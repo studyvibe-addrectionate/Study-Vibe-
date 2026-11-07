@@ -1,0 +1,1946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.6/purify.min.js"></script>
+
+<script>
+  window.MathJax = {
+    tex: {
+     inlineMath: [['\\(', '\\)'], ['$', '$']],
+displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      processEscapes: true
+    },
+    options: {
+      skipHtmlTags: [
+        'script',
+        'noscript',
+        'style',
+        'textarea',
+        'pre',
+        'code'
+      ]
+    },
+    startup: {
+      typeset: false
+    }
+  };
+</script>
+
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="Study Vibe by Addrectionate — From Confusion to Confidence. Learn smarter with AI."
+  >
+  <title>Study Vibe | Addrectionate</title>
+
+  <!-- PDF.js: extracts text from PDF files in the browser -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+    defer
+  ></script>
+
+  <style>
+    .main-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.main-navigation a {
+  text-decoration: none;
+  color: #24213b;
+  font-size: 14px;
+}
+
+.main-navigation a:hover {
+  color: #6046d9;
+}
+
+.main-navigation a.button {
+  background: #6046d9;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 10px;
+}
+
+.main-navigation a.button:hover {
+  background: #4530ae;
+}
+
+@media (max-width: 760px) {
+  .main-navigation {
+    gap: 10px;
+  }
+}
+    :root {
+      --primary: #6046d9;
+      --primary-dark: #4530ae;
+      --background: #f6f5ff;
+      --surface: #ffffff;
+      --text: #24213b;
+      --muted: #6e6a83;
+      --border: #e6e2f3;
+      --success: #16794b;
+      --danger: #b42318;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    a {
+      color: var(--primary);
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin: auto;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .navbar {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+    }
+
+    .brand {
+      color: var(--primary);
+      font-size: 1.45rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    nav {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--text);
+      font-size: 0.94rem;
+    }
+
+    nav a:hover {
+      color: var(--primary);
+    }
+
+    .button {
+      display: inline-block;
+      padding: 11px 17px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .button:hover {
+      background: var(--primary-dark);
+    }
+
+    .button.secondary {
+      background: #eeebff;
+      color: var(--primary-dark);
+    }
+
+    .button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .hero {
+  position: relative;
+  padding: 45px 0;
+  text-align: left;
+  background: linear-gradient(135deg, #eeebff, #ffffff);
+  overflow: hidden;
+}
+
+.hero-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 380px;
+}
+
+.hero-content {
+  flex: 0 0 55%;
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-content h1 {
+  max-width: 600px;
+}
+
+.hero-content p {
+  max-width: 540px;
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 1.08rem;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hero-robot {
+  flex: 0 0 42%;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.hero-robot img {
+  display: block;
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  object-fit: contain;
+}
+    .eyebrow {
+      color: var(--primary);
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+    }
+
+    h1 {
+      font-size: clamp(2.1rem, 6vw, 3.8rem);
+      line-height: 1.15;
+      margin: 14px 0;
+    }
+
+    section {
+      padding: 42px 0;
+      scroll-margin-top: 90px;
+    }
+
+    .section-heading {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 8px;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+    }
+
+    .section-heading p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 8px 25px rgba(45, 32, 100, 0.04);
+      min-width: 0;
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .plan-price {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 6px 0;
+    }
+
+    .plan-list {
+      padding-left: 22px;
+      margin-bottom: 22px;
+    }
+
+    .plan-list li {
+      margin-bottom: 7px;
+    }
+
+    .premium {
+      border: 2px solid var(--primary);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      background: #eeebff;
+      color: var(--primary-dark);
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d8d3e8;
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid #c9bfff;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 125px;
+      resize: vertical;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .status {
+      margin-top: 12px;
+      font-size: 0.92rem;
+      overflow-wrap: anywhere;
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .status.success {
+      color: var(--success);
+    }
+
+    .result-box {
+  min-height: 120px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  background: #faf9ff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  line-height: 1.8;
+}
+
+.result-box p {
+  white-space: normal;
+}
+
+.result-box pre {
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.result-box mjx-container {
+  max-width: 100%;
+}
+
+.result-box mjx-container[display="true"] {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 0;
+}
+    .result-box h1,
+.result-box h2,
+.result-box h3 {
+  margin: 18px 0 10px;
+  line-height: 1.4;
+}
+
+.result-box p {
+  margin: 10px 0;
+  line-height: 1.7;
+}
+
+.result-box ul,
+.result-box ol {
+  padding-left: 26px;
+  margin: 10px 0;
+}
+
+.result-box pre {
+  overflow-x: auto;
+  padding: 12px;
+  background: #f0edf8;
+  border-radius: 8px;
+}
+
+.result-box mjx-container {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+   } 
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .feature {
+      padding: 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .feature h3 {
+      margin-top: 0;
+    }
+
+    .small {
+      font-size: 0.85rem;
+    }
+
+    footer {
+      background: #211a3c;
+      color: #fff;
+      padding: 28px 0;
+      margin-top: 30px;
+    }
+
+    footer a {
+      color: #ded7ff;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    @media (max-width: 760px) {
+      .grid,
+      .form-grid,
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .navbar {
+        justify-content: center;
+      }
+
+      nav {
+        justify-content: center;
+      }
+  .hero-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  min-height: 350px;
+}
+
+.hero-content {
+  flex: 1 1 65%;
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-robot {
+  flex: 0 0 30%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-robot img {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  object-fit: contain;
+  opacity: 1;
+}
+
+.hero {
+    padding: 35px 0;
+  }
+
+  .hero-layout {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .hero-content {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .hero-content h1,
+  .hero-content p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .hero-robot {
+    flex: 0 0 auto;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-robot img {
+    max-width: 240px;
+ }
+}
+  </style>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjs@14.8.1/lib/browser/math.js"></script>
+</head>
+
+<body>
+ <header>
+  <div class="container navbar">
+    <a class="brand" href="#home">
+      Study Vibe
+      <small>BY ADDRECTIONATE</small>
+    </a>
+
+    <nav aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#features">Features</a>
+      <a href="#assistant">AI Study Assistant</a>
+      <a href="#plans">Plans</a>
+      <a href="login.html">Log in</a>
+      <a href="mcq.html">MCQ Generator</a>
+      <a href="exam.html">MCQ Exam</a>
+      <a href="studio.html">Study Studio</a>
+      <a href="writing-studio.html">Writing Studio</a>
+      <a href="tools.html/index.html">Study Tools</a>
+      <a class="button" href="payment.html">Get Premium</a>
+    </nav>
+  </div>
+</header>
+
+  <main>
+    <section class="hero" id="home">
+  <div class="container hero-layout">
+
+    <div class="hero-content">
+      <div class="eyebrow">A smarter way to study</div>
+
+      <h1>From Confusion to Confidence</h1>
+
+      <p>
+        Turn your study materials into answers, notes, practice questions,
+        and step-by-step explanations with Study Vibe by Addrectionate.
+      </p>
+
+      <div class="hero-buttons">
+        <a class="button" href="#assistant">Start Studying</a>
+        <a class="button secondary" href="#plans">Explore Plans</a>
+      </div>
+    </div>
+
+    <div class="hero-robot">
+      <img src="images/robot.png" alt="Study Vibe AI Robot">
+    </div>
+
+  </div>
+</section>
+
+    <section id="features">
+      <div class="container">
+        <div class="section-heading">
+          <h2>Everything You Need to Study Smarter</h2>
+          <p>One place for learning, revision, and practice.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <h3>📚 PDF Study</h3>
+            <p>Extract text from your PDF and use it as study material.</p>
+          </article>
+
+          <article class="feature">
+            <h3>🧠 AI Answers</h3>
+            <p>Ask questions and request explanations in your chosen language.</p>
+          </article>
+           <article class="feature">
+            <h3>✍️ MCQs</h3>
+            <p>Generate multiple-choice questions for revision.</p>
+          </article>
+
+          <article class="feature">
+            <h3>📝 Short Questions</h3>
+            <p>Practise concise questions and answers on a topic.</p>
+          </article>
+
+          <article class="feature">
+            <h3>📖 Notes</h3>
+            <p>Prepare revision notes from your topic or extracted PDF text.</p>
+          </article>
+          <article class="feature">
+            <h3>✍️ Exams</h3>
+            <p>Practise exams and check your progress.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+          <section id="mathHelp">
+  <div class="container">
+    <div class="card">
+      <h2>Math Help</h2>
+      <p>Type a problem, speak your problem, or upload a photo. AI will explain the solution step by step.</p>
+
+      <div class="field">
+        <label for="mathProblem">Type your math problem</label>
+        <textarea
+          id="mathProblem"
+          rows="5"
+          placeholder="Example: Find the derivative of x^3 + 2x^2 - 5x"
+        ></textarea>
+      </div>
+
+      <div class="field full">
+        <button type="button" class="button secondary" id="mathVoiceButton">
+          🎤 Speak Math Problem
+        </button>
+        <p id="mathVoiceStatus" class="muted small">
+          Tap the microphone and speak.
+        </p>
+      </div>
+
+      <div class="field full">
+        <label for="mathImage">Upload Math Photo / Take Photo</label>
+        <input
+          type="file"
+          id="mathImage"
+          accept="image/*"
+          capture="environment"
+        >
+
+        <img
+          id="mathImagePreview"
+          alt="Math problem preview"
+          style="display:none;max-width:100%;max-height:250px;border-radius:12px;margin-top:10px;"
+        >
+
+        <button
+          type="button"
+          id="removeMathImage"
+          class="button secondary"
+          style="display:none;margin-top:8px;"
+        >
+          Remove Image
+        </button>
+      </div>
+
+      <div class="field">
+        <label for="mathLanguage">Answer language</label>
+        <select id="mathLanguage">
+          <option value="English">English</option>
+          <option value="Bangla">বাংলা (Bangla)</option>
+        </select>
+      </div>
+
+      <div class="button-row">
+        <button type="button" class="button" id="solveMathButton">
+          Solve Step by Step
+        </button>
+      </div>
+
+      <p id="mathStatus" class="status" role="status"></p>
+
+      <h3>Written Math Problem</h3>
+      <pre id="recognizedMath" style="white-space:pre-wrap;"></pre>
+
+      <h3>Step-by-Step Solution</h3>
+      <div id="mathSolution" class="result-box"></div>
+      <hr style="margin:25px 0;border:0;border-top:1px solid #e6e2f3;">
+
+<div id="premiumGraphSection">
+      <h3>📈 Math Graph Plotter</h3>
+
+<p class="muted">
+  Enter a function of x to create its graph.
+  Examples: x^2, 2*x+3, sin(x), cos(x), sqrt(x).
+</p>
+
+<div class="field">
+  <label for="graphEquation">Enter equation: y =</label>
+  <input
+    id="graphEquation"
+    type="text"
+    placeholder="Example: x^2"
+    value="x^2"
+  >
+</div>
+
+<div class="form-grid" style="margin-top:12px;">
+  <div class="field">
+    <label for="graphMin">Minimum x</label>
+    <input id="graphMin" type="number" value="-10">
+  </div>
+
+  <div class="field">
+    <label for="graphMax">Maximum x</label>
+    <input id="graphMax" type="number" value="10">
+  </div>
+</div>
+
+<div class="button-row">
+  <button type="button" class="button" id="plotGraphButton">
+    Generate Graph
+  </button>
+
+  <button type="button" class="button secondary" id="clearGraphButton">
+    Clear Graph
+  </button>
+</div>
+
+<p id="graphStatus" class="status" role="status"></p>
+
+<div
+  id="mathGraph"
+  style="width:100%;height:400px;margin-top:15px;"
+></div>
+</div>
+    </div>
+  </div>
+</section>
+
+    <section id="assistant">
+      <div class="container">
+        <div class="section-heading">
+          <h2>AI Study Assistant</h2>
+          <p>Choose a task, add your question, and start learning.</p>
+        </div>
+
+        <div class="card">
+          <form id="studyForm">
+            <div class="form-grid">
+              <div class="field">
+                <label for="task">What do you want to do?</label>
+                <select id="task" name="task" required>
+                  <option value="answer">Answer a question</option>
+                  <option value="math">Solve a maths problem</option>
+                   <option value="short">Generate short questions</option>
+                  <option value="notes">Prepare study notes</option>
+                  <option value="summary">Summarise study material</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="subject">Subject</label>
+                <input
+                  id="subject"
+                  name="subject"
+                  type="text"
+                  placeholder="e.g. Chemistry"
+                >
+              </div>
+
+              <div class="field">
+                <label for="topic">Topic or chapter</label>
+                <input
+                  id="topic"
+                  name="topic"
+                  type="text"
+                  placeholder="e.g. Chemical equilibrium"
+                >
+              </div>
+
+              <div class="field">
+                <label for="difficulty">Difficulty</label>
+                <select id="difficulty" name="difficulty">
+                  <option value="Beginner">Beginner</option>
+                  <option value="Intermediate" selected>Intermediate</option>
+                  <option value="Advanced">Advanced</option>
+                </select>
+              </div>
+
+             <div class="field">
+               <label for="language">Answer language</label>
+               <select id="language" name="language">
+                <option value="English">English</option>
+                <option value="Bangla">বাংলা (Bangla)</option>
+               </select>
+              </div>
+
+              <div class="field">
+  <label for="question">Your question or instructions</label>
+  <textarea
+    id="question"
+    name="question"
+    placeholder="Write your question here. For maths, type the equation and ask for every step."
+  ></textarea>
+</div>
+
+<div class="field full">
+  <button
+    type="button"
+    class="button secondary"
+    id="studyVoiceButton"
+  >
+    🎤 Speak Your Question
+  </button>
+
+  <p id="studyVoiceStatus" class="muted small">
+    Tap the microphone and speak.
+  </p>
+</div>
+              </div>
+              <div class="field full">
+                <label for="studyImage">Upload Image / Take Photo</label>
+                <input
+                  type="file"
+                  id="studyImage"
+                  accept="image/*"
+                  capture="environment"
+                >
+
+                <img
+                  id="studyImagePreview"
+                  alt="Selected study image preview"
+                  style="display:none;max-width:100%;max-height:250px;border-radius:12px;margin-top:10px;"
+                >
+
+                <button
+                  type="button"
+                  id="removeStudyImage"
+                  class="button secondary"
+                  style="display:none;margin-top:8px;"
+                >
+                  Remove Image
+                </button>
+              </div>
+
+              <div class="field full">
+                <label for="pdfFile">Upload a PDF study file</label>
+                <input
+                  id="pdfFile"
+                  name="pdfFile"
+                  type="file"
+                  accept=".pdf,application/pdf"
+                >
+                <p class="muted small">
+                  Free plan: up to 200 MB per PDF. Premium plan: up to 1 GB
+                  per PDF, once premium upload support is implemented.
+                  This page currently extracts PDF text in your browser;
+                  it does not upload or store the original PDF.
+                </p>
+                <div id="pdfStatus" class="status" role="status"></div>
+              </div>
+
+              <div class="field full">
+                <label for="pdfText">Extracted PDF text</label>
+                <textarea
+                  id="pdfText"
+                  name="pdfText"
+                  placeholder="Extracted PDF text will appear here. You can also paste relevant textbook content."
+                ></textarea>
+                <p class="muted small">
+                  Only a limited amount of extracted text is sent with each
+                  request. Very long PDFs may take time to process.
+                </p>
+              </div>
+              <div class="field">
+  <label for="notesLanguage">Notes language</label>
+  <select id="notesLanguage" name="notesLanguage">
+    <option value="English">English</option>
+    <option value="Bangla">বাংলা (Bangla)</option>
+  </select>
+              </div>
+            </div>
+
+            <div class="button-row">
+              <button class="button" type="submit" id="generateButton">
+                Generate
+              </button>
+              <button class="button secondary" type="button" id="clearButton">
+                Clear
+              </button>
+            </div>
+
+            <div id="studyStatus" class="status" role="status"></div>
+          </form>
+
+          <div style="margin-top: 25px;">
+            <h3>Your Result</h3>
+            <div
+              id="result"
+              class="result-box"
+              aria-live="polite"
+            >Your AI-generated answer will appear here.</div>
+
+            <div class="button-row">
+              <button
+                class="button secondary"
+                type="button"
+                id="copyButton"
+              >
+                Copy Result
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="plans">
+      <div class="container">
+        <div class="section-heading">
+          <h2>Choose Your Study Plan</h2>
+          <p>Start free and upgrade when you need more.</p>
+        </div>
+
+        <div class="grid">
+<article class="card">
+  <span class="tag">FREEMIUM</span>
+  <h3>Study Vibe Freemium</h3>
+  <div class="plan-price">৳0 <span class="muted small">/ month</span></div>
+  <p class="muted">Essential AI-powered study support for everyone.</p>
+
+  <ul class="plan-list">
+    <li>10 AI requests per week</li>
+    <li>Ask questions from PDFs and study materials</li>
+    <li>Generate notes and summaries</li>
+    <li>Generate short questions</li>
+    <li>Solve mathematical problems step by step</li>
+    <li>Generate MCQs without explanations</li>
+    <li>Take MCQ exams without explanations</li>
+  </ul>
+
+  <a class="button secondary" href="#assistant">Try Freemium</a>
+</article>
+
+<article class="card premium">
+  <span class="tag">PREMIUM PLAN</span>
+  <h3>Study Vibe Premium</h3>
+  <div class="plan-price">
+    ৳299 <span class="muted small">/ month</span>
+  </div>
+  <p class="muted">Advanced AI assistance for ambitious learners.</p>
+
+  <ul class="plan-list">
+    <li>Everything in Freemium</li>
+    <li>AI Writing Studio</li>
+    <li>Assignment and research paper assistance</li>
+    <li>Thesis and academic writing support</li>
+    <li>Advanced content generation</li>
+    <li>MCQs with explanations</li>
+    <li>MCQ exams with explanations</li>
+    <li>Mathematical graph plotting</li>
+    <li>Premium educational utilities</li>
+  </ul>
+
+  <a class="button" href="payment.html">Choose Premium</a>
+</article>
+        </div>
+
+        <p class="muted small" style="margin-top: 18px;">
+          Plan descriptions are not proof that subscription restrictions,
+          payments, or file-size limits are already enforced. These require
+          backend authentication, payment verification, and file-upload
+          validation.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-content">
+      <div>
+        <strong>Study Vibe by Addrectionate</strong>
+        <div class="small">From Confusion to Confidence</div>
+      </div>
+
+      <div class="small">
+        <a href="login.html">Log in</a>
+        &nbsp; | &nbsp;
+        <a href="payment.html">Premium</a>
+      </div>
+
+      <div class="small">
+        © <span id="year"></span> Addrectionate. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    "use strict";
+
+    const studyForm = document.getElementById("studyForm");
+    const pdfFile = document.getElementById("pdfFile");
+    const pdfText = document.getElementById("pdfText");
+    const pdfStatus = document.getElementById("pdfStatus");
+    const studyStatus = document.getElementById("studyStatus");
+    const resultBox = document.getElementById("result");
+    const generateButton = document.getElementById("generateButton");
+    const studyImage = document.getElementById("studyImage");
+    const studyImagePreview = document.getElementById("studyImagePreview");
+    const removeStudyImage = document.getElementById("removeStudyImage");
+
+    const studyVoiceButton = document.getElementById("studyVoiceButton");
+    const studyVoiceStatus = document.getElementById("studyVoiceStatus");
+    studyImage.addEventListener("change", () => {
+  const file = studyImage.files[0];
+
+  if (!file) {
+    studyImagePreview.style.display = "none";
+    studyImagePreview.src = "";
+    removeStudyImage.style.display = "none";
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    alert("Please select an image file.");
+    studyImage.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    studyImagePreview.src = reader.result;
+    studyImagePreview.style.display = "block";
+    removeStudyImage.style.display = "inline-block";
+  };
+
+  reader.readAsDataURL(file);
+});
+removeStudyImage.addEventListener("click", () => {
+  studyImage.value = "";
+  studyImagePreview.src = "";
+  studyImagePreview.style.display = "none";
+  removeStudyImage.style.display = "none";
+});
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+
+let studyRecognition = null;
+let isStudyListening = false;
+
+if (SpeechRecognition) {
+  studyRecognition = new SpeechRecognition();
+  studyRecognition.continuous = true;
+  studyRecognition.interimResults = true;
+
+  studyVoiceButton.addEventListener("click", () => {
+    if (isStudyListening) {
+      studyRecognition.stop();
+      return;
+    }
+
+    const selectedLanguage =
+      document.getElementById("language").value;
+
+    studyRecognition.lang =
+      selectedLanguage.toLowerCase().includes("bangla")
+        ? "bn-BD"
+        : "en-US";
+
+    studyRecognition.start();
+  });
+
+  studyRecognition.onstart = () => {
+    isStudyListening = true;
+    studyVoiceButton.textContent = "⏹ Stop Speaking";
+    studyVoiceStatus.textContent = "Listening... Speak now.";
+  };
+
+  studyRecognition.onresult = (event) => {
+    let transcript = "";
+
+    for (let i = 0; i < event.results.length; i++) {
+      transcript += event.results[i][0].transcript + " ";
+    }
+
+    document.getElementById("question").value = transcript.trim();
+  };
+
+  studyRecognition.onend = () => {
+    isStudyListening = false;
+    studyVoiceButton.textContent = "🎤 Speak Your Question";
+    studyVoiceStatus.textContent = "Voice input finished.";
+  };
+
+  studyRecognition.onerror = (event) => {
+    studyVoiceStatus.textContent =
+      "Voice error: " + event.error;
+  };
+
+} else {
+  studyVoiceButton.disabled = true;
+  studyVoiceStatus.textContent =
+    "Voice input is not supported in this browser. Try Chrome.";
+}
+
+    // The Free plan's intended per-file limit.
+    // This is a browser-side check, not secure subscription enforcement.
+    const FREE_PDF_LIMIT = 200 * 1024 * 1024;
+
+    // Keep requests manageable. This is not the full PDF upload size.
+    const MAX_TEXT_CHARACTERS = 20000;
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    }
+
+    function showStatus(element, message, type = "") {
+      element.textContent = message;
+      element.className = "status" + (type ? " " + type : "");
+    }
+   function normalizeMathOutput(answer, task) {
+  if (task !== "math") {
+    return answer;
+  }
+
+  let output = answer;
+
+  // Convert standalone [ equation ] lines into MathJax display equations.
+  output = output.replace(
+    /^\s*\[\s*([^\[\]\n]+?)\s*\]\s*$/gm,
+    function (match, equation) {
+      if (/[=^_\\+\-*\/<>]/.test(equation)) {
+        return "\\[\n" + equation.trim() + "\n\\]";
+      }
+      return match;
+    }
+  );
+
+  return output;
+}
+
+async function renderAnswer(answer, task) {
+  // First, normalize mathematical output.
+  const normalizedAnswer = normalizeMathOutput(answer, task);
+
+  // Protect mathematical expressions from Markdown processing.
+  const mathExpressions = [];
+
+  const protectedAnswer = normalizedAnswer.replace(
+    /\$\$[\s\S]+?\$\$|\\\[[\s\S]+?\\\]|\\\([\s\S]+?\\\)|(?<!\\)\$(?!\$)(?:\\.|[^$\n])+?\$/g,
+    function (expression) {
+      const token = "MATHJAXTOKEN" + mathExpressions.length + "END";
+      mathExpressions.push(expression);
+      return token;
+    }
+  );
+
+  // Convert the remaining text into Markdown.
+  const markdownHtml = marked.parse(protectedAnswer);
+
+  // Sanitize the HTML before inserting it.
+  resultBox.innerHTML = DOMPurify.sanitize(markdownHtml);
+
+  // Restore mathematical expressions as text, not HTML.
+  const walker = document.createTreeWalker(
+    resultBox,
+    NodeFilter.SHOW_TEXT
+  );
+
+  let textNode;
+
+  while ((textNode = walker.nextNode())) {
+    let text = textNode.nodeValue;
+
+    mathExpressions.forEach(function (expression, index) {
+      const token = "MATHJAXTOKEN" + index + "END";
+
+      if (text.includes(token)) {
+        text = text.replaceAll(token, expression);
+      }
+    });
+
+    textNode.nodeValue = text;
+  }
+
+  // Ask MathJax to typeset the restored equations.
+  if (window.MathJax) {
+    await window.MathJax.startup.promise;
+
+    if (window.MathJax.typesetPromise) {
+      await window.MathJax.typesetPromise([resultBox]);
+    }
+  }
+}
+
+    function getPdfLimitMessage() {
+      return "The Free plan currently accepts PDFs up to 200 MB. " +
+        "Premium's 1 GB limit requires secure Premium upload support.";
+    }
+
+    pdfFile.addEventListener("change", async function () {
+      const file = pdfFile.files && pdfFile.files[0];
+
+      pdfText.value = "";
+      showStatus(pdfStatus, "");
+
+      if (!file) {
+        return;
+      }
+
+      const isPdf = file.type === "application/pdf" ||
+        file.name.toLowerCase().endsWith(".pdf");
+
+      if (!isPdf) {
+        showStatus(pdfStatus, "Please select a PDF file.", "error");
+        pdfFile.value = "";
+        return;
+      }
+
+      if (file.size > FREE_PDF_LIMIT) {
+        showStatus(pdfStatus, getPdfLimitMessage(), "error");
+        pdfFile.value = "";
+        return;
+      }
+
+      if (!window.pdfjsLib) {
+        showStatus(
+          pdfStatus,
+          "The PDF reader could not load. Check your internet connection and refresh the page.",
+          "error"
+        );
+        return;
+      }
+
+      showStatus(
+        pdfStatus,
+        "Reading your PDF in this browser. Large files may take some time..."
+      );
+
+      try {
+        const buffer = await file.arrayBuffer();
+
+        const pdf = await window.pdfjsLib.getDocument({
+          data: new Uint8Array(buffer)
+        }).promise;
+
+        let extractedText = "";
+        let pagesRead = 0;
+
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+          const page = await pdf.getPage(pageNumber);
+          const content = await page.getTextContent();
+          const pageText = content.items
+            .map(item => item.str || "")
+            .join(" ");
+
+          extractedText +=
+            "\n\n--- Page " + pageNumber + " ---\n" + pageText;
+
+          pagesRead++;
+
+          // Avoid creating a huge text field in the browser.
+          if (extractedText.length >= 1000000) {
+            extractedText = extractedText.slice(0, 1000000);
+            break;
+          }
+        }
+
+        pdfText.value = extractedText;
+
+        showStatus(
+          pdfStatus,
+          "PDF text extracted from " + pagesRead + " page(s). " +
+          "The AI request will use at most " +
+          MAX_TEXT_CHARACTERS.toLocaleString() +
+          " characters of this text.",
+          "success"
+        );
+      } catch (error) {
+        console.error("PDF extraction error:", error);
+        showStatus(
+          pdfStatus,
+          "Could not read this PDF. It may be damaged, encrypted, or too large for your device's available memory.",
+          "error"
+        );
+      }
+    });
+    function compressStudyImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const image = new Image();
+
+      image.onload = () => {
+        const maxSize = 1600;
+
+        let width = image.width;
+        let height = image.height;
+
+        if (width > maxSize || height > maxSize) {
+          const ratio = Math.min(
+            maxSize / width,
+            maxSize / height
+          );
+
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0, width, height);
+
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      
+      image.onerror = reject;
+      image.src = reader.result;
+    };
+
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+// MATH HELP: IMAGE + VOICE + AI SOLVER
+
+const mathProblem = document.getElementById("mathProblem");
+const mathImage = document.getElementById("mathImage");
+const mathImagePreview = document.getElementById("mathImagePreview");
+const removeMathImage = document.getElementById("removeMathImage");
+const mathVoiceButton = document.getElementById("mathVoiceButton");
+const mathVoiceStatus = document.getElementById("mathVoiceStatus");
+const solveMathButton = document.getElementById("solveMathButton");
+const mathStatus = document.getElementById("mathStatus");
+const mathSolution = document.getElementById("mathSolution");
+const recognizedMath = document.getElementById("recognizedMath");
+
+// Image preview
+mathImage.addEventListener("change", () => {
+  const file = mathImage.files[0];
+
+  if (!file) {
+    mathImagePreview.src = "";
+    mathImagePreview.style.display = "none";
+    removeMathImage.style.display = "none";
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    alert("Please select an image file.");
+    mathImage.value = "";
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    mathImagePreview.src = reader.result;
+    mathImagePreview.style.display = "block";
+    removeMathImage.style.display = "inline-block";
+  };
+
+  reader.readAsDataURL(file);
+});
+
+// Remove image
+removeMathImage.addEventListener("click", () => {
+  mathImage.value = "";
+  mathImagePreview.src = "";
+  mathImagePreview.style.display = "none";
+  removeMathImage.style.display = "none";
+});
+
+// Voice input
+const MathSpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+
+let mathRecognition = null;
+let isMathListening = false;
+
+if (MathSpeechRecognition) {
+  mathRecognition = new MathSpeechRecognition();
+  mathRecognition.continuous = true;
+  mathRecognition.interimResults = true;
+
+  mathVoiceButton.addEventListener("click", () => {
+    if (isMathListening) {
+      mathRecognition.stop();
+      return;
+    }
+
+    const language =
+      document.getElementById("mathLanguage").value;
+
+    mathRecognition.lang =
+      language === "Bangla" ? "bn-BD" : "en-US";
+
+    mathRecognition.start();
+  });
+
+  mathRecognition.onstart = () => {
+    isMathListening = true;
+    mathVoiceButton.textContent = "⏹ Stop Speaking";
+    mathVoiceStatus.textContent = "Listening... Speak now.";
+  };
+
+  mathRecognition.onresult = (event) => {
+    let transcript = "";
+
+    for (let i = 0; i < event.results.length; i++) {
+      transcript += event.results[i][0].transcript + " ";
+    }
+
+    mathProblem.value = transcript.trim();
+  };
+
+  mathRecognition.onend = () => {
+    isMathListening = false;
+    mathVoiceButton.textContent = "🎤 Speak Math Problem";
+    mathVoiceStatus.textContent = "Voice input finished.";
+  };
+
+  mathRecognition.onerror = (event) => {
+    mathVoiceStatus.textContent = "Voice error: " + event.error;
+  };
+
+} else {
+  mathVoiceButton.disabled = true;
+  mathVoiceStatus.textContent =
+    "Voice input is not supported in this browser. Try Chrome.";
+}
+
+// Solve math using AI
+solveMathButton.addEventListener("click", async () => {
+  const question = mathProblem.value.trim();
+  const imageFile = mathImage.files[0];
+  const language =
+    document.getElementById("mathLanguage").value;
+
+  if (!question && !imageFile) {
+    mathStatus.textContent =
+      "Please type, speak, or upload a photo of your math problem.";
+    mathStatus.className = "status error";
+    return;
+  }
+
+  let imageData = null;
+
+  if (imageFile) {
+    try {
+      imageData = await compressStudyImage(imageFile);
+    } catch (error) {
+      mathStatus.textContent =
+        "Could not process the image. Please try another photo.";
+      mathStatus.className = "status error";
+      return;
+    }
+  }
+
+  solveMathButton.disabled = true;
+  solveMathButton.textContent = "Solving...";
+  mathStatus.textContent = "Connecting to the AI server...";
+  mathStatus.className = "status";
+  mathSolution.textContent = "Please wait while AI solves your problem.";
+
+  recognizedMath.textContent = question ||
+    "Math problem submitted through image.";
+
+  const payload = {
+    task: "math",
+    subject: "Mathematics",
+    topic: "Math problem",
+    difficulty: "Intermediate",
+    language,
+    question,
+    textbook: "",
+    imageData
+  };
+
+  try {
+    const response = await fetch("/api/study", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Server error (" + response.status + ")."
+      );
+    }
+
+    if (!data.answer) {
+      throw new Error("The AI server did not return a solution.");
+    }
+
+    const normalizedAnswer =
+      normalizeMathOutput(data.answer, "math");
+
+    const mathHtml = marked.parse(normalizedAnswer);
+
+    mathSolution.innerHTML =
+      DOMPurify.sanitize(mathHtml);
+
+    if (window.MathJax) {
+      await window.MathJax.startup.promise;
+
+      if (window.MathJax.typesetPromise) {
+        await window.MathJax.typesetPromise([mathSolution]);
+      }
+    }
+
+    mathStatus.textContent = "Your solution is ready.";
+    mathStatus.className = "status success";
+
+  } catch (error) {
+    console.error("Math Help error:", error);
+
+    mathSolution.textContent =
+      "We couldn't solve the problem.";
+
+    mathStatus.textContent =
+      error.message || "Could not connect to the AI server.";
+
+    mathStatus.className = "status error";
+
+  } finally {
+    solveMathButton.disabled = false;
+    solveMathButton.textContent = "Solve Step by Step";
+  }
+});
+    studyForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const task = document.getElementById("task").value;
+      const subject = document.getElementById("subject").value.trim();
+      const topic = document.getElementById("topic").value.trim();
+      const difficulty = document.getElementById("difficulty").value;
+      const language = document.getElementById("language").value;
+      const question = document.getElementById("question").value.trim();
+      const textbook = pdfText.value
+        .trim()
+        .slice(0, MAX_TEXT_CHARACTERS);
+
+      if (!question && !topic && !textbook && !studyImage.files[0]) {
+        showStatus(
+          studyStatus,
+          "Please enter a question, topic, upload an image, or provide PDF study text.",
+          "error"
+        );
+        return;
+      }
+
+     let imageData = null;
+
+if (studyImage.files && studyImage.files[0]) {
+  try {
+    imageData = await compressStudyImage(studyImage.files[0]);
+  } catch (error) {
+    alert("Could not process the image. Please try another photo.");
+    return;
+  }
+}
+
+if (task === "short") {
+  // Short question generation instructions
+  // Use the uploaded PDF, image, topic or question as source.
+  // Generate concise, relevant questions with answers.
+}
+const requestQuestion = question || (
+  task === "notes"
+    ? `Generate detailed, well-organized study notes for ${subject || "the supplied subject"}. Topic: ${topic || "derive it from the uploaded study material"}. Use the supplied PDF text as the primary source.`
+    : task === "short"
+    ? `Generate important short questions with concise answers for ${subject || "the supplied subject"}. Topic: ${topic || "derive it from the uploaded study material"}. Use the supplied PDF text as the primary source.`
+    : task === "summary"
+    ? `Prepare a clear and comprehensive summary of ${subject || "the supplied study material"}. Topic: ${topic || "derive it from the uploaded PDF"}. Cover the important concepts and key points.`
+    : `Please help me with ${topic || "the supplied study material"}.`
+);
+
+const payload = {
+  task,
+  subject,
+  topic,
+  difficulty,
+  language,
+  question: requestQuestion,
+  textbook,
+  imageData
+};
+
+      generateButton.disabled = true;
+      generateButton.textContent = "Generating...";
+      showStatus(studyStatus, "Connecting to the AI server...");
+      resultBox.textContent = "Please wait while your answer is generated.";
+
+      try {
+        const response = await fetch("/api/study", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(
+            data.error ||
+            "The server returned an error (" + response.status + ")."
+          );
+        }
+
+        if (!data.answer) {
+          throw new Error(
+            "The server did not return an answer. Check server.mjs."
+          );
+        }
+
+       await renderAnswer(data.answer, task);
+showStatus(studyStatus, "Your result is ready.", "success");
+      } catch (error) {
+        console.error("AI request error:", error);
+
+        resultBox.textContent = "We couldn't generate a result.";
+        showStatus(
+          studyStatus,
+          error.message ||
+          "Could not connect to the AI server. Make sure server.mjs is running and the AI connection is configured.",
+          "error"
+        );
+      } finally {
+        generateButton.disabled = false;
+        generateButton.textContent = "Generate";
+      }
+    });
+
+    document.getElementById("clearButton").addEventListener("click", function () {
+  if (studyRecognition && isStudyListening) {
+    studyRecognition.stop();
+  }
+
+  studyForm.reset();
+
+  pdfText.value = "";
+  pdfFile.value = "";
+
+  studyImage.value = "";
+  studyImagePreview.src = "";
+  studyImagePreview.style.display = "none";
+  removeStudyImage.style.display = "none";
+
+  studyVoiceStatus.textContent = "Tap the microphone and speak.";
+  studyVoiceButton.textContent = "🎤 Speak Your Question";
+
+  resultBox.textContent = "Your AI-generated answer will appear here.";
+
+  showStatus(pdfStatus, "");
+  showStatus(studyStatus, "");
+});
+      
+    document.getElementById("copyButton").addEventListener("click", async function () {
+      const textToCopy = resultBox.textContent.trim();
+
+      if (
+        !textToCopy ||
+        textToCopy === "Your AI-generated answer will appear here."
+      ) {
+        showStatus(studyStatus, "There is no result to copy yet.", "error");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        showStatus(studyStatus, "Result copied to clipboard.", "success");
+      } catch (error) {
+        showStatus(
+          studyStatus,
+          "Clipboard access failed. Select the result text and copy it manually.",
+          "error"
+        );
+      }
+    });
+    // PREMIUM GRAPH ACCESS
+
+async function loadGraphMembership() {
+  const graphSection = document.getElementById("premiumGraphSection");
+
+  try {
+    const response = await fetch("/api/auth/me", {
+      credentials: "same-origin"
+    });
+
+    const data = await response.json();
+
+    const isPremium =
+      data.loggedIn &&
+      data.user &&
+      data.user.plan === "premium";
+
+    if (!isPremium) {
+      graphSection.innerHTML = `
+        <h3>📈 Math Graph Plotter</h3>
+        <p>
+          Mathematical graph plotting is available with
+          Study Vibe Premium.
+        </p>
+        <a class="button" href="payment.html">
+          Upgrade to Premium
+        </a>
+      `;
+    }
+
+  } catch (error) {
+    console.error("Could not check graph membership:", error);
+  }
+}
+
+loadGraphMembership();
+    // MATH GRAPH PLOTTER
+
+const graphEquation = document.getElementById("graphEquation");
+const graphMin = document.getElementById("graphMin");
+const graphMax = document.getElementById("graphMax");
+const plotGraphButton = document.getElementById("plotGraphButton");
+const clearGraphButton = document.getElementById("clearGraphButton");
+const graphStatus = document.getElementById("graphStatus");
+
+plotGraphButton.addEventListener("click", function () {
+
+  const expression = graphEquation.value.trim();
+  const min = Number(graphMin.value);
+  const max = Number(graphMax.value);
+
+  if (!expression) {
+    graphStatus.textContent = "Please enter a mathematical function.";
+    graphStatus.className = "status error";
+    return;
+  }
+
+  if (
+    !Number.isFinite(min) ||
+    !Number.isFinite(max) ||
+    min >= max
+  ) {
+    graphStatus.textContent =
+      "Please enter a valid minimum and maximum x-value.";
+    graphStatus.className = "status error";
+    return;
+  }
+
+  try {
+    const compiledFunction = math.compile(expression);
+
+    const xValues = [];
+    const yValues = [];
+
+    const samples = 500;
+
+    for (let i = 0; i <= samples; i++) {
+
+      const x = min + (max - min) * i / samples;
+
+      let y;
+
+      try {
+        y = compiledFunction.evaluate({ x });
+
+        if (typeof y !== "number" || !Number.isFinite(y)) {
+          y = null;
+        }
+
+        if (y !== null && Math.abs(y) > 1000000) {
+          y = null;
+        }
+
+      } catch {
+        y = null;
+      }
+
+      xValues.push(x);
+      yValues.push(y);
+    }
+
+    const graphData = [{
+      x: xValues,
+      y: yValues,
+      type: "scatter",
+      mode: "lines",
+      name: "y = " + expression,
+      line: {
+        width: 3
+      },
+      connectgaps: false
+    }];
+
+    const layout = {
+      title: "Graph of y = " + expression,
+      xaxis: {
+        title: "x",
+        zeroline: true,
+        showgrid: true
+      },
+      yaxis: {
+        title: "y",
+        zeroline: true,
+        showgrid: true
+      },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#faf9ff",
+      margin: {
+        l: 55,
+        r: 20,
+        t: 55,
+        b: 50
+      }
+    };
+
+    Plotly.newPlot(
+      "mathGraph",
+      graphData,
+      layout,
+      {
+        responsive: true,
+        displaylogo: false
+      }
+    );
+
+    graphStatus.textContent = "Graph generated successfully.";
+    graphStatus.className = "status success";
+
+  } catch (error) {
+
+    graphStatus.textContent =
+      "Invalid equation. Try expressions like x^2, 2*x+3 or sin(x).";
+
+    graphStatus.className = "status error";
+
+  }
+
+});
+
+clearGraphButton.addEventListener("click", function () {
+
+  graphEquation.value = "";
+  graphMin.value = "-10";
+  graphMax.value = "10";
+
+  Plotly.purge("mathGraph");
+
+  graphStatus.textContent = "Graph cleared.";
+  graphStatus.className = "status";
+
+});
+  </script>
+</body>
+</html>

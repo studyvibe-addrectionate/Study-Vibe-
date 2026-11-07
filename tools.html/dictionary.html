@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dictionary | Study Vibe</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f5fb;
+    color: #20243a;
+    min-height: 100vh;
+}
+
+header {
+    background: #20243a;
+    color: white;
+    padding: 17px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+header h2 {
+    font-size: 21px;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.container {
+    width: 92%;
+    max-width: 750px;
+    margin: 30px auto;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    font-size: 30px;
+    color: #263b80;
+    margin-bottom: 8px;
+}
+
+.hero p {
+    color: #777;
+    font-size: 14px;
+}
+
+.search-box {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+}
+
+.search-row {
+    display: flex;
+    gap: 9px;
+}
+
+input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid #dce0eb;
+    border-radius: 9px;
+    font-size: 16px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #5268d9;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    border-radius: 9px;
+    font-weight: bold;
+}
+
+.search-btn {
+    background: #5268d9;
+    color: white;
+    padding: 0 20px;
+    font-size: 15px;
+}
+
+.search-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.quick-words {
+    margin-top: 14px;
+    color: #777;
+    font-size: 13px;
+    line-height: 2;
+}
+
+.quick-words button {
+    background: #edf0ff;
+    color: #394b9c;
+    padding: 6px 10px;
+    margin: 4px;
+    font-size: 12px;
+}
+
+.result {
+    margin-top: 20px;
+    background: white;
+    padding: 22px;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+    display: none;
+}
+
+.word-title {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.word-title h2 {
+    font-size: 29px;
+    color: #263b80;
+    overflow-wrap: anywhere;
+}
+
+.pronunciation {
+    color: #777;
+    margin-top: 7px;
+    font-size: 14px;
+}
+
+.sound-btn {
+    background: #e8edff;
+    color: #354aab;
+    padding: 9px 12px;
+    font-size: 17px;
+}
+
+.section {
+    border-top: 1px solid #e9eaf0;
+    margin-top: 20px;
+    padding-top: 17px;
+}
+
+.section h3 {
+    color: #263b80;
+    font-size: 17px;
+    margin-bottom: 10px;
+}
+
+.section p, .section li {
+    line-height: 1.7;
+    font-size: 14px;
+    color: #454a5b;
+}
+
+.section ul {
+    padding-left: 22px;
+}
+
+.definition {
+    margin-bottom: 14px;
+}
+
+.part {
+    display: inline-block;
+    color: #7c62bd;
+    background: #f0ebff;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+
+.example {
+    background: #f4f6ff;
+    padding: 12px;
+    border-left: 3px solid #5268d9;
+    border-radius: 5px;
+    margin-top: 8px;
+}
+
+.error {
+    margin-top: 20px;
+    background: #fff0f0;
+    color: #b32626;
+    padding: 15px;
+    border-radius: 10px;
+    display: none;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #5268d9;
+    display: none;
+}
+
+footer {
+    text-align: center;
+    color: #888;
+    font-size: 12px;
+    padding: 25px 10px;
+}
+
+@media(max-width: 480px) {
+    .search-row {
+        flex-direction: column;
+    }
+
+    .search-btn {
+        padding: 14px;
+    }
+
+    .hero h1 {
+        font-size: 25px;
+    }
+
+    .result {
+        padding: 17px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>Study Vibe</h2>
+    <a href="tools.html">← Back to Study Tools</a>
+</header>
+
+<main class="container">
+
+    <div class="hero">
+        <h1>English Dictionary</h1>
+        <p>Discover meanings, synonyms, antonyms and pronunciation.</p>
+    </div>
+
+    <div class="search-box">
+
+        <div class="search-row">
+            <input
+                type="text"
+                id="wordInput"
+                placeholder="Enter an English word..."
+                autocomplete="off"
+            >
+
+            <button class="search-btn" id="searchButton"
+                onclick="searchWord()">Search</button>
+        </div>
+
+        <div class="quick-words">
+            Try:
+            <button onclick="quickSearch('Beautiful')">Beautiful</button>
+            <button onclick="quickSearch('Education')">Education</button>
+            <button onclick="quickSearch('Courage')">Courage</button>
+            <button onclick="quickSearch('Knowledge')">Knowledge</button>
+        </div>
+
+    </div>
+
+    <div class="loading" id="loading">
+        Searching dictionary...
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <div class="result" id="result">
+
+        <div class="word-title">
+            <div>
+                <h2 id="wordTitle"></h2>
+                <p class="pronunciation" id="pronunciation"></p>
+            </div>
+
+            <button class="sound-btn" onclick="speakWord()"
+                title="Listen to pronunciation">🔊</button>
+        </div>
+
+        <div class="section">
+            <h3>Meaning and Definition</h3>
+            <div id="definitions"></div>
+        </div>
+
+        <div class="section">
+            <h3>Synonyms</h3>
+            <ul id="synonyms"></ul>
+        </div>
+
+        <div class="section">
+            <h3>Antonyms</h3>
+            <ul id="antonyms"></ul>
+        </div>
+
+        <div class="section">
+            <h3>Bangla Meaning</h3>
+            <p id="banglaMeaning">Bangla meaning is not available yet.</p>
+        </div>
+
+    </div>
+
+</main>
+
+<footer>
+    Study Vibe by Addrectionate
+    <br><br>
+    From Confusion to Confidence
+</footer>
+
+<script>
+const wordInput = document.getElementById("wordInput");
+const searchButton = document.getElementById("searchButton");
+
+let currentWord = "";
+
+wordInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") searchWord();
+});
+
+function quickSearch(word) {
+    wordInput.value = word;
+    searchWord();
+}
+
+function showLoading(show) {
+    document.getElementById("loading").style.display =
+        show ? "block" : "none";
+
+    searchButton.disabled = show;
+    searchButton.textContent = show ? "Searching..." : "Search";
+}
+
+function showError(message) {
+    const error = document.getElementById("error");
+    error.textContent = message;
+    error.style.display = "block";
+}
+
+function addListItem(list, text) {
+    const li = document.createElement("li");
+    li.textContent = text;
+    list.appendChild(li);
+}
+
+function renderList(id, words, emptyMessage) {
+    const list = document.getElementById(id);
+    list.replaceChildren();
+
+    const items = [...new Set(
+        [...words].map(w => String(w).trim()).filter(Boolean)
+    )].slice(0, 15);
+
+    if (!items.length) {
+        addListItem(list, emptyMessage);
+        return;
+    }
+
+    items.forEach(word => addListItem(list, word));
+}
+
+// Get synonyms and antonyms from Datamuse.
+async function getRelatedWords(word, type) {
+    const relation = type === "synonyms" ? "rel_syn" : "rel_ant";
+
+    const url =
+        "https://api.datamuse.com/words?" +
+        relation + "=" + encodeURIComponent(word) +
+        "&max=15";
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+        throw new Error("Related words service unavailable.");
+    }
+
+    const data = await response.json();
+
+    return Array.isArray(data)
+        ? data.map(item => item.word).filter(Boolean)
+        : [];
+}
+
+async function searchWord() {
+    const word = wordInput.value.trim();
+
+    if (!word) {
+        wordInput.focus();
+        return;
+    }
+
+    if (!/^[a-zA-Z'-]+$/.test(word)) {
+        showError("Please enter one English word using letters only.");
+        return;
+    }
+
+    currentWord = word;
+
+    document.getElementById("result").style.display = "none";
+    document.getElementById("error").style.display = "none";
+
+    showLoading(true);
+
+    try {
+        const response = await fetch(
+            "https://api.dictionaryapi.dev/api/v2/entries/en/" +
+            encodeURIComponent(word)
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                response.status === 404
+                    ? "Word not found. Please check the spelling."
+                    : "Dictionary service is temporarily unavailable."
+            );
+        }
+
+        const data = await response.json();
+
+        if (!Array.isArray(data) || !data.length) {
+            throw new Error("No dictionary entry found for this word.");
+        }
+
+        displayWord(data[0]);
+
+        // Load synonyms, antonyms and Bangla meaning independently.
+        await Promise.allSettled([
+            loadRelatedWords(word, "synonyms"),
+            loadRelatedWords(word, "antonyms"),
+            getBanglaMeaning(word)
+        ]);
+
+    } catch (error) {
+        showError(
+            error.message.includes("Failed to fetch")
+                ? "Unable to connect. Please check your internet connection."
+                : error.message
+        );
+    } finally {
+        showLoading(false);
+    }
+}
+
+function displayWord(data) {
+    document.getElementById("result").style.display = "block";
+
+    document.getElementById("wordTitle").textContent =
+        data.word || currentWord;
+
+    let phonetic = data.phonetic || "";
+
+    if (!phonetic && data.phonetics) {
+        const item = data.phonetics.find(p => p.text);
+        if (item) phonetic = item.text;
+    }
+
+    document.getElementById("pronunciation").textContent =
+        phonetic
+            ? "Pronunciation: " + phonetic
+            : "Pronunciation unavailable";
+
+    const definitions = document.getElementById("definitions");
+    definitions.replaceChildren();
+
+    const synonyms = new Set();
+    const antonyms = new Set();
+
+    (data.meanings || []).forEach(meaning => {
+        const block = document.createElement("div");
+        block.className = "definition";
+
+        const part = document.createElement("span");
+        part.className = "part";
+        part.textContent = meaning.partOfSpeech || "Meaning";
+
+        block.appendChild(part);
+
+        (meaning.definitions || []).slice(0, 3).forEach(item => {
+            const p = document.createElement("p");
+            p.textContent = "• " + item.definition;
+            block.appendChild(p);
+
+            if (item.example) {
+                const example = document.createElement("div");
+                example.className = "example";
+                example.textContent = "Example: " + item.example;
+                block.appendChild(example);
+            }
+
+            (item.synonyms || []).forEach(s => synonyms.add(s));
+            (item.antonyms || []).forEach(a => antonyms.add(a));
+        });
+
+        (meaning.synonyms || []).forEach(s => synonyms.add(s));
+        (meaning.antonyms || []).forEach(a => antonyms.add(a));
+
+        definitions.appendChild(block);
+    });
+
+    // Show any synonyms and antonyms already provided.
+    renderList("synonyms", synonyms, "Searching for synonyms...");
+    renderList("antonyms", antonyms, "Searching for antonyms...");
+}
+
+async function loadRelatedWords(word, type) {
+    const listId = type;
+    const list = document.getElementById(listId);
+
+    try {
+        const related = await getRelatedWords(word, type);
+
+        // Keep any results already supplied by the dictionary API.
+        const existing = [...list.querySelectorAll("li")]
+            .map(li => li.textContent)
+            .filter(text =>
+                text !== "Searching for synonyms..." &&
+                text !== "Searching for antonyms..." &&
+                text !== "No results available."
+            );
+
+        const combined = [...new Set([...existing, ...related])];
+
+        renderList(
+            listId,
+            combined,
+            type === "synonyms"
+                ? "No synonyms found for this word."
+                : "No antonyms found for this word."
+        );
+
+    } catch {
+        renderList(
+            listId,
+            [],
+            "Related words are temporarily unavailable."
+        );
+    }
+}
+
+async function getBanglaMeaning(word) {
+    const output = document.getElementById("banglaMeaning");
+    output.textContent = "Translating...";
+
+    try {
+        const url =
+            "https://api.mymemory.translated.net/get?q=" +
+            encodeURIComponent(word) +
+            "&langpair=en|bn";
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const translation = data.responseData &&
+            data.responseData.translatedText;
+
+        if (data.responseStatus === 200 && translation) {
+            output.textContent = translation;
+        } else {
+            output.textContent = "Bangla meaning is not available.";
+        }
+
+    } catch {
+        output.textContent =
+            "Translation unavailable. Please try again later.";
+    }
+}
+
+function speakWord() {
+    if (!currentWord || !("speechSynthesis" in window)) {
+        alert("Pronunciation audio is not supported in this browser.");
+        return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(currentWord);
+    utterance.lang = "en-US";
+    utterance.rate = 0.85;
+
+    window.speechSynthesis.speak(utterance);
+}
+</script>
+
+</body>
+</html>

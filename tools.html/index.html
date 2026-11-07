@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Tools | Study Vibe</title>
+
+<style>
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+}
+body{
+ font-family:Arial,sans-serif;
+ background:#f4f7ff;
+ color:#172554;
+}
+header{
+ background:linear-gradient(135deg,#1e40af,#2563eb);
+ color:white;
+ padding:35px 20px;
+ text-align:center;
+}
+.brand{
+ font-size:14px;
+ font-weight:bold;
+ letter-spacing:2px;
+ opacity:.9;
+}
+header h1{
+ font-size:32px;
+ margin:14px 0 8px;
+}
+header p{
+ font-size:15px;
+ opacity:.9;
+}
+.container{
+ max-width:1100px;
+ margin:auto;
+ padding:25px 18px 45px;
+}
+.search-box{
+ margin:0 auto 25px;
+ max-width:650px;
+}
+.search-box input{
+ width:100%;
+ padding:16px;
+ border:1px solid #cbd5e1;
+ border-radius:13px;
+ font-size:16px;
+ outline:none;
+}
+.search-box input:focus{
+ border-color:#2563eb;
+}
+.filters{
+ display:flex;
+ flex-wrap:wrap;
+ justify-content:center;
+ gap:10px;
+ margin-bottom:30px;
+}
+.filters button{
+ padding:10px 17px;
+ border:0;
+ border-radius:20px;
+ background:#dbeafe;
+ color:#1e40af;
+ font-weight:bold;
+ cursor:pointer;
+}
+.filters button.active{
+ background:#2563eb;
+ color:white;
+}
+.section-title{
+ font-size:21px;
+ margin:28px 0 15px;
+ color:#1e3a8a;
+}
+.tools-grid{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:16px;
+}
+.tool-card{
+ display:flex;
+ flex-direction:column;
+ background:white;
+ padding:20px;
+ border-radius:16px;
+ text-decoration:none;
+ color:#172554;
+ border:1px solid #e2e8f0;
+ transition:.2s;
+ min-height:175px;
+}
+.tool-card:hover{
+ transform:translateY(-4px);
+ box-shadow:0 10px 25px #1e40af15;
+ border-color:#93c5fd;
+}
+.tool-icon{
+ font-size:30px;
+ margin-bottom:13px;
+}
+.tool-card h3{
+ font-size:17px;
+ margin-bottom:8px;
+}
+.tool-card p{
+ font-size:13px;
+ color:#64748b;
+ line-height:1.5;
+ flex:1;
+}
+.open{
+ color:#2563eb;
+ font-size:13px;
+ font-weight:bold;
+ margin-top:14px;
+}
+.empty{
+ text-align:center;
+ padding:40px 10px;
+ color:#64748b;
+ display:none;
+}
+footer{
+ background:#172554;
+ color:white;
+ text-align:center;
+ padding:25px 15px;
+ font-size:13px;
+ line-height:1.8;
+}
+footer a{
+ color:#bfdbfe;
+ text-decoration:none;
+}
+@media(max-width:500px){
+ header h1{font-size:26px}
+ .tools-grid{grid-template-columns:1fr 1fr;gap:10px}
+ .tool-card{padding:14px;min-height:175px}
+ .tool-icon{font-size:25px}
+ .tool-card h3{font-size:15px}
+ .tool-card p{font-size:12px}
+}
+@media(max-width:350px){
+ .tools-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="brand">STUDY VIBE BY ADDRECTIONATE</div>
+ <h1>Study Tools</h1>
+ <p>Everything you need to study smarter in one place.</p>
+</header>
+
+<main class="container">
+
+ <div class="search-box">
+  <input
+   type="search"
+   id="search"
+   placeholder="🔍 Search your study tools..."
+   aria-label="Search study tools"
+  >
+ </div>
+
+ <div class="filters">
+  <button class="active" data-category="all">All Tools</button>
+  <button data-category="study">Study</button>
+  <button data-category="science">Science</button>
+  <button data-category="productivity">Productivity</button>
+  <button data-category="language">Language</button>
+ </div>
+
+ <h2 class="section-title">Explore Your Tools</h2>
+
+ <div class="tools-grid" id="toolsGrid">
+
+  <!-- STUDY TOOLS -->
+
+  <a class="tool-card" href="../studio.html"
+     data-category="study" data-name="study studio ai study">
+   <div class="tool-icon">🤖</div>
+   <h3>AI Study Studio</h3>
+   <p>Generate notes, summaries and questions with AI.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <a class="tool-card" href="../mcq.html"
+     data-category="study" data-name="mcq question generator">
+   <div class="tool-icon">📝</div>
+   <h3>MCQ Generator</h3>
+   <p>Create multiple-choice questions with answers and explanations.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <a class="tool-card" href="../exam.html"
+     data-category="study" data-name="exam test timer">
+   <div class="tool-icon">📋</div>
+   <h3>Online Exam</h3>
+   <p>Practise timed exams and check your performance.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <a class="tool-card" href="flashcard.html"
+     data-category="study" data-name="flashcards revision memory">
+   <div class="tool-icon">🃏</div>
+   <h3>Flashcards</h3>
+   <p>Make flashcards and practise remembering information.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <a class="tool-card" href="formula-book.html"
+     data-category="study science" data-name="formula book formulas">
+   <div class="tool-icon">📐</div>
+   <h3>Formula Book</h3>
+   <p>Find useful mathematics, physics and chemistry formulas.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <!-- NEW: LIBRARY -->
+
+  <a class="tool-card" href="library.html"
+     data-category="study productivity"
+     data-name="library my library saved files pdf notes materials folders">
+   <div class="tool-icon">📚</div>
+   <h3>My Library</h3>
+   <p>Save, organize, search and access your study materials in one place.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <!-- NEW: PROGRESS TRACKER -->
+
+  <a class="tool-card" href="progress.html"
+     data-category="study productivity"
+     data-name="progress tracker study progress hours goals tasks exam performance streak">
+   <div class="tool-icon">📊</div>
+   <h3>Progress Tracker</h3>
+   <p>Track study hours, subject progress, daily goals and exam performance.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <!-- SCIENCE TOOLS -->
+
+  <a class="tool-card" href="periodic-table.html"
+     data-category="science" data-name="periodic table chemistry elements">
+   <div class="tool-icon">⚗️</div>
+   <h3>Periodic Table</h3>
+   <p>Explore all 118 chemical elements.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <a class="tool-card" href="calculator.html"
+     data-category="science study" data-name="calculator mathematics">
+   <div class="tool-icon">🧮</div>
+   <h3>Calculator</h3>
+   <p>Perform mathematical calculations quickly.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <a class="tool-card" href="unit-converter.html"
+     data-category="science" data-name="unit converter measurement">
+   <div class="tool-icon">📏</div>
+   <h3>Unit Converter</h3>
+   <p>Convert length, weight, temperature, speed and more.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <!-- PRODUCTIVITY TOOLS -->
+
+  <a class="tool-card" href="planner.html"
+     data-category="productivity study" data-name="study planner tasks">
+   <div class="tool-icon">📅</div>
+   <h3>Study Planner</h3>
+   <p>Organise your subjects, topics and daily study tasks.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <a class="tool-card" href="pomodoro.html"
+     data-category="productivity study" data-name="pomodoro timer focus">
+   <div class="tool-icon">⏱️</div>
+   <h3>Pomodoro Timer</h3>
+   <p>Focus with study sessions and scheduled breaks.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <a class="tool-card" href="lecture-to-notes.html"
+     data-category="productivity study" data-name="lecture to notes speech">
+   <div class="tool-icon">🎙️</div>
+   <h3>Lecture to Notes</h3>
+   <p>Convert spoken lectures into written transcripts.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <!-- LANGUAGE TOOLS -->
+
+  <a class="tool-card" href="dictionary.html"
+     data-category="language" data-name="dictionary english bangla meaning">
+   <div class="tool-icon">📖</div>
+   <h3>Dictionary</h3>
+   <p>Explore word meanings, translations and pronunciation.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <a class="tool-card" href="text-to-speech.html"
+     data-category="language productivity" data-name="text to speech reading">
+   <div class="tool-icon">🔊</div>
+   <h3>Text to Speech</h3>
+   <p>Listen to your written study materials aloud.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+  <a class="tool-card" href="voice-assistant.html"
+     data-category="language productivity" data-name="voice assistant microphone">
+   <div class="tool-icon">🎧</div>
+   <h3>Voice Assistant</h3>
+   <p>Speak to your browser-based study assistant.</p>
+   <span class="open">Open Tool →</span>
+  </a>
+
+ </div>
+
+ <div class="empty" id="empty">
+  <h3>No tools found!</h3>
+  <p>Try another search keyword or category.</p>
+ </div>
+
+</main>
+
+<footer>
+ <strong>Study Vibe by Addrectionate</strong>
+ <p>From Confusion to Confidence.</p>
+ <p>
+  <a href="tools.html/index.html">Home</a> |
+  <a href="index.html">Study Tools</a>
+</p>
+</footer>
+
+<script>
+const search=document.getElementById("search");
+const cards=[...document.querySelectorAll(".tool-card")];
+const filters=[...document.querySelectorAll(".filters button")];
+const empty=document.getElementById("empty");
+
+let selectedCategory="all";
+
+function filterTools(){
+ const keyword=search.value.toLowerCase().trim();
+ let visible=0;
+
+ cards.forEach(card=>{
+  const name=card.dataset.name.toLowerCase();
+  const title=card.querySelector("h3").textContent.toLowerCase();
+  const description=card.querySelector("p").textContent.toLowerCase();
+  const categories=card.dataset.category.split(" ");
+
+  const matchesSearch=
+   name.includes(keyword)||
+   title.includes(keyword)||
+   description.includes(keyword);
+
+  const matchesCategory=
+   selectedCategory==="all"||
+   categories.includes(selectedCategory);
+
+  const show=matchesSearch&&matchesCategory;
+
+  card.style.display=show?"flex":"none";
+  if(show)visible++;
+ });
+
+ empty.style.display=visible===0?"block":"none";
+}
+
+search.addEventListener("input",filterTools);
+
+filters.forEach(button=>{
+ button.addEventListener("click",()=>{
+  selectedCategory=button.dataset.category;
+
+  filters.forEach(item=>item.classList.remove("active"));
+  button.classList.add("active");
+
+  filterTools();
+ });
+});
+</script>
+
+</body>
+</html>

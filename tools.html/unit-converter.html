@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unit Converter | Study Vibe</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:20px;font-family:Arial,sans-serif;
+ background:linear-gradient(135deg,#eaf1ff,#f8faff);
+ color:#172554;min-height:100vh
+}
+.container{
+ max-width:650px;margin:30px auto;background:white;
+ padding:25px;border-radius:22px;
+ box-shadow:0 10px 35px #1e40af18
+}
+.brand{text-align:center;color:#2563eb;font-weight:bold;letter-spacing:1px}
+h1{text-align:center;margin:12px 0 5px}
+.subtitle{text-align:center;color:#64748b;font-size:14px}
+label{display:block;font-weight:bold;margin:18px 0 8px;color:#334155}
+select,input{
+ width:100%;padding:13px;border:1px solid #cbd5e1;
+ border-radius:10px;font-size:16px;background:white
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.swap{text-align:center;margin:15px}
+.swap button{
+ border:0;background:#dbeafe;color:#1d4ed8;
+ border-radius:50%;width:45px;height:45px;
+ font-size:22px;cursor:pointer
+}
+.result{
+ margin-top:22px;padding:22px;background:#eff6ff;
+ border-radius:15px;text-align:center
+}
+.result small{color:#64748b}
+#output{
+ display:block;font-size:30px;font-weight:bold;
+ color:#2563eb;overflow-wrap:anywhere;margin-top:10px
+}
+button{cursor:pointer}
+.copy{
+ margin-top:15px;padding:12px 20px;background:#2563eb;
+ color:white;border:0;border-radius:10px;font-weight:bold
+}
+.back{display:block;text-align:center;margin-top:22px;color:#2563eb;text-decoration:none}
+@media(max-width:450px){
+ .container{padding:18px}
+ .grid{grid-template-columns:1fr}
+ #output{font-size:25px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+ <div class="brand">STUDY VIBE</div>
+ <h1>Unit Converter</h1>
+ <p class="subtitle">Convert measurements quickly and easily.</p>
+
+ <label for="category">Select category</label>
+ <select id="category">
+  <option value="length">Length</option>
+  <option value="weight">Weight / Mass</option>
+  <option value="temperature">Temperature</option>
+  <option value="area">Area</option>
+  <option value="volume">Volume</option>
+  <option value="time">Time</option>
+  <option value="speed">Speed</option>
+  <option value="storage">Digital Storage</option>
+ </select>
+
+ <label for="amount">Enter value</label>
+ <input type="number" id="amount" value="1" step="any" placeholder="Enter a number">
+
+ <div class="grid">
+  <div>
+   <label for="from">From</label>
+   <select id="from"></select>
+  </div>
+  <div>
+   <label for="to">To</label>
+   <select id="to"></select>
+  </div>
+ </div>
+
+ <div class="swap">
+  <button id="swap" title="Swap units">⇄</button>
+ </div>
+
+ <div class="result">
+  <small>Converted result</small>
+  <span id="output">100 cm</span>
+  <button class="copy" id="copy">Copy Result</button>
+ </div>
+
+ <a class="back" href="index.html">← Back to Study Vibe</a>
+</div>
+
+<script>
+const units={
+ length:{
+  "Millimeter (mm)":0.001,
+  "Centimeter (cm)":0.01,
+  "Meter (m)":1,
+  "Kilometer (km)":1000,
+  "Inch (in)":0.0254,
+  "Foot (ft)":0.3048,
+  "Yard (yd)":0.9144,
+  "Mile (mi)":1609.344
+ },
+ weight:{
+  "Milligram (mg)":0.000001,
+  "Gram (g)":0.001,
+  "Kilogram (kg)":1,
+  "Tonne (t)":1000,
+  "Pound (lb)":0.45359237,
+  "Ounce (oz)":0.028349523125
+ },
+ temperature:{
+  "Celsius (°C)":1,
+  "Fahrenheit (°F)":1,
+  "Kelvin (K)":1
+ },
+ area:{
+  "Square millimeter (mm²)":0.000001,
+  "Square centimeter (cm²)":0.0001,
+  "Square meter (m²)":1,
+  "Square kilometer (km²)":1000000,
+  "Hectare (ha)":10000,
+  "Acre":4046.8564224,
+  "Square foot (ft²)":0.09290304
+ },
+ volume:{
+  "Milliliter (mL)":0.001,
+  "Liter (L)":1,
+  "Cubic meter (m³)":1000,
+  "US gallon":3.785411784,
+  "US cup":0.2365882365
+ },
+ time:{
+  "Second (s)":1,
+  "Minute (min)":60,
+  "Hour (h)":3600,
+  "Day":86400,
+  "Week":604800
+ },
+ speed:{
+  "Meter/second (m/s)":1,
+  "Kilometer/hour (km/h)":1/3.6,
+  "Mile/hour (mph)":0.44704,
+  "Foot/second (ft/s)":0.3048
+ },
+ storage:{
+  "Byte (B)":1,
+  "Kilobyte (KB)":1000,
+  "Megabyte (MB)":1000000,
+  "Gigabyte (GB)":1000000000,
+  "Terabyte (TB)":1000000000000,
+  "Kibibyte (KiB)":1024,
+  "Mebibyte (MiB)":1048576,
+  "Gibibyte (GiB)":1073741824
+ }
+};
+
+const category=document.getElementById("category");
+const from=document.getElementById("from");
+const to=document.getElementById("to");
+const amount=document.getElementById("amount");
+const output=document.getElementById("output");
+
+function loadUnits(){
+ const list=Object.keys(units[category.value]);
+ from.innerHTML="";
+ to.innerHTML="";
+ list.forEach((unit,i)=>{
+  from.add(new Option(unit,unit));
+  to.add(new Option(unit,unit));
+ });
+ from.selectedIndex=0;
+ to.selectedIndex=list.length>1?1:0;
+ convert();
+}
+
+function convertTemperature(value,a,b){
+ let celsius;
+ if(a.includes("Fahrenheit"))celsius=(value-32)*5/9;
+ else if(a.includes("Kelvin"))celsius=value-273.15;
+ else celsius=value;
+
+ if(b.includes("Fahrenheit"))return celsius*9/5+32;
+ if(b.includes("Kelvin"))return celsius+273.15;
+ return celsius;
+}
+
+function convert(){
+ const value=Number(amount.value);
+ if(amount.value.trim()===""||!Number.isFinite(value)){
+  output.textContent="Enter a valid number";
+  return;
+ }
+
+ const a=from.value;
+ const b=to.value;
+ let result;
+
+ if(category.value==="temperature"){
+  result=convertTemperature(value,a,b);
+ }else{
+  result=value*units[category.value][a]/units[category.value][b];
+ }
+
+ const formatted=Number(result.toPrecision(12)).toLocaleString("en-US",{
+  maximumFractionDigits:10
+ });
+
+ output.textContent=formatted+" "+b;
+}
+
+category.addEventListener("change",loadUnits);
+amount.addEventListener("input",convert);
+from.addEventListener("change",convert);
+to.addEventListener("change",convert);
+
+document.getElementById("swap").addEventListener("click",()=>{
+ const old=from.value;
+ from.value=to.value;
+ to.value=old;
+ convert();
+});
+
+document.getElementById("copy").addEventListener("click",async()=>{
+ try{
+  await navigator.clipboard.writeText(output.textContent);
+  document.getElementById("copy").textContent="Copied!";
+ }catch(e){
+  document.getElementById("copy").textContent="Copy unavailable";
+ }
+ setTimeout(()=>{
+  document.getElementById("copy").textContent="Copy Result";
+ },1500);
+});
+
+loadUnits();
+</script>
+</body>
+</html>

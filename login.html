@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Vibe | Login</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #101a35, #193d72);
+      color: #17233e;
+    }
+
+    .main-navigation {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .main-navigation a {
+      color: white;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .main-navigation a:hover {
+      color: #e6c36b;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      padding: 32px 26px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 45px #0005;
+    }
+
+    .brand {
+      text-align: center;
+      color: #183c75;
+      font-size: 30px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .tagline {
+      text-align: center;
+      color: #b18a35;
+      margin-bottom: 26px;
+    }
+
+    h2 { text-align: center; }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 17px 0 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #cbd3e0;
+      border-radius: 9px;
+      font-size: 15px;
+    }
+
+    .hint {
+      color: #68748a;
+      font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 14px;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .premium {
+      background: #183c75;
+      color: white;
+    }
+
+    .free {
+      background: #f0f3f8;
+      color: #183c75;
+      border: 1px solid #d6deeb;
+    }
+
+    #message {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 16px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .footer {
+      text-align: center;
+      color: #6c7587;
+      font-size: 12px;
+      margin-top: 22px;
+    }
+
+    .account-actions a {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #183c75;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <nav class="main-navigation" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="index.html#features">Features</a>
+      <a href="index.html#assistant">AI Study Assistant</a>
+      <a href="index.html#plans">Plans</a>
+      <a href="login.html">Login / Register</a>
+      <a href="payment.html">Premium Payment</a>
+    </nav>
+  </header>
+
+  <main class="login-card">
+
+    <div class="brand">Study Vibe</div>
+    <div class="tagline">From Confusion to Confidence</div>
+
+    <h2 id="heading">Welcome Back!</h2>
+
+    <p style="text-align:center;color:#69748a">
+      Sign in to continue your learning journey.
+    </p>
+
+    <form id="loginForm">
+
+      <label for="email">Email Address</label>
+      <input
+        type="email"
+        id="email"
+        placeholder="you@example.com"
+        autocomplete="email"
+        required
+      >
+
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+        minlength="8"
+        required
+      >
+
+      <div class="hint" id="passwordHint">
+        Enter your account password.
+      </div>
+
+      <button class="premium" type="submit" id="submitButton">
+        Sign In
+      </button>
+
+      <button class="free" type="button" id="freeButton">
+        Create a Free Account
+      </button>
+
+    </form>
+
+    <div id="message" role="status" aria-live="polite"></div>
+
+    <div class="account-actions" id="accountActions" hidden>
+      <a href="index.html">Go to Study Vibe Home</a>
+      <a href="payment.html">Explore Premium Membership</a>
+      <button class="free" type="button" id="logoutButton">
+        Log Out
+      </button>
+    </div>
+
+    <div class="footer">
+      A product by Addrectionate
+    </div>
+
+  </main>
+
+  <script>
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const message = document.getElementById("message");
+    const form = document.getElementById("loginForm");
+    const heading = document.getElementById("heading");
+    const submitButton = document.getElementById("submitButton");
+    const freeButton = document.getElementById("freeButton");
+    const passwordHint = document.getElementById("passwordHint");
+    const accountActions = document.getElementById("accountActions");
+    const logoutButton = document.getElementById("logoutButton");
+
+    let mode = "login";
+
+    function showMessage(text, success = false) {
+      message.textContent = text;
+      message.style.color = success ? "#168044" : "#c0392b";
+    }
+
+    function setMode(newMode) {
+      mode = newMode;
+      message.textContent = "";
+
+      if (mode === "register") {
+        heading.textContent = "Create Your Account";
+        submitButton.textContent = "Create Free Account";
+        freeButton.textContent = "Back to Login";
+        password.placeholder = "Create a strong password";
+        password.autocomplete = "new-password";
+        passwordHint.textContent =
+          "At least 8 characters, including a letter, a number and a symbol.";
+      } else {
+        heading.textContent = "Welcome Back!";
+        submitButton.textContent = "Sign In";
+        freeButton.textContent = "Create a Free Account";
+        password.placeholder = "Enter your password";
+        password.autocomplete = "current-password";
+        passwordHint.textContent = "Enter your account password.";
+      }
+    }
+
+    function validateForm() {
+      const emailValid =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+
+      if (!emailValid) {
+        showMessage("Please enter a valid email address.");
+        return false;
+      }
+
+      if (mode === "register") {
+        const passwordValid =
+          password.value.length >= 8 &&
+          /[A-Za-z]/.test(password.value) &&
+          /[0-9]/.test(password.value) &&
+          /[^A-Za-z0-9]/.test(password.value);
+
+        if (!passwordValid) {
+          showMessage(
+            "Password must have at least 8 characters, a letter, a number and a symbol."
+          );
+          return false;
+        }
+
+        if (new TextEncoder().encode(password.value).length > 72) {
+          showMessage("Password is too long.");
+          return false;
+        }
+      } else if (!password.value) {
+        showMessage("Please enter your password.");
+        return false;
+      }
+
+      return true;
+    }
+
+    async function checkAccount() {
+      try {
+        const response = await fetch("/api/auth/me", {
+          credentials: "same-origin"
+        });
+
+        const data = await response.json();
+
+        if (data.loggedIn && data.user) {
+          form.hidden = true;
+          heading.textContent = "You're Signed In!";
+          accountActions.hidden = false;
+
+          const plan =
+            data.user.plan === "premium" ? "Premium" : "Free";
+
+          showMessage(
+            "Signed in as " + data.user.email +
+            " · " + plan + " account.",
+            true
+          );
+        }
+      } catch (error) {
+        showMessage(
+          "Could not check your account. Please refresh the page."
+        );
+      }
+    }
+
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      if (!validateForm()) return;
+
+      submitButton.disabled = true;
+      freeButton.disabled = true;
+      submitButton.textContent = "Please wait...";
+
+      try {
+        const endpoint = mode === "register"
+          ? "/api/auth/register"
+          : "/api/auth/login";
+
+        const response = await fetch(endpoint, {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email: email.value.trim(),
+            password: password.value
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Something went wrong.");
+        }
+
+        showMessage(
+          mode === "register"
+            ? "Your Free account has been created successfully!"
+            : "Login successful!",
+          true
+        );
+
+        password.value = "";
+
+        // Open the homepage after successful registration or login.
+        window.location.href = "index.html";
+
+      } catch (error) {
+        showMessage(error.message);
+      } finally {
+        submitButton.disabled = false;
+        freeButton.disabled = false;
+
+        submitButton.textContent =
+          mode === "register" ? "Create Free Account" : "Sign In";
+      }
+    });
+
+    freeButton.addEventListener("click", function() {
+      setMode(mode === "login" ? "register" : "login");
+    });
+
+    logoutButton.addEventListener("click", async function() {
+      logoutButton.disabled = true;
+
+      try {
+        const response = await fetch("/api/auth/logout", {
+          method: "POST",
+          credentials: "same-origin"
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Logout failed.");
+        }
+
+        window.location.reload();
+
+      } catch (error) {
+        showMessage(error.message);
+        logoutButton.disabled = false;
+      }
+    });
+
+    checkAccount();
+  </script>
+
+</body>
+</html>

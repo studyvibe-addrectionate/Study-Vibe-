@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Writing Studio | Study Vibe</title>
+
+<style>
+:root {
+  --primary: #6754d9;
+  --dark: #17152b;
+  --muted: #77758b;
+  --bg: #f5f4fb;
+  --white: #ffffff;
+  --border: #e5e2f0;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+}
+header {
+  background: white;
+  padding: 17px 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-size: 22px; font-weight: bold; color: var(--primary); }
+header a { text-decoration: none; color: var(--primary); font-weight: bold; }
+.container { max-width: 1100px; margin: 30px auto; padding: 0 18px; }
+.hero { text-align: center; margin-bottom: 28px; }
+.hero h1 { margin-bottom: 8px; font-size: 32px; }
+.hero p { color: var(--muted); }
+.panel {
+  background: white;
+  padding: 25px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 22px;
+}
+h2 { margin-top: 0; font-size: 21px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.field { display: flex; flex-direction: column; gap: 7px; }
+.field.full { grid-column: 1 / -1; }
+label { font-size: 14px; font-weight: bold; }
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  font-size: 15px;
+  font-family: inherit;
+  background: white;
+}
+textarea { min-height: 105px; resize: vertical; }
+button {
+  border: none;
+  border-radius: 9px;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.primary { background: var(--primary); color: white; }
+.secondary { background: #eeeafd; color: var(--primary); }
+button:disabled { opacity: .6; cursor: not-allowed; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+#result {
+  white-space: pre-wrap;
+  line-height: 1.75;
+  min-height: 160px;
+  padding: 18px;
+  background: #faf9ff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+#status { margin-top: 12px; color: var(--muted); font-size: 14px; }
+.word-count { color: var(--muted); font-size: 13px; margin-top: 8px; }
+footer { text-align: center; padding: 25px; color: var(--muted); }
+@media(max-width:650px) {
+  .grid { grid-template-columns: 1fr; }
+  .field.full { grid-column: auto; }
+  .panel { padding: 18px; }
+  .hero h1 { font-size: 27px; }
+}
+@media print {
+  header, .hero, #formPanel, .actions, footer { display: none !important; }
+  body { background: white; }
+  .container { margin: 0; max-width: 100%; }
+  .panel { border: none; }
+  #result { border: none; background: white; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Study Vibe</div>
+  <a href="index.html">← Back to Home</a>
+</header>
+
+<main class="container">
+
+  <section class="hero">
+    <h1>✍️ Writing Studio</h1>
+    <p>From ideas to well-structured writing — your AI writing assistant.</p>
+  </section>
+
+  <section class="panel" id="formPanel">
+    <h2>Create Your Writing</h2>
+
+    <div class="grid">
+
+      <div class="field full">
+        <label for="writingType">What do you want to write?</label>
+        <select id="writingType">
+          <optgroup label="Academic Writing">
+            <option value="assignment">Assignment</option>
+            <option value="research">Research Paper</option>
+            <option value="thesis">Thesis</option>
+            <option value="paragraph">Educational Paragraph</option>
+          </optgroup>
+          <optgroup label="English & Creative Writing">
+            <option value="story">Completing Story</option>
+            <option value="letter">Letter (Formal / Informal)</option>
+            <option value="dialogue">Dialogue</option>
+            <option value="composition">Composition</option>
+          </optgroup>
+          <optgroup label="Professional Writing">
+            <option value="cv">CV / Resume</option>
+            <option value="application">Application</option>
+            <option value="newspaper">Newspaper Article</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="subject">Subject / Department</label>
+        <input id="subject" placeholder="e.g. Chemistry, English, Biology">
+      </div>
+
+      <div class="field">
+        <label for="level">Academic Level</label>
+        <select id="level">
+          <option>School</option>
+          <option>SSC</option>
+          <option>HSC</option>
+          <option>Undergraduate</option>
+          <option>Postgraduate</option>
+          <option>University Research</option>
+          <option>General</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <label for="topic">Topic / Title</label>
+        <input id="topic" placeholder="Enter your writing topic or title" required>
+      </div>
+
+      <div class="field">
+        <label for="wordCount">Approximate Word Count</label>
+        <select id="wordCount">
+          <option value="150">150 words</option>
+          <option value="250" selected>250 words</option>
+          <option value="500">500 words</option>
+          <option value="750">750 words</option>
+          <option value="1000">1,000 words</option>
+          <option value="1500">1,500 words</option>
+          <option value="2000">2,000 words</option>
+          <option value="3000">3,000 words</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="language">Writing Language</label>
+        <select id="language">
+          <option value="English">English</option>
+          <option value="Bangla">Bangla</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <label for="details">Instructions / Important Points</label>
+        <textarea id="details" placeholder="Add your teacher's instructions, required headings, points, or other details..."></textarea>
+      </div>
+
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="generateBtn" onclick="generateWriting()">✨ Generate Writing</button>
+    </div>
+
+    <div id="status"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Your Generated Writing</h2>
+    <div id="result">Your generated writing will appear here.</div>
+    <div class="word-count" id="wordCountDisplay">Word count: 0</div>
+
+    <div class="actions">
+      <button class="secondary" onclick="copyWriting()">Copy</button>
+      <button class="secondary" onclick="reviseWriting()">Revise Writing</button>
+      <button class="secondary" onclick="window.print()">Print / Save PDF</button>
+    </div>
+
+    <div class="field" style="margin-top:18px">
+      <label for="revision">How would you like to revise it?</label>
+      <textarea id="revision" placeholder="e.g. Make it more formal, simplify the language, add examples, improve the introduction..."></textarea>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Study Vibe by Addrectionate · From Confusion to Confidence
+</footer>
+
+<script>
+let generatedText = "";
+
+const resultBox = document.getElementById("result");
+const statusBox = document.getElementById("status");
+const generateBtn = document.getElementById("generateBtn");
+
+function updateWordCount(text) {
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  document.getElementById("wordCountDisplay").textContent =
+    "Word count: " + words;
+}
+
+function getFormData() {
+  const details = document.getElementById("details").value.trim();
+
+  return {
+    type: document.getElementById("writingType").value,
+    subject: document.getElementById("subject").value.trim(),
+    topic: document.getElementById("topic").value.trim(),
+    level: document.getElementById("level").value,
+    wordCount: document.getElementById("wordCount").value,
+    language: document.getElementById("language").value,
+    details: details,
+    instructions: details
+  };
+}
+
+async function sendWritingRequest(data, buttonText) {
+  generateBtn.disabled = true;
+  generateBtn.textContent = "Please wait...";
+  statusBox.textContent = "Your writing is being prepared...";
+  resultBox.textContent = "Generating...";
+
+  try {
+    const response = await fetch("/api/writing", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      throw new Error(responseData.error || "Unable to generate writing.");
+    }
+
+    generatedText = responseData.answer || responseData.text || "";
+
+    if (!generatedText) {
+      throw new Error("The AI returned an empty response. Please try again.");
+    }
+
+    resultBox.textContent = generatedText;
+    updateWordCount(generatedText);
+    statusBox.textContent = "Your writing is ready!";
+  } catch (error) {
+    resultBox.textContent = "Something went wrong.";
+    statusBox.textContent = error.message;
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.textContent = buttonText;
+  }
+}
+
+function generateWriting() {
+  const data = getFormData();
+
+  if (!data.topic.trim()) {
+    statusBox.textContent = "Please enter a topic or title first.";
+    document.getElementById("topic").focus();
+    return;
+  }
+
+  sendWritingRequest(data, "✨ Generate Writing");
+}
+
+function reviseWriting() {
+  if (!generatedText) {
+    statusBox.textContent = "Generate some writing before revising it.";
+    return;
+  }
+
+  const instruction = document.getElementById("revision").value.trim();
+
+  if (!instruction) {
+    statusBox.textContent = "Please describe how you want to revise the writing.";
+    return;
+  }
+
+  const data = getFormData();
+  data.instructions =
+    "Revise the following previously generated writing according to the user's instructions. Preserve accurate information and do not invent facts.\n\nREVISION INSTRUCTIONS:\n" +
+    instruction +
+    "\n\nPREVIOUS WRITING:\n" + generatedText;
+
+  sendWritingRequest(data, "✨ Generate Writing");
+}
+
+async function copyWriting() {
+  if (!generatedText) {
+    statusBox.textContent = "There is no writing to copy yet.";
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(generatedText);
+    statusBox.textContent = "Writing copied!";
+  } catch {
+    statusBox.textContent = "Copy was blocked by your browser. Please select and copy the text manually.";
+  }
+}
+</script>
+
+</body>
+</html>

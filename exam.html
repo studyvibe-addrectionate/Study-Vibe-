@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCQ Exam | Study Vibe</title>
+
+  <!-- PDF reader -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fc;
+      color: #202b42;
+    }
+
+    header {
+      background: #172d55;
+      color: white;
+      padding: 22px 16px;
+      text-align: center;
+    }
+
+    header h1 { margin: 0 0 8px; }
+    header p { margin: 5px 0; color: #dce7ff; }
+
+    .container {
+      width: min(900px, 94%);
+      margin: 25px auto;
+    }
+
+    .panel {
+      background: white;
+      padding: 22px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 18px #172d5510;
+    }
+
+    h2 { margin-top: 0; color: #172d55; }
+
+    label.field-label {
+      display: block;
+      margin: 15px 0 7px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccd5e4;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+    }
+
+    button {
+      border: none;
+      padding: 13px 20px;
+      border-radius: 8px;
+      background: #2864c5;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      width: 100%;
+      margin-top: 22px;
+    }
+
+    .hidden { display: none !important; }
+
+    .status {
+      margin-top: 15px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .small {
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    .info {
+      background: #f0f5ff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 18px;
+      line-height: 1.8;
+    }
+
+    .exam-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .timer {
+      background: #fff0e9;
+      color: #a33a16;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-weight: bold;
+      font-size: 19px;
+    }
+
+    .question-card {
+      border: 1px solid #e0e6f0;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+      background: white;
+    }
+
+    .question-title {
+      font-weight: bold;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    label.option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid #dce3ee;
+      border-radius: 8px;
+      margin: 9px 0;
+      cursor: pointer;
+      line-height: 1.5;
+      font-weight: normal;
+    }
+
+    label.option:has(input:checked) {
+      background: #edf4ff;
+      border-color: #2864c5;
+    }
+
+    label.option input {
+      width: auto;
+      margin-top: 4px;
+    }
+
+    .result-score {
+      font-size: 30px;
+      font-weight: bold;
+      color: #2864c5;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .result-item {
+      background: #f0f5ff;
+      padding: 16px;
+      border-radius: 10px;
+    }
+
+    .result-item strong {
+      display: block;
+      font-size: 24px;
+      margin-top: 6px;
+    }
+
+    .review-correct {
+      color: #16804a;
+      font-weight: bold;
+    }
+
+    .review-wrong {
+      color: #c13c3c;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      .panel { padding: 16px; }
+      header h1 { font-size: 24px; }
+    }
+
+    @media print {
+      header {
+        background: white;
+        color: black;
+      }
+
+      header p { color: black; }
+
+      button, #settings, .timer {
+        display: none !important;
+      }
+
+      body { background: white; }
+
+      .panel, .question-card {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Study Vibe MCQ Exam</h1>
+  <p>From Confusion To Confidence</p>
+  <p style="margin-top:10px;font-size:13px;">by Addrectionate</p>
+</header>
+
+<main class="container">
+
+  <!-- EXAM SETTINGS -->
+  <section id="settings" class="panel">
+    <h2>Exam Settings</h2>
+
+    <p class="small">
+      Upload a PDF to generate questions from your study material,
+      or create an exam using a subject and topic.
+    </p>
+
+    <label class="field-label" for="pdfFile">
+      Upload PDF (optional)
+    </label>
+
+    <input id="pdfFile" type="file" accept=".pdf,application/pdf">
+
+    <p id="pdfStatus" class="small" role="status">
+      No PDF selected. You can use Subject + Topic instead.
+    </p>
+    <!-- IMAGE INPUT -->
+<label class="field-label" for="examImage">
+  Upload Image / Take Photo (optional)
+</label>
+
+<input
+  id="examImage"
+  type="file"
+  accept="image/*"
+  capture="environment"
+>
+
+<img
+  id="examImagePreview"
+  alt="Exam study material preview"
+  style="display:none;max-width:100%;max-height:250px;border-radius:10px;margin-top:12px;"
+>
+
+<button
+  id="removeExamImage"
+  type="button"
+  style="display:none;margin-top:10px;"
+>
+  Remove Image
+</button>
+
+<p class="small">
+  Upload a photo of textbook pages, notes, formulas or diagrams.
+</p>
+
+<!-- VOICE INPUT -->
+<label class="field-label">
+  Voice Topic Input
+</label>
+
+<button
+  id="examVoiceBtn"
+  type="button"
+>
+  🎤 Speak Your Topic
+</button>
+
+<p id="examVoiceStatus" class="small">
+  Tap the microphone and speak your topic.
+</p>
+
+    <label class="field-label" for="subject">Subject</label>
+    <select id="subject">
+      <option value="">Select subject</option>
+      <option>Chemistry</option>
+      <option>Physics</option>
+      <option>Biology</option>
+      <option>Mathematics</option>
+      <option>English</option>
+      <option>Bangla</option>
+      <option>ICT</option>
+      <option>General Knowledge</option>
+      <option>Other</option>
+    </select>
+
+    <label class="field-label" for="topic">Topic / Chapter</label>
+    <input id="topic" type="text"
+      placeholder="e.g. Chemical Bonding">
+
+    <label class="field-label" for="difficulty">Difficulty</label>
+    <select id="difficulty">
+      <option value="Easy">Easy</option>
+      <option value="Medium" selected>Medium</option>
+      <option value="Hard">Hard</option>
+    </select>
+
+    <label class="field-label" for="marks">Marks per question</label>
+    <select id="marks">
+      <option value="1">1 mark</option>
+      <option value="2">2 marks</option>
+      <option value="5">5 marks</option>
+    </select>
+
+    <label class="field-label" for="duration">Time limit</label>
+    <select id="duration">
+      <option value="15">15 minutes</option>
+      <option value="30" selected>30 minutes</option>
+      <option value="45">45 minutes</option>
+      <option value="60">60 minutes</option>
+    </select>
+
+    <label class="field-label" for="language">Question language</label>
+    <select id="language">
+      <option value="English">English</option>
+      <option value="Bangla">Bangla</option>
+    </select>
+
+    <div class="info">
+      <strong>Total questions:</strong> 30<br>
+      <strong>Total marks:</strong> <span id="totalMarks">30</span><br>
+      <strong>Options:</strong> A, B, C, D
+    </div>
+
+    <button id="startBtn" class="primary">
+      Generate MCQs & Start Exam
+    </button>
+
+    <p id="status" class="status" role="status"></p>
+  </section>
+
+  <!-- EXAM SHEET -->
+  <section id="exam" class="hidden">
+    <div class="panel">
+      <div class="exam-top">
+        <div>
+          <h2 id="examTitle">MCQ Exam</h2>
+          <p id="examInfo" class="small"></p>
+        </div>
+
+        <div id="timer" class="timer">30:00</div>
+      </div>
+
+      <p id="progress" class="small">Answered: 0 / 30</p>
+    </div>
+
+    <form id="answerForm">
+      <div id="questions"></div>
+
+      <div class="panel">
+        <p class="small">
+          Check your answers before submitting.
+          You cannot change answers after submission.
+        </p>
+
+        <button id="submitBtn" type="submit" class="primary">
+          Submit Exam
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="panel hidden">
+    <h2>Exam Result</h2>
+
+    <p id="score" class="result-score"></p>
+    <p id="resultDetails"></p>
+
+    <div class="result-grid">
+      <div class="result-item">
+        Correct
+        <strong id="correctCount">0</strong>
+      </div>
+
+      <div class="result-item">
+        Wrong
+        <strong id="wrongCount">0</strong>
+      </div>
+
+      <div class="result-item">
+        Unanswered
+        <strong id="unansweredCount">0</strong>
+      </div>
+
+      <div class="result-item">
+        Percentage
+        <strong id="percentage">0%</strong>
+      </div>
+    </div>
+
+    <h2>Answer Review</h2>
+    <div id="review"></div>
+
+    <button id="printBtn" class="primary" type="button">
+      Print Result
+    </button>
+
+    <button id="retryBtn" class="primary" type="button">
+      Take Another Exam
+    </button>
+  </section>
+
+</main>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  const QUESTION_COUNT = 30;
+  const MAX_TEXT_CHARACTERS = 20000;
+  const MAX_PDF_SIZE = 200 * 1024 * 1024;
+
+  if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+
+  let questions = [];
+  let answers = {};
+  let remainingSeconds = 0;
+  let timerInterval = null;
+  let examSubmitted = false;
+  let currentPlan = "free";
+
+  // EXAM IMAGE PREVIEW
+$("examImage").addEventListener("change", async function () {
+  const file = this.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    alert("Please select an image file.");
+    this.value = "";
+    return;
+  }
+
+  $("examImagePreview").src = URL.createObjectURL(file);
+  $("examImagePreview").style.display = "block";
+  $("removeExamImage").style.display = "inline-block";
+});
+
+$("removeExamImage").addEventListener("click", function () {
+  $("examImage").value = "";
+  $("examImagePreview").src = "";
+  $("examImagePreview").style.display = "none";
+  this.style.display = "none";
+});
+
+
+// COMPRESS EXAM IMAGE
+async function compressExamImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+      img.onload = function () {
+        const canvas = document.createElement("canvas");
+        const maxSize = 1600;
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxSize || height > maxSize) {
+          const scale = Math.min(
+            maxSize / width,
+            maxSize / height
+          );
+
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+
+      img.onerror = reject;
+      img.src = event.target.result;
+    };
+
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+
+// EXAM VOICE INPUT
+$("examVoiceBtn").addEventListener("click", function () {
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    $("examVoiceStatus").textContent =
+      "Voice input is not supported in this browser. Try Chrome.";
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+
+  recognition.lang =
+    $("language").value === "Bangla"
+      ? "bn-BD"
+      : "en-US";
+
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  $("examVoiceStatus").textContent = "Listening... Speak now.";
+
+  recognition.onresult = function (event) {
+    const transcript = event.results[0][0].transcript;
+
+    $("topic").value = transcript;
+
+    $("examVoiceStatus").textContent =
+      "Voice added: " + transcript;
+  };
+
+  recognition.onerror = function () {
+    $("examVoiceStatus").textContent =
+      "Voice recognition failed. Please try again.";
+  };
+
+  recognition.onend = function () {
+    if ($("examVoiceStatus").textContent === "Listening... Speak now.") {
+      $("examVoiceStatus").textContent =
+        "Tap the microphone and speak your topic.";
+    }
+  };
+
+  recognition.start();
+});
+  $("marks").addEventListener("change", updateTotalMarks);
+
+  function updateTotalMarks() {
+    $("totalMarks").textContent =
+      QUESTION_COUNT * Number($("marks").value);
+  }
+
+  function setStatus(message) {
+    $("status").textContent = message;
+  }
+  async function loadMembership() {
+  try {
+    const response = await fetch("/api/auth/me", {
+      credentials: "same-origin"
+    });
+
+    const data = await response.json();
+
+    currentPlan =
+      data.loggedIn && data.user && data.user.plan === "premium"
+        ? "premium"
+        : "free";
+
+  } catch (error) {
+    console.error("Could not load membership:", error);
+    currentPlan = "free";
+  }
+}
+
+  $("pdfFile").addEventListener("change", () => {
+    const file = $("pdfFile").files[0];
+
+    if (!file) {
+      $("pdfStatus").textContent =
+        "No PDF selected. You can use Subject + Topic instead.";
+      return;
+    }
+
+    if (
+      file.type !== "application/pdf" &&
+      !file.name.toLowerCase().endsWith(".pdf")
+    ) {
+      $("pdfFile").value = "";
+      $("pdfStatus").textContent = "Please select a PDF file.";
+      return;
+    }
+
+    if (file.size > MAX_PDF_SIZE) {
+      $("pdfFile").value = "";
+      $("pdfStatus").textContent =
+        "PDF exceeds 200 MB. Please choose a smaller file.";
+      return;
+    }
+
+    $("pdfStatus").textContent =
+      "Selected: " + file.name +
+      " (" + (file.size / (1024 * 1024)).toFixed(2) + " MB)";
+  });
+
+  async function extractPdfText(file) {
+    if (!window.pdfjsLib) {
+      throw new Error(
+        "The PDF reader could not load. Check your internet connection and refresh the page."
+      );
+    }
+
+    $("pdfStatus").textContent =
+      "Reading PDF text in your browser. Please wait...";
+
+    const buffer = await file.arrayBuffer();
+
+    const pdf = await pdfjsLib.getDocument({
+      data: new Uint8Array(buffer)
+    }).promise;
+
+    let fullText = "";
+
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+      const content = await page.getTextContent();
+
+      const pageText = content.items
+        .map(item => item.str || "")
+        .join(" ");
+
+      fullText += pageText + "\n";
+
+      if (fullText.length >= MAX_TEXT_CHARACTERS) {
+        break;
+      }
+    }
+
+    fullText = fullText.trim();
+
+    if (!fullText) {
+      throw new Error(
+        "No readable text found. This PDF may contain scanned pages or images only."
+      );
+    }
+
+    $("pdfStatus").textContent =
+      "PDF text extracted. Preparing your exam...";
+
+    return fullText.slice(0, MAX_TEXT_CHARACTERS);
+  }
+
+  function extractText(data) {
+    if (typeof data === "string") return data;
+
+    if (data && typeof data === "object") {
+      for (const key of ["answer", "text", "result", "output", "response"]) {
+        if (typeof data[key] === "string") return data[key];
+      }
+    }
+
+    return "";
+  }
+
+  function parseQuestions(text) {
+    const cleaned = text
+      .replace(/```json/gi, "")
+      .replace(/```/g, "")
+      .trim();
+
+    let parsed;
+
+    try {
+      parsed = JSON.parse(cleaned);
+    } catch {
+      const start = cleaned.indexOf("[");
+      const end = cleaned.lastIndexOf("]");
+
+      if (start < 0 || end <= start) {
+        throw new Error(
+          "AI did not return a valid MCQ list. Please try again."
+        );
+      }
+
+      parsed = JSON.parse(cleaned.slice(start, end + 1));
+    }
+
+    if (parsed && !Array.isArray(parsed)) {
+      parsed = parsed.questions;
+    }
+
+    if (!Array.isArray(parsed) || parsed.length !== QUESTION_COUNT) {
+      throw new Error(
+        "The AI must return exactly 30 questions. Please try again."
+      );
+    }
+
+    return parsed.map((q, index) => {
+      const question = q.question || q.q;
+      const rawOptions = q.options || q.choices;
+
+      const options = Array.isArray(rawOptions)
+        ? rawOptions.map(option =>
+            typeof option === "string"
+              ? option
+              : option.text || option.value || ""
+          )
+        : [];
+
+      let correct =
+        q.correctIndex ?? q.answerIndex ??
+        q.correctAnswer ?? q.answer;
+
+      if (typeof correct === "string") {
+        const value = correct.trim().toUpperCase();
+
+        if (/^[A-D]$/.test(value)) {
+          correct = value.charCodeAt(0) - 65;
+        } else if (/^[1-4]$/.test(value)) {
+          correct = Number(value) - 1;
+        } else {
+          correct = options.findIndex(
+            option =>
+              option.trim().toLowerCase() === value.toLowerCase()
+          );
+        }
+      }
+
+      correct = Number(correct);
+
+      if (
+        !question ||
+        options.length !== 4 ||
+        options.some(option => !String(option).trim()) ||
+        !Number.isInteger(correct) ||
+        correct < 0 ||
+        correct > 3
+      ) {
+        throw new Error(
+          "Question " + (index + 1) +
+          " has an invalid format. Please try again."
+        );
+      }
+
+      return {
+  question: String(question),
+  options: options.map(String),
+  correctIndex: correct,
+  explanation:
+    currentPlan === "premium"
+      ? String(q.explanation || "")
+      : ""
+};
+    });
+  }
+
+  async function generateQuestions(
+  subject,
+  topic,
+  difficulty,
+  language,
+  textbook,
+  imageData
+) {
+  const sourceInstruction = (textbook || imageData)
+    ? `Use the supplied study material as the primary source.
+
+${textbook ? "PDF TEXT:\n" + textbook : ""}
+${imageData ? "Carefully read the uploaded image, including text, formulas, tables and diagrams. Do not invent unsupported details." : ""}`
+    : `Create questions based on this subject and topic.
+Subject: ${subject}
+Topic: ${topic}`;
+
+  const premiumInstruction =
+    currentPlan === "premium"
+      ? `Include an explanation for every correct answer.`
+      : `Do not include explanations.`;
+
+  const outputStructure =
+    currentPlan === "premium"
+      ? `{
+  "question": "Question text",
+  "options": ["Option A", "Option B", "Option C", "Option D"],
+  "correctIndex": 0,
+  "explanation": "Explanation of the correct answer"
+}`
+      : `{
+  "question": "Question text",
+  "options": ["Option A", "Option B", "Option C", "Option D"],
+  "correctIndex": 0
+}`;
+
+  const prompt = `
+Generate exactly 30 multiple-choice questions for a student exam.
+
+Subject: ${subject}
+Topic: ${topic || "Use the uploaded study material"}
+Difficulty: ${difficulty}
+Question language: ${language}
+
+${sourceInstruction}
+
+${premiumInstruction}
+
+Return ONLY a valid JSON array. No markdown and no extra text.
+
+Each item must have this structure:
+${outputStructure}
+
+Requirements:
+- Exactly 30 questions.
+- Exactly four non-empty options per question.
+- correctIndex must be 0, 1, 2, or 3.
+- Only one correct answer per question.
+- Avoid duplicate questions.
+- Keep questions and answers factually accurate.
+- Write questions and options in the selected language.
+- Do not return an answer key outside the JSON.
+`;
+
+  const response = await fetch("/api/study", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "same-origin",
+    body: JSON.stringify({
+      task: "mcq",
+      subject: subject,
+      topic: topic,
+      difficulty: difficulty,
+      language: language,
+      question: prompt,
+      textbook: textbook,
+      imageData: imageData
+    })
+  });
+
+  let data;
+
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error(
+      "The server returned an unreadable response. Please try again."
+    );
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data.error?.message ||
+      data.message ||
+      "AI server error (" + response.status + ")."
+    );
+  }
+
+  const responseText = extractText(data);
+
+  if (!responseText) {
+    throw new Error(
+      "Could not read the AI response. Please check the server response."
+    );
+  }
+
+  return parseQuestions(responseText);
+}
+
+  $("startBtn").addEventListener("click", async () => {
+  const subject = $("subject").value;
+  const topic = $("topic").value.trim();
+  const difficulty = $("difficulty").value;
+  const language = $("language").value;
+  const file = $("pdfFile").files[0];
+  const imageFile = $("examImage").files[0];
+
+  if (!subject) {
+    setStatus("Please select a subject.");
+    return;
+  }
+
+  if (!topic && !file && !imageFile) {
+    setStatus(
+      "Enter a topic, upload a PDF, or upload an image first."
+    );
+    return;
+  }
+
+  $("startBtn").disabled = true;
+
+  try {
+    await loadMembership();
+
+    let textbook = "";
+    let imageData = null;
+
+    setStatus("Preparing your study material...");
+
+    if (file) {
+      textbook = await extractPdfText(file);
+    }
+
+    if (imageFile) {
+      imageData = await compressExamImage(imageFile);
+    }
+
+    setStatus(
+      currentPlan === "premium"
+        ? "Generating 30 MCQs with answers and explanations..."
+        : "Generating 30 MCQs with answers..."
+    );
+
+    questions = await generateQuestions(
+      subject,
+      topic,
+      difficulty,
+      language,
+      textbook,
+      imageData
+    );
+
+    answers = {};
+    examSubmitted = false;
+
+    $("examImage").value = "";
+    $("examImagePreview").src = "";
+    $("examImagePreview").style.display = "none";
+    $("removeExamImage").style.display = "none";
+
+    $("examVoiceStatus").textContent =
+      "Tap the microphone and speak your topic.";
+
+    $("examTitle").textContent = subject + " MCQ Exam";
+
+    $("examInfo").textContent =
+      (topic || (file ? file.name : "Image-based Exam")) +
+      " • " + difficulty +
+      " • " + $("marks").value + " mark(s) per question";
+
+    renderQuestions();
+
+    $("settings").classList.add("hidden");
+    $("result").classList.add("hidden");
+    $("exam").classList.remove("hidden");
+
+    startTimer(Number($("duration").value) * 60);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+    setStatus("");
+
+  } catch (error) {
+    setStatus(
+      "Unable to start exam: " + error.message
+    );
+
+  } finally {
+    $("startBtn").disabled = false;
+  }
+});
+
+  function renderQuestions() {
+    $("questions").replaceChildren();
+
+    questions.forEach((q, index) => {
+      const card = document.createElement("div");
+      card.className = "panel question-card";
+
+      const title = document.createElement("div");
+      title.className = "question-title";
+      title.textContent =
+        "Q" + (index + 1) + ". " + q.question +
+        " (" + $("marks").value + " mark(s))";
+
+      card.appendChild(title);
+
+      q.options.forEach((option, optionIndex) => {
+        const label = document.createElement("label");
+        label.className = "option";
+
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.name = "question-" + index;
+        radio.value = optionIndex;
+
+        radio.addEventListener("change", () => {
+          answers[index] = optionIndex;
+          updateProgress();
+        });
+
+        const text = document.createElement("span");
+        text.textContent =
+          String.fromCharCode(65 + optionIndex) + ". " + option;
+
+        label.append(radio, text);
+        card.appendChild(label);
+      });
+
+      $("questions").appendChild(card);
+    });
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    $("progress").textContent =
+      "Answered: " + Object.keys(answers).length + " / 30";
+  }
+
+  function startTimer(seconds) {
+    clearInterval(timerInterval);
+    remainingSeconds = seconds;
+    updateTimer();
+
+    timerInterval = setInterval(() => {
+      remainingSeconds--;
+      updateTimer();
+
+      if (remainingSeconds <= 0) {
+        clearInterval(timerInterval);
+        submitExam(true);
+      }
+    }, 1000);
+  }
+
+  function updateTimer() {
+    const minutes = Math.floor(remainingSeconds / 60);
+    const seconds = remainingSeconds % 60;
+
+    $("timer").textContent =
+      String(minutes).padStart(2, "0") + ":" +
+      String(seconds).padStart(2, "0");
+  }
+
+  $("answerForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    if (examSubmitted) return;
+
+    if (!confirm("Are you sure you want to submit the exam?")) {
+      return;
+    }
+
+    submitExam(false);
+  });
+
+  function submitExam(autoSubmitted) {
+    if (examSubmitted) return;
+
+    examSubmitted = true;
+    clearInterval(timerInterval);
+
+    const marksPerQuestion = Number($("marks").value);
+    let correct = 0;
+    let wrong = 0;
+    let unanswered = 0;
+
+    questions.forEach((q, index) => {
+      if (answers[index] === undefined) {
+        unanswered++;
+      } else if (answers[index] === q.correctIndex) {
+        correct++;
+      } else {
+        wrong++;
+      }
+    });
+
+    const totalMarks = questions.length * marksPerQuestion;
+    const obtained = correct * marksPerQuestion;
+    const percent = totalMarks
+      ? Math.round((obtained / totalMarks) * 100)
+      : 0;
+
+    $("score").textContent = obtained + " / " + totalMarks;
+
+     $("score").textContent = obtained + " / " + totalMarks;
+
+    $("resultDetails").textContent =
+      (autoSubmitted ? "Time is up. " : "Exam submitted. ") +
+      "You answered " + (correct + wrong) +
+      " out of " + questions.length + " questions.";
+
+    $("correctCount").textContent = correct;
+    $("wrongCount").textContent = wrong;
+    $("unansweredCount").textContent = unanswered;
+    $("percentage").textContent = percent + "%";
+
+    $("review").replaceChildren();
+questions.forEach((q, index) => {
+      const card = document.createElement("div");
+      card.className = "question-card";
+
+      const title = document.createElement("p");
+      title.className = "question-title";
+      title.textContent = "Q" + (index + 1) + ". " + q.question;
+
+      const chosen = answers[index];
+
+      const yourAnswer = document.createElement("p");
+      yourAnswer.className =
+        chosen === q.correctIndex
+          ? "review-correct"
+          : "review-wrong";
+
+      yourAnswer.textContent =
+        "Your answer: " +
+        (chosen === undefined
+          ? "Not answered"
+          : String.fromCharCode(65 + chosen) +
+            ". " + q.options[chosen]);
+
+      const correctAnswer = document.createElement("p");
+correctAnswer.className = "review-correct";
+      correctAnswer.textContent =
+        "Correct answer: " +
+        String.fromCharCode(65 + q.correctIndex) +
+        ". " + q.options[q.correctIndex];
+
+      card.append(title, yourAnswer, correctAnswer);
+
+if (currentPlan === "premium" && q.explanation) {
+  const explanation = document.createElement("p");
+
+  explanation.textContent =
+    "Explanation: " + q.explanation;
+
+  card.appendChild(explanation);
+}
+
+$("review").appendChild(card);
+    });
+
+    $("exam").classList.add("hidden");
+    $("result").classList.remove("hidden");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  $("printBtn").addEventListener("click", () => {
+    window.print();
+  });
+
+  $("retryBtn").addEventListener("click", () => {
+clearInterval(timerInterval);
+
+    $("result").classList.add("hidden");
+    $("exam").classList.add("hidden");
+    $("settings").classList.remove("hidden");
+
+    $("pdfFile").value = "";
+    $("pdfStatus").textContent =
+      "No PDF selected. You can use Subject + Topic instead.";
+
+    $("topic").value = "";
+    setStatus("");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  updateTotalMarks();
+</script>
+
+</body>
+</html>

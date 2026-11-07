@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formula Book | Study Vibe</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f5fb;
+    color: #20243a;
+    min-height: 100vh;
+}
+
+header {
+    background: #20243a;
+    color: white;
+    padding: 17px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+header h2 { font-size: 21px; }
+
+header a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.container {
+    width: 92%;
+    max-width: 950px;
+    margin: 30px auto;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    color: #263b80;
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.hero p {
+    color: #777;
+    font-size: 14px;
+}
+
+.search-panel {
+    background: white;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.05);
+    margin-bottom: 20px;
+}
+
+.search-panel input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #dce0eb;
+    border-radius: 9px;
+    font-size: 15px;
+    margin-bottom: 14px;
+}
+
+.search-panel input:focus {
+    outline: none;
+    border-color: #5268d9;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filters button {
+    background: #edf0ff;
+    color: #354aab;
+    padding: 9px 13px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.filters button.active {
+    background: #5268d9;
+    color: white;
+}
+
+.section-title {
+    color: #263b80;
+    font-size: 20px;
+    margin: 25px 0 15px;
+}
+
+.formula-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.formula-card {
+    background: white;
+    border-radius: 13px;
+    padding: 18px;
+    box-shadow: 0 4px 15px rgba(0,0,0,.04);
+    border-left: 4px solid #5268d9;
+}
+
+.formula-card h3 {
+    font-size: 16px;
+    color: #263b80;
+    margin-bottom: 12px;
+}
+
+.formula {
+    background: #f3f5ff;
+    color: #263b80;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    margin-bottom: 10px;
+}
+
+.description {
+    color: #666;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.copy-btn {
+    background: #5268d9;
+    color: white;
+    padding: 9px 13px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.copy-btn:hover {
+    background: #394db5;
+}
+
+.empty {
+    background: white;
+    padding: 25px;
+    text-align: center;
+    color: #777;
+    border-radius: 12px;
+    display: none;
+}
+
+footer {
+    text-align: center;
+    color: #888;
+    font-size: 12px;
+    padding: 25px 10px;
+}
+
+@media(max-width: 600px) {
+    .formula-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: 25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>Study Vibe</h2>
+    <a href="tools.html">← Back to Study Tools</a>
+</header>
+
+<main class="container">
+
+    <div class="hero">
+        <h1>Formula Book</h1>
+        <p>Your collection of important Mathematics, Physics and Chemistry formulas.</p>
+    </div>
+
+    <div class="search-panel">
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search a formula or topic..."
+            oninput="renderFormulas()"
+        >
+
+        <div class="filters">
+            <button class="active" onclick="filterSubject('All', this)">All</button>
+            <button onclick="filterSubject('Mathematics', this)">Mathematics</button>
+            <button onclick="filterSubject('Algebra', this)">Algebra</button>
+            <button onclick="filterSubject('Geometry', this)">Geometry</button>
+            <button onclick="filterSubject('Trigonometry', this)">Trigonometry</button>
+            <button onclick="filterSubject('Physics', this)">Physics</button>
+            <button onclick="filterSubject('Chemistry', this)">Chemistry</button>
+        </div>
+    </div>
+
+    <h2 class="section-title" id="resultTitle">All Formulas</h2>
+
+    <div class="formula-grid" id="formulaGrid"></div>
+
+    <div class="empty" id="emptyMessage">
+        No formulas found. Try another search.
+    </div>
+
+</main>
+
+<footer>
+    Study Vibe by Addrectionate
+    <br><br>
+    From Confusion to Confidence
+</footer>
+
+<script>
+
+const formulas = [
+
+    // MATHEMATICS
+
+    {
+        subject: "Mathematics",
+        title: "Percentage",
+        formula: "Percentage = (Part / Whole) × 100",
+        description: "Used to calculate a value as a percentage of a whole."
+    },
+    {
+        subject: "Mathematics",
+        title: "Profit",
+        formula: "Profit = Selling Price − Cost Price",
+        description: "The amount gained when selling price exceeds cost price."
+    },
+    {
+        subject: "Mathematics",
+        title: "Loss",
+        formula: "Loss = Cost Price − Selling Price",
+        description: "The amount lost when cost price exceeds selling price."
+    },
+    {
+        subject: "Mathematics",
+        title: "Simple Interest",
+        formula: "SI = (P × R × T) / 100",
+        description: "P = Principal, R = annual interest rate, T = time in years."
+    },
+    {
+        subject: "Mathematics",
+        title: "Average",
+        formula: "Average = Sum of Values / Number of Values",
+        description: "The arithmetic mean of a collection of values."
+    },
+
+    // ALGEBRA
+
+    {
+        subject: "Algebra",
+        title: "Square of a Sum",
+        formula: "(a + b)² = a² + 2ab + b²",
+        description: "Important algebraic identity."
+    },
+    {
+        subject: "Algebra",
+        title: "Square of a Difference",
+        formula: "(a − b)² = a² − 2ab + b²",
+        description: "Important algebraic identity."
+    },
+    {
+        subject: "Algebra",
+        title: "Difference of Squares",
+        formula: "a² − b² = (a + b)(a − b)",
+        description: "Factorization identity."
+    },
+    {
+        subject: "Algebra",
+        title: "Cube of a Sum",
+        formula: "(a + b)³ = a³ + 3a²b + 3ab² + b³",
+        description: "Expansion of the cube of a sum."
+    },
+    {
+        subject: "Algebra",
+        title: "Quadratic Equation",
+        formula: "x = [−b ± √(b² − 4ac)] / 2a",
+        description: "For ax² + bx + c = 0, where a ≠ 0."
+    },
+
+    // GEOMETRY
+
+    {
+        subject: "Geometry",
+        title: "Area of a Rectangle",
+        formula: "Area = Length × Width",
+        description: "Area of a rectangular shape."
+    },
+    {
+        subject: "Geometry",
+        title: "Area of a Square",
+        formula: "Area = Side²",
+        description: "Area of a square."
+    },
+    {
+        subject: "Geometry",
+        title: "Area of a Triangle",
+        formula: "Area = ½ × Base × Height",
+        description: "Area of a triangle."
+    },
+    {
+        subject: "Geometry",
+        title: "Area of a Circle",
+        formula: "Area = πr²",
+        description: "r = radius of the circle."
+    },
+    {
+        subject: "Geometry",
+        title: "Circumference of a Circle",
+        formula: "C = 2πr",
+        description: "The perimeter around a circle."
+    },
+    {
+        subject: "Geometry",
+        title: "Pythagorean Theorem",
+        formula: "a² + b² = c²",
+        description: "For a right-angled triangle, c is the hypotenuse."
+    },
+    {
+        subject: "Geometry",
+        title: "Volume of a Cube",
+        formula: "V = Side³",
+        description: "Volume of a cube."
+    },
+    {
+        subject: "Geometry",
+        title: "Volume of a Cuboid",
+        formula: "V = Length × Width × Height",
+        description: "Volume of a rectangular solid."
+    },
+
+    // TRIGONOMETRY
+
+    {
+        subject: "Trigonometry",
+        title: "Sine",
+        formula: "sin θ = Opposite / Hypotenuse",
+        description: "Ratio of opposite side to hypotenuse."
+    },
+    {
+        subject: "Trigonometry",
+        title: "Cosine",
+        formula: "cos θ = Adjacent / Hypotenuse",
+        description: "Ratio of adjacent side to hypotenuse."
+    },
+    {
+        subject: "Trigonometry",
+        title: "Tangent",
+        formula: "tan θ = Opposite / Adjacent",
+        description: "Ratio of opposite side to adjacent side."
+    },
+    {
+        subject: "Trigonometry",
+        title: "Fundamental Identity",
+        formula: "sin² θ + cos² θ = 1",
+        description: "A fundamental trigonometric identity."
+    },
+    {
+        subject: "Trigonometry",
+        title: "Tangent Identity",
+        formula: "tan θ = sin θ / cos θ",
+        description: "Relationship between tangent, sine and cosine."
+    },
+
+    // PHYSICS
+
+    {
+        subject: "Physics",
+        title: "Speed",
+        formula: "Speed = Distance / Time",
+        description: "Average distance travelled per unit time."
+    },
+    {
+        subject: "Physics",
+        title: "Velocity",
+        formula: "Velocity = Displacement / Time",
+        description: "Rate of change of displacement."
+    },
+    {
+        subject: "Physics",
+        title: "Acceleration",
+        formula: "a = (v − u) / t",
+        description: "v = final velocity, u = initial velocity, t = time."
+    },
+    {
+        subject: "Physics",
+        title: "Force",
+        formula: "F = ma",
+        description: "Newton's second law of motion."
+    },
+    {
+        subject: "Physics",
+        title: "Weight",
+        formula: "W = mg",
+        description: "m = mass, g = gravitational acceleration."
+    },
+    {
+        subject: "Physics",
+        title: "Work",
+        formula: "W = F × s",
+        description: "Work done by a constant force along the displacement."
+    },
+    {
+        subject: "Physics",
+        title: "Power",
+        formula: "P = Work / Time",
+        description: "Rate of doing work."
+    },
+    {
+        subject: "Physics",
+        title: "Density",
+        formula: "Density = Mass / Volume",
+        description: "Mass per unit volume."
+    },
+    {
+        subject: "Physics",
+        title: "Ohm's Law",
+        formula: "V = IR",
+        description: "Voltage = Current × Resistance."
+    },
+    {
+        subject: "Physics",
+        title: "Electrical Power",
+        formula: "P = VI",
+        description: "Electrical power = Voltage × Current."
+    },
+    {
+        subject: "Physics",
+        title: "Kinetic Energy",
+        formula: "KE = ½mv²",
+        description: "Energy possessed by a moving object."
+    },
+    {
+        subject: "Physics",
+        title: "Potential Energy",
+        formula: "PE = mgh",
+        description: "Gravitational potential energy near Earth's surface."
+    },
+
+    // CHEMISTRY
+
+    {
+        subject: "Chemistry",
+        title: "Density",
+        formula: "Density = Mass / Volume",
+        description: "Mass contained in a unit volume."
+    },
+    {
+        subject: "Chemistry",
+        title: "Mole",
+        formula: "n = Mass / Molar Mass",
+        description: "Calculates the number of moles of a substance."
+    },
+    {
+        subject: "Chemistry",
+        title: "Number of Particles",
+        formula: "N = n × Nₐ",
+        description: "Nₐ = Avogadro constant, approximately 6.022 × 10²³ mol⁻¹."
+    },
+    {
+        subject: "Chemistry",
+        title: "Molarity",
+        formula: "M = Moles of Solute / Volume of Solution (L)",
+        description: "Concentration expressed in moles per litre."
+    },
+    {
+        subject: "Chemistry",
+        title: "pH",
+        formula: "pH = −log₁₀[H⁺]",
+        description: "For hydrogen ion concentration in mol/L."
+    },
+    {
+        subject: "Chemistry",
+        title: "Mass Percentage",
+        formula: "% by Mass = (Mass of Component / Total Mass) × 100",
+        description: "Percentage of a component in a mixture."
+    },
+    {
+        subject: "Chemistry",
+        title: "Ideal Gas Equation",
+        formula: "PV = nRT",
+        description: "P = pressure, V = volume, n = moles, R = gas constant, T = Kelvin temperature."
+    }
+
+];
+
+let selectedSubject = "All";
+
+function filterSubject(subject, button) {
+    selectedSubject = subject;
+
+    document.querySelectorAll(".filters button").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+    renderFormulas();
+}
+
+function renderFormulas() {
+    const search = document.getElementById("searchInput")
+        .value.trim().toLowerCase();
+
+    const grid = document.getElementById("formulaGrid");
+    const empty = document.getElementById("emptyMessage");
+
+    grid.replaceChildren();
+
+    const filtered = formulas.filter(item => {
+        const matchesSubject =
+            selectedSubject === "All" ||
+            item.subject === selectedSubject;
+
+        const matchesSearch =
+            item.title.toLowerCase().includes(search) ||
+            item.formula.toLowerCase().includes(search) ||
+            item.description.toLowerCase().includes(search) ||
+            item.subject.toLowerCase().includes(search);
+
+        return matchesSubject && matchesSearch;
+    });
+
+    document.getElementById("resultTitle").textContent =
+        selectedSubject === "All"
+            ? "All Formulas (" + filtered.length + ")"
+            : selectedSubject + " Formulas (" + filtered.length + ")";
+
+    empty.style.display = filtered.length ? "none" : "block";
+
+    filtered.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "formula-card";
+
+        const title = document.createElement("h3");
+        title.textContent = item.title;
+
+        const formula = document.createElement("div");
+        formula.className = "formula";
+        formula.textContent = item.formula;
+
+        const description = document.createElement("p");
+        description.className = "description";
+        description.textContent = item.description;
+
+        const copy = document.createElement("button");
+        copy.className = "copy-btn";
+        copy.textContent = "📋 Copy Formula";
+
+        copy.addEventListener("click", async () => {
+            try {
+                await navigator.clipboard.writeText(item.formula);
+                copy.textContent = "✓ Copied!";
+            } catch {
+                copy.textContent = "Copy unavailable";
+            }
+
+            setTimeout(() => {
+                copy.textContent = "📋 Copy Formula";
+            }, 1500);
+        });
+
+        card.appendChild(title);
+        card.appendChild(formula);
+        card.appendChild(description);
+        card.appendChild(copy);
+
+        grid.appendChild(card);
+    });
+}
+
+renderFormulas();
+
+</script>
+
+</body>
+</html>

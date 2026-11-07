@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture to Notes | Study Vibe</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f5fb;
+    color: #20243a;
+    min-height: 100vh;
+}
+
+header {
+    background: #20243a;
+    color: white;
+    padding: 17px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+header h2 { font-size: 21px; }
+
+header a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.container {
+    width: 92%;
+    max-width: 850px;
+    margin: 30px auto;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    color: #263b80;
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.hero p {
+    color: #777;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.panel {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.05);
+    margin-bottom: 20px;
+}
+
+.panel h2 {
+    color: #263b80;
+    font-size: 19px;
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 13px 0 7px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #dce0eb;
+    border-radius: 9px;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+}
+
+textarea {
+    min-height: 180px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #5268d9;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.primary {
+    background: #5268d9;
+    color: white;
+}
+
+.secondary {
+    background: #edf0ff;
+    color: #354aab;
+}
+
+.stop {
+    background: #fff0f0;
+    color: #b32626;
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.status {
+    background: #f1f4ff;
+    color: #354aab;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.status.recording {
+    background: #fff0f0;
+    color: #b32626;
+}
+
+.note-info {
+    color: #777;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+.saved-note {
+    background: #f8f9ff;
+    border: 1px solid #e7e9f3;
+    border-radius: 10px;
+    padding: 13px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.saved-note strong {
+    color: #263b80;
+    font-size: 14px;
+}
+
+.saved-note small {
+    color: #777;
+    display: block;
+    margin-top: 5px;
+}
+
+.saved-note button {
+    padding: 8px 10px;
+    font-size: 12px;
+}
+
+.empty {
+    color: #888;
+    text-align: center;
+    padding: 18px;
+    font-size: 14px;
+}
+
+footer {
+    text-align: center;
+    color: #888;
+    font-size: 12px;
+    padding: 25px 10px;
+}
+
+@media(max-width: 500px) {
+    .hero h1 { font-size: 25px; }
+    .actions button { flex: 1; }
+    .panel { padding: 16px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>Study Vibe</h2>
+    <a href="tools.html">← Back to Study Tools</a>
+</header>
+
+<main class="container">
+
+    <div class="hero">
+        <h1>Lecture to Notes</h1>
+        <p>Turn your classroom lectures into editable written notes.</p>
+    </div>
+
+    <section class="panel">
+        <h2>Lecture Details</h2>
+
+        <label for="lectureTitle">Lecture Title</label>
+        <input id="lectureTitle" type="text"
+            placeholder="e.g. Introduction to Organic Chemistry">
+
+        <label for="subject">Subject</label>
+        <input id="subject" type="text"
+            placeholder="e.g. Chemistry">
+
+        <label for="language">Lecture Language</label>
+        <select id="language">
+            <option value="en-US">English</option>
+            <option value="bn-BD">Bangla</option>
+            <option value="en-IN">English (India)</option>
+            <option value="hi-IN">Hindi</option>
+        </select>
+    </section>
+
+    <section class="panel">
+        <h2>Record Your Lecture</h2>
+
+        <p class="note-info">
+            Allow microphone permission when your browser asks.
+            Speak clearly and keep your device near the speaker.
+        </p>
+
+        <div class="actions">
+            <button class="primary" id="startBtn" onclick="startRecording()">
+                🎙 Start Recording
+            </button>
+
+            <button class="stop" id="stopBtn"
+                onclick="stopRecording()" disabled>
+                ■ Stop Recording
+            </button>
+        </div>
+
+        <div class="status" id="status">
+            Ready to record. Your browser must support speech recognition.
+        </div>
+
+        <p class="note-info">
+            Note: Browser speech recognition may require internet and
+            may not be supported by every browser or device.
+        </p>
+    </section>
+
+    <section class="panel">
+        <h2>Lecture Transcript / Notes</h2>
+
+        <label for="notes">Edit your lecture text</label>
+        <textarea id="notes"
+            placeholder="Your recognized lecture text will appear here. You can also type or paste notes manually..."></textarea>
+
+        <div class="actions">
+            <button class="primary" onclick="saveNote()">💾 Save Notes</button>
+            <button class="secondary" onclick="copyNotes()">📋 Copy</button>
+            <button class="secondary" onclick="downloadNotes()">⬇ Download TXT</button>
+            <button class="secondary" onclick="clearNotes()">Clear Text</button>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>My Saved Lectures</h2>
+        <div id="savedNotes">
+            <p class="empty">No saved lectures yet.</p>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    Study Vibe by Addrectionate
+    <br><br>
+    From Confusion to Confidence
+</footer>
+
+<script>
+const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+let recognition = null;
+let isRecording = false;
+let finalTranscript = "";
+
+const notesBox = document.getElementById("notes");
+const statusBox = document.getElementById("status");
+const startBtn = document.getElementById("startBtn");
+const stopBtn = document.getElementById("stopBtn");
+
+function setStatus(message, recording = false) {
+    statusBox.textContent = message;
+    statusBox.classList.toggle("recording", recording);
+}
+
+function startRecording() {
+    if (!SpeechRecognition) {
+        setStatus(
+            "Speech recognition is not supported in this browser. Try a supported browser or type your notes manually."
+        );
+        return;
+    }
+
+    if (isRecording) return;
+
+    finalTranscript = notesBox.value.trim();
+
+    recognition = new SpeechRecognition();
+    recognition.lang = document.getElementById("language").value;
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onstart = function() {
+        isRecording = true;
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        setStatus("Recording... Speak clearly.", true);
+    };
+
+    recognition.onresult = function(event) {
+        let interimTranscript = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const text = event.results[i][0].transcript;
+
+            if (event.results[i].isFinal) {
+                finalTranscript +=
+                    (finalTranscript ? " " : "") + text;
+            } else {
+                interimTranscript += text;
+            }
+        }
+
+        notesBox.value =
+            finalTranscript +
+            (interimTranscript ? " " + interimTranscript : "");
+    };
+
+    recognition.onerror = function(event) {
+        setStatus("Recording error: " + event.error);
+    };
+
+    recognition.onend = function() {
+        isRecording = false;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+
+        if (notesBox.value.trim()) {
+            finalTranscript = notesBox.value.trim();
+            setStatus("Recording stopped. You can edit and save your notes.");
+        } else {
+            setStatus("Recording stopped. No speech was recognized.");
+        }
+    };
+
+    try {
+        recognition.start();
+    } catch (error) {
+        setStatus("Unable to start recording. Please try again.");
+        isRecording = false;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+    }
+}
+
+function stopRecording() {
+    if (recognition && isRecording) {
+        recognition.stop();
+    }
+}
+
+function getLectureData() {
+    const title = document.getElementById("lectureTitle").value.trim();
+    const subject = document.getElementById("subject").value.trim();
+    const text = notesBox.value.trim();
+
+    if (!text) {
+        alert("Please record or write some lecture notes first.");
+        return null;
+    }
+
+    return {
+        id: Date.now().toString(),
+        title: title || "Untitled Lecture",
+        subject: subject || "General",
+        text,
+        date: new Date().toLocaleString()
+    };
+}
+
+function getSavedNotes() {
+    try {
+        const data = JSON.parse(
+            localStorage.getItem("studyVibeLectures") || "[]"
+        );
+        return Array.isArray(data) ? data : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveNote() {
+    const lecture = getLectureData();
+    if (!lecture) return;
+
+    const saved = getSavedNotes();
+    saved.unshift(lecture);
+
+    try {
+        localStorage.setItem("studyVibeLectures", JSON.stringify(saved));
+        renderSavedNotes();
+        alert("Lecture notes saved successfully!");
+    } catch {
+        alert("Could not save notes. Browser storage may be full.");
+    }
+}
+
+function renderSavedNotes() {
+    const container = document.getElementById("savedNotes");
+    const saved = getSavedNotes();
+
+    container.replaceChildren();
+
+    if (!saved.length) {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent = "No saved lectures yet.";
+        container.appendChild(empty);
+        return;
+    }
+
+    saved.forEach(lecture => {
+        const item = document.createElement("div");
+        item.className = "saved-note";
+
+        const info = document.createElement("div");
+
+        const title = document.createElement("strong");
+        title.textContent = lecture.title;
+
+        const details = document.createElement("small");
+        details.textContent =
+            lecture.subject + " • " + lecture.date;
+
+        info.appendChild(title);
+        info.appendChild(details);
+
+        const actions = document.createElement("div");
+
+        const openBtn = document.createElement("button");
+        openBtn.className = "secondary";
+        openBtn.textContent = "Open";
+        openBtn.onclick = () => openNote(lecture.id);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "stop";
+        deleteBtn.textContent = "Delete";
+        deleteBtn.onclick = () => deleteNote(lecture.id);
+
+        actions.appendChild(openBtn);
+        actions.appendChild(deleteBtn);
+
+        item.appendChild(info);
+        item.appendChild(actions);
+
+        container.appendChild(item);
+    });
+}
+
+function openNote(id) {
+    const lecture = getSavedNotes().find(item => item.id === id);
+    if (!lecture) return;
+
+    document.getElementById("lectureTitle").value = lecture.title;
+    document.getElementById("subject").value = lecture.subject;
+    notesBox.value = lecture.text;
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function deleteNote(id) {
+    if (!confirm("Delete this saved lecture?")) return;
+
+    const saved = getSavedNotes().filter(item => item.id !== id);
+
+    try {
+        localStorage.setItem("studyVibeLectures", JSON.stringify(saved));
+        renderSavedNotes();
+    } catch {
+        alert("Unable to update saved lectures.");
+    }
+}
+
+async function copyNotes() {
+    if (!notesBox.value.trim()) {
+        alert("There are no notes to copy.");
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(notesBox.value);
+        alert("Notes copied!");
+    } catch {
+        alert("Copy is unavailable in this browser.");
+    }
+}
+
+function downloadNotes() {
+    const lecture = getLectureData();
+    if (!lecture) return;
+
+    const content =
+        "Study Vibe - Lecture Notes\n\n" +
+        "Title: " + lecture.title + "\n" +
+        "Subject: " + lecture.subject + "\n" +
+        "Date: " + lecture.date + "\n\n" +
+        lecture.text;
+
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download =
+        lecture.title.replace(/[^a-z0-9_-]/gi, "_") + ".txt";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+}
+
+function clearNotes() {
+    if (!confirm("Clear the current lecture text?")) return;
+
+    notesBox.value = "";
+    finalTranscript = "";
+}
+
+renderSavedNotes();
+</script>
+
+</body>
+</html>

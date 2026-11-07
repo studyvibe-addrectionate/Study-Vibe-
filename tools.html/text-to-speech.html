@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text to Speech | Study Vibe</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:20px;font-family:Arial,sans-serif;
+ background:linear-gradient(135deg,#eaf1ff,#f8faff);
+ color:#172554;min-height:100vh
+}
+.container{
+ max-width:750px;margin:25px auto;background:white;
+ padding:25px;border-radius:20px;
+ box-shadow:0 10px 35px #1e40af18
+}
+.brand{text-align:center;color:#2563eb;font-weight:bold;letter-spacing:1px}
+h1{text-align:center;margin:12px 0 5px}
+.subtitle{text-align:center;color:#64748b;font-size:14px}
+label{display:block;margin:18px 0 8px;font-weight:bold;color:#334155}
+textarea,select,input{
+ width:100%;padding:12px;border:1px solid #cbd5e1;
+ border-radius:10px;font-size:15px;background:white
+}
+textarea{height:220px;resize:vertical;line-height:1.6}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+button{
+ border:0;padding:13px 18px;border-radius:10px;
+ font-size:15px;font-weight:bold;cursor:pointer
+}
+.buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.play{background:#2563eb;color:white}
+.pause{background:#dbeafe;color:#1e40af}
+.stop{background:#fee2e2;color:#b91c1c}
+button:disabled{opacity:.45;cursor:not-allowed}
+.status{
+ margin-top:18px;padding:13px;background:#eff6ff;
+ border-radius:10px;color:#1e40af;text-align:center
+}
+.range-label{display:flex;justify-content:space-between}
+.back{display:block;text-align:center;margin-top:22px;color:#2563eb;text-decoration:none}
+@media(max-width:500px){.row{grid-template-columns:1fr}.container{padding:18px}}
+</style>
+</head>
+<body>
+<div class="container">
+ <div class="brand">STUDY VIBE</div>
+ <h1>Text to Speech</h1>
+ <p class="subtitle">Turn your study materials into spoken words.</p>
+
+ <label for="text">Enter your text</label>
+ <textarea id="text" placeholder="Paste or type your notes, lesson, story or study materials here..."></textarea>
+
+ <div class="row">
+  <div>
+   <label for="language">Language</label>
+   <select id="language">
+    <option value="en">English</option>
+    <option value="bn">Bangla</option>
+    <option value="hi">Hindi</option>
+   </select>
+  </div>
+  <div>
+   <label for="voice">Available voice</label>
+   <select id="voice">
+    <option value="">Default voice</option>
+   </select>
+  </div>
+ </div>
+
+ <label class="range-label">
+  <span>Speaking speed</span><span id="speedValue">1x</span>
+ </label>
+ <input type="range" id="speed" min="0.5" max="2" step="0.1" value="1">
+
+ <label class="range-label">
+  <span>Pitch</span><span id="pitchValue">1</span>
+ </label>
+ <input type="range" id="pitch" min="0.5" max="2" step="0.1" value="1">
+
+ <label class="range-label">
+  <span>Volume</span><span id="volumeValue">100%</span>
+ </label>
+ <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+
+ <div class="buttons">
+  <button class="play" id="play">▶ Play</button>
+  <button class="pause" id="pause" disabled>Ⅱ Pause</button>
+  <button class="pause" id="resume" disabled>▶ Resume</button>
+  <button class="stop" id="stop" disabled>■ Stop</button>
+ </div>
+
+ <div class="status" id="status" aria-live="polite">
+  Ready to read your text.
+ </div>
+ <a class="back" href="index.html">← Back to Study Vibe</a>
+</div>
+
+<script>
+const textBox=document.getElementById("text");
+const language=document.getElementById("language");
+const voiceSelect=document.getElementById("voice");
+const speed=document.getElementById("speed");
+const pitch=document.getElementById("pitch");
+const volume=document.getElementById("volume");
+const statusBox=document.getElementById("status");
+
+let voices=[];
+let chunks=[];
+let current=0;
+let playing=false;
+let paused=false;
+let runId=0;
+
+function loadVoices(){
+ voices=speechSynthesis.getVoices();
+ updateVoices();
+}
+
+function updateVoices(){
+ const lang=language.value;
+ const previous=voiceSelect.value;
+ voiceSelect.innerHTML='<option value="">Default voice</option>';
+
+ voices.forEach((v,i)=>{
+  if(v.lang.toLowerCase().startsWith(lang)){
+   const option=document.createElement("option");
+   option.value=i;
+   option.textContent=v.name+" ("+v.lang+")";
+   voiceSelect.appendChild(option);
+  }
+ });
+
+ if(previous && voiceSelect.querySelector('option[value="'+previous+'"]')){
+  voiceSelect.value=previous;
+ }
+}
+
+if(!("speechSynthesis" in window)){
+ statusBox.textContent="Sorry, speech synthesis is not supported by this browser.";
+ document.getElementById("play").disabled=true;
+}else{
+ loadVoices();
+ speechSynthesis.onvoiceschanged=loadVoices;
+}
+
+language.addEventListener("change",()=>{
+ stopReading();
+ updateVoices();
+});
+
+speed.addEventListener("input",()=>{
+ document.getElementById("speedValue").textContent=speed.value+"x";
+});
+pitch.addEventListener("input",()=>{
+ document.getElementById("pitchValue").textContent=pitch.value;
+});
+volume.addEventListener("input",()=>{
+ document.getElementById("volumeValue").textContent=Math.round(volume.value*100)+"%";
+});
+
+function splitText(value){
+ // Split into manageable sentences to support longer text.
+ const sentences=value.match(/[^.!?।]+[.!?।]?/gu)||[value];
+ const result=[];
+ let part="";
+ sentences.forEach(sentence=>{
+  if((part+sentence).length>220){
+   if(part.trim())result.push(part.trim());
+   part=sentence;
+  }else{
+   part+=sentence;
+  }
+ });
+ if(part.trim())result.push(part.trim());
+ return result;
+}
+
+function setButtons(){
+ document.getElementById("pause").disabled=!playing||paused;
+ document.getElementById("resume").disabled=!paused;
+ document.getElementById("stop").disabled=!playing&&!paused;
+}
+
+function speakNext(id){
+ if(id!==runId)return;
+ if(current>=chunks.length){
+  playing=false;
+  paused=false;
+  statusBox.textContent="Finished! Your text has been read.";
+  setButtons();
+  return;
+ }
+
+ const utterance=new SpeechSynthesisUtterance(chunks[current]);
+ utterance.lang=language.value==="bn"?"bn-BD":
+  language.value==="hi"?"hi-IN":"en-US";
+ utterance.rate=Number(speed.value);
+ utterance.pitch=Number(pitch.value);
+ utterance.volume=Number(volume.value);
+
+ const selected=voiceSelect.value;
+ if(selected!==""){
+  const chosen=voices[Number(selected)];
+  if(chosen)utterance.voice=chosen;
+ }
+
+ utterance.onstart=()=>{
+  if(id===runId){
+   statusBox.textContent="Reading part "+(current+1)+" of "+chunks.length;
+  }
+ };
+ utterance.onend=()=>{
+  if(id!==runId)return;
+  current++;
+  speakNext(id);
+ };
+ utterance.onerror=(event)=>{
+  if(id!==runId)return;
+  if(event.error==="canceled"||event.error==="interrupted")return;
+  playing=false;
+  statusBox.textContent="Could not read this text. Try another voice or browser.";
+  setButtons();
+ };
+
+ speechSynthesis.speak(utterance);
+}
+
+function stopReading(){
+ runId++;
+ speechSynthesis.cancel();
+ playing=false;
+ paused=false;
+ current=0;
+ chunks=[];
+ setButtons();
+}
+
+document.getElementById("play").addEventListener("click",()=>{
+ const value=textBox.value.trim();
+ if(!value){
+  statusBox.textContent="Please enter some text first.";
+  return;
+ }
+ if(!("speechSynthesis" in window)){
+  statusBox.textContent="Speech is not supported in this browser.";
+  return;
+ }
+
+ stopReading();
+ chunks=splitText(value);
+ current=0;
+ playing=true;
+ statusBox.textContent="Starting...";
+ setButtons();
+ speakNext(runId);
+});
+
+document.getElementById("pause").addEventListener("click",()=>{
+ if(playing){
+  speechSynthesis.pause();
+  paused=true;
+  statusBox.textContent="Reading paused.";
+  setButtons();
+ }
+});
+
+document.getElementById("resume").addEventListener("click",()=>{
+ if(paused){
+  speechSynthesis.resume();
+  paused=false;
+  statusBox.textContent="Reading resumed.";
+  setButtons();
+ }
+});
+
+document.getElementById("stop").addEventListener("click",()=>{
+ stopReading();
+ statusBox.textContent="Reading stopped.";
+});
+</script>
+</body>
+</html>

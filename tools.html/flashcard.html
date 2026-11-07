@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcards | Study Vibe</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f5fb;
+    color: #20243a;
+    min-height: 100vh;
+}
+
+header {
+    background: #20243a;
+    color: white;
+    padding: 17px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+header h2 { font-size: 21px; }
+
+header a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.container {
+    width: 92%;
+    max-width: 850px;
+    margin: 30px auto;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    color: #263b80;
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.hero p {
+    color: #777;
+    font-size: 14px;
+}
+
+.panel {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.05);
+    margin-bottom: 20px;
+}
+
+.panel h2 {
+    color: #263b80;
+    font-size: 19px;
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 12px 0 7px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #dce0eb;
+    border-radius: 9px;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+}
+
+textarea {
+    min-height: 85px;
+    resize: vertical;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #5268d9;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 11px 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.primary {
+    background: #5268d9;
+    color: white;
+}
+
+.secondary {
+    background: #edf0ff;
+    color: #354aab;
+}
+
+.danger {
+    background: #fff0f0;
+    color: #b32626;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    background: white;
+    border-radius: 12px;
+    padding: 15px 8px;
+    text-align: center;
+    box-shadow: 0 3px 12px rgba(0,0,0,.04);
+}
+
+.stat strong {
+    display: block;
+    font-size: 23px;
+    color: #354aab;
+    margin-bottom: 5px;
+}
+
+.stat span {
+    color: #777;
+    font-size: 12px;
+}
+
+.study-area {
+    text-align: center;
+    display: none;
+}
+
+.progress {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.flashcard {
+    background: white;
+    min-height: 250px;
+    border-radius: 18px;
+    padding: 30px 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,.07);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid #e8ebfa;
+    transition: .2s;
+}
+
+.flashcard:hover {
+    border-color: #5268d9;
+}
+
+.card-label {
+    color: #5268d9;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card-text {
+    font-size: 23px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.tap-hint {
+    margin-top: 25px;
+    color: #999;
+    font-size: 12px;
+}
+
+.study-controls, .review-controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.known {
+    background: #e4f7eb;
+    color: #16743a;
+}
+
+.revise {
+    background: #fff2dc;
+    color: #9a6200;
+}
+
+.card-list {
+    display: grid;
+    gap: 10px;
+}
+
+.card-item {
+    background: #f8f9ff;
+    border: 1px solid #e7e9f3;
+    border-radius: 10px;
+    padding: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.card-item p {
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.card-item small {
+    color: #777;
+}
+
+.empty {
+    text-align: center;
+    color: #888;
+    padding: 20px;
+    font-size: 14px;
+}
+
+footer {
+    text-align: center;
+    color: #888;
+    font-size: 12px;
+    padding: 25px 10px;
+}
+
+@media(max-width: 500px) {
+    .hero h1 { font-size: 25px; }
+    .stats { gap: 7px; }
+    .stat { padding: 12px 5px; }
+    .card-text { font-size: 20px; }
+    .flashcard { min-height: 220px; }
+    .form-actions button { flex: 1; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h2>Study Vibe</h2>
+    <a href="tools.html">← Back to Study Tools</a>
+</header>
+
+<main class="container">
+
+    <div class="hero">
+        <h1>My Flashcards</h1>
+        <p>Create, revise and remember what you learn.</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat">
+            <strong id="totalCount">0</strong>
+            <span>Total Cards</span>
+        </div>
+        <div class="stat">
+            <strong id="knownCount">0</strong>
+            <span>Known</span>
+        </div>
+        <div class="stat">
+            <strong id="revisionCount">0</strong>
+            <span>Need Revision</span>
+        </div>
+    </div>
+
+    <section class="panel">
+        <h2>Create a Flashcard</h2>
+
+        <label for="question">Question / Term</label>
+        <textarea id="question" placeholder="Write a question or term..."></textarea>
+
+        <label for="answer">Answer / Meaning</label>
+        <textarea id="answer" placeholder="Write the answer or explanation..."></textarea>
+
+        <div class="form-actions">
+            <button class="primary" onclick="addCard()">+ Add Flashcard</button>
+            <button class="secondary" onclick="clearForm()">Clear</button>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Study Your Cards</h2>
+
+        <div id="emptyStudy" class="empty">
+            No flashcards yet. Create your first card above!
+        </div>
+
+        <div class="study-area" id="studyArea">
+            <p class="progress" id="progress"></p>
+
+            <div class="flashcard" onclick="flipCard()">
+                <div class="card-label" id="cardLabel">Question</div>
+                <div class="card-text" id="cardText"></div>
+                <div class="tap-hint">Tap the card to reveal the answer</div>
+            </div>
+
+            <div class="study-controls">
+                <button class="secondary" onclick="previousCard()">← Previous</button>
+                <button class="secondary" onclick="nextCard()">Next →</button>
+                <button class="secondary" onclick="shuffleCards()">🔀 Shuffle</button>
+            </div>
+
+            <div class="review-controls">
+                <button class="known" onclick="markCard('known')">✓ I Know This</button>
+                <button class="revise" onclick="markCard('revision')">× Need Revision</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>My Card Collection</h2>
+
+        <div id="cardList" class="card-list"></div>
+
+        <div class="form-actions">
+            <button class="danger" onclick="clearAllCards()">Delete All Cards</button>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    Study Vibe by Addrectionate
+    <br><br>
+    From Confusion to Confidence
+</footer>
+
+<script>
+const STORAGE_KEY = "studyVibeFlashcards";
+
+let cards = loadCards();
+let currentIndex = 0;
+let showingAnswer = false;
+
+function loadCards() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        return Array.isArray(saved) ? saved.filter(card =>
+            card &&
+            typeof card.question === "string" &&
+            typeof card.answer === "string"
+        ) : [];
+    } catch {
+        return [];
+    }
+}
+
+function saveCards() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+        return true;
+    } catch {
+        alert("Unable to save. Your browser storage may be full or disabled.");
+        return false;
+    }
+}
+
+function addCard() {
+    const question = document.getElementById("question").value.trim();
+    const answer = document.getElementById("answer").value.trim();
+
+    if (!question || !answer) {
+        alert("Please enter both a question and an answer.");
+        return;
+    }
+
+    cards.push({
+        id: Date.now().toString() + Math.random().toString(16).slice(2),
+        question,
+        answer,
+        status: "revision"
+    });
+
+    if (!saveCards()) {
+        cards.pop();
+        return;
+    }
+
+    currentIndex = cards.length - 1;
+    showingAnswer = false;
+
+    clearForm();
+    renderAll();
+}
+
+function clearForm() {
+    document.getElementById("question").value = "";
+    document.getElementById("answer").value = "";
+}
+
+function flipCard() {
+    if (!cards.length) return;
+
+    showingAnswer = !showingAnswer;
+    renderStudy();
+}
+
+function previousCard() {
+    if (!cards.length) return;
+
+    currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+    showingAnswer = false;
+    renderStudy();
+}
+
+function nextCard() {
+    if (!cards.length) return;
+
+    currentIndex = (currentIndex + 1) % cards.length;
+    showingAnswer = false;
+    renderStudy();
+}
+
+function shuffleCards() {
+    for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+
+    currentIndex = 0;
+    showingAnswer = false;
+    saveCards();
+    renderAll();
+}
+
+function markCard(status) {
+    if (!cards.length) return;
+
+    cards[currentIndex].status = status;
+    saveCards();
+    renderAll();
+}
+
+function deleteCard(id) {
+    if (!confirm("Delete this flashcard?")) return;
+
+    const deletedIndex = cards.findIndex(card => card.id === id);
+    if (deletedIndex === -1) return;
+
+    cards.splice(deletedIndex, 1);
+
+    if (deletedIndex < currentIndex) {
+        currentIndex--;
+    }
+
+    if (currentIndex >= cards.length) {
+        currentIndex = Math.max(0, cards.length - 1);
+    }
+
+    showingAnswer = false;
+    saveCards();
+    renderAll();
+}
+
+function clearAllCards() {
+    if (!cards.length) return;
+
+    if (!confirm("Are you sure you want to delete all flashcards?")) return;
+
+    cards = [];
+    currentIndex = 0;
+    showingAnswer = false;
+    saveCards();
+    renderAll();
+}
+
+function renderStudy() {
+    const area = document.getElementById("studyArea");
+    const empty = document.getElementById("emptyStudy");
+
+    if (!cards.length) {
+        area.style.display = "none";
+        empty.style.display = "block";
+        return;
+    }
+
+    area.style.display = "block";
+    empty.style.display = "none";
+
+    const card = cards[currentIndex];
+
+    document.getElementById("progress").textContent =
+        "Card " + (currentIndex + 1) + " of " + cards.length;
+
+    document.getElementById("cardLabel").textContent =
+        showingAnswer ? "Answer" : "Question";
+
+    document.getElementById("cardText").textContent =
+        showingAnswer ? card.answer : card.question;
+}
+
+function renderList() {
+    const list = document.getElementById("cardList");
+    list.replaceChildren();
+
+    if (!cards.length) {
+        const empty = document.createElement("p");
+        empty.className = "empty";
+        empty.textContent = "Your collection is empty.";
+        list.appendChild(empty);
+        return;
+    }
+
+    cards.forEach((card, index) => {
+        const item = document.createElement("div");
+        item.className = "card-item";
+
+        const info = document.createElement("div");
+
+        const question = document.createElement("p");
+        question.textContent = (index + 1) + ". " + card.question;
+
+        const status = document.createElement("small");
+        status.textContent =
+            card.status === "known" ? "✓ Known" : "× Need Revision";
+
+        info.appendChild(question);
+        info.appendChild(status);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "danger";
+        deleteButton.textContent = "Delete";
+        deleteButton.onclick = () => deleteCard(card.id);
+
+        item.appendChild(info);
+        item.appendChild(deleteButton);
+
+        list.appendChild(item);
+    });
+}
+
+function renderStats() {
+    document.getElementById("totalCount").textContent = cards.length;
+
+    document.getElementById("knownCount").textContent =
+        cards.filter(card => card.status === "known").length;
+
+    document.getElementById("revisionCount").textContent =
+        cards.filter(card => card.status !== "known").length;
+}
+
+function renderAll() {
+    if (cards.length) {
+        currentIndex = Math.max(0, Math.min(currentIndex, cards.length - 1));
+    } else {
+        currentIndex = 0;
+    }
+
+    renderStats();
+    renderStudy();
+    renderList();
+}
+
+renderAll();
+</script>
+
+</body>
+</html>

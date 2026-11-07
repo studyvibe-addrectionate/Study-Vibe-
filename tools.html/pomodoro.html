@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pomodoro Timer | Study Vibe</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;font-family:Arial,sans-serif;
+ background:linear-gradient(135deg,#eaf1ff,#f8faff);
+ color:#172554;min-height:100vh;
+ display:flex;justify-content:center;align-items:center;padding:20px
+}
+.app{
+ width:100%;max-width:480px;background:white;
+ padding:30px 22px;border-radius:24px;text-align:center;
+ box-shadow:0 12px 40px #1e40af18
+}
+.brand{color:#2563eb;font-weight:bold;letter-spacing:1px}
+h1{margin:10px 0 5px;font-size:28px}
+.subtitle{color:#64748b;font-size:14px}
+.tabs{display:flex;gap:8px;margin:25px 0}
+.tabs button{
+ flex:1;border:0;border-radius:12px;padding:12px 5px;
+ background:#eff4ff;color:#1e40af;font-weight:bold;cursor:pointer
+}
+.tabs button.active{background:#2563eb;color:white}
+.timer{
+ width:245px;height:245px;border-radius:50%;
+ border:10px solid #dbeafe;margin:20px auto;
+ display:flex;flex-direction:column;justify-content:center;
+ align-items:center;background:#f8fbff
+}
+#time{font-size:55px;font-weight:bold;font-variant-numeric:tabular-nums}
+#modeLabel{color:#64748b;font-size:14px;margin-top:5px}
+.controls{display:flex;justify-content:center;gap:10px}
+.controls button{
+ border:0;border-radius:12px;padding:13px 25px;
+ font-size:16px;font-weight:bold;cursor:pointer
+}
+#start{background:#2563eb;color:white}
+#reset{background:#e2e8f0;color:#1e293b}
+.stats{
+ margin-top:25px;background:#f1f5ff;padding:16px;
+ border-radius:14px;color:#334155
+}
+.stats strong{color:#2563eb}
+.settings{margin-top:22px;text-align:left}
+.settings h3{text-align:center}
+.setting-row{
+ display:flex;justify-content:space-between;align-items:center;
+ margin:12px 0;color:#475569
+}
+input{
+ width:75px;padding:8px;border:1px solid #cbd5e1;
+ border-radius:8px;text-align:center
+}
+.back{display:inline-block;margin-top:20px;color:#2563eb;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="app">
+ <div class="brand">STUDY VIBE</div>
+ <h1>Pomodoro Timer</h1>
+ <p class="subtitle">Focus better. Study smarter.</p>
+
+ <div class="tabs">
+  <button class="active" data-mode="focus">Focus</button>
+  <button data-mode="short">Short Break</button>
+  <button data-mode="long">Long Break</button>
+ </div>
+
+ <div class="timer">
+  <div id="time">25:00</div>
+  <div id="modeLabel">Time to focus</div>
+ </div>
+
+ <div class="controls">
+  <button id="start">Start</button>
+  <button id="reset">Reset</button>
+ </div>
+
+ <div class="stats">
+  Completed focus sessions: <strong id="sessions">0</strong>
+  <p id="message">Your next study session starts here!</p>
+ </div>
+
+ <div class="settings">
+  <h3>Timer Settings</h3>
+  <div class="setting-row">
+   <label for="focusLength">Focus (minutes)</label>
+   <input id="focusLength" type="number" min="1" max="120" value="25">
+  </div>
+  <div class="setting-row">
+   <label for="shortLength">Short break (minutes)</label>
+   <input id="shortLength" type="number" min="1" max="60" value="5">
+  </div>
+  <div class="setting-row">
+   <label for="longLength">Long break (minutes)</label>
+   <input id="longLength" type="number" min="1" max="60" value="15">
+  </div>
+ </div>
+
+ <a class="back" href="index.html">← Back to Study Vibe</a>
+</div>
+
+<script>
+const timeDisplay=document.getElementById("time");
+const startBtn=document.getElementById("start");
+const resetBtn=document.getElementById("reset");
+const sessionsDisplay=document.getElementById("sessions");
+const message=document.getElementById("message");
+const modeLabel=document.getElementById("modeLabel");
+
+let mode="focus";
+let remaining=25*60;
+let timer=null;
+let sessions=0;
+
+const settings={
+ focus:document.getElementById("focusLength"),
+ short:document.getElementById("shortLength"),
+ long:document.getElementById("longLength")
+};
+
+function duration(m){
+ return Number(settings[m].value)*60;
+}
+
+function validSettings(){
+ return Object.values(settings).every(input=>
+  Number.isFinite(Number(input.value)) &&
+  Number(input.value)>=1 &&
+  Number(input.value)<=120
+ );
+}
+
+function display(){
+ const min=Math.floor(remaining/60);
+ const sec=remaining%60;
+ timeDisplay.textContent=
+  String(min).padStart(2,"0")+":"+String(sec).padStart(2,"0");
+ document.title=timeDisplay.textContent+" - Study Vibe";
+}
+
+function stopTimer(){
+ if(timer!==null){
+  clearInterval(timer);
+  timer=null;
+ }
+ startBtn.textContent="Start";
+}
+
+function selectMode(newMode){
+ stopTimer();
+ mode=newMode;
+ remaining=duration(mode);
+ modeLabel.textContent=
+  mode==="focus"?"Time to focus":
+  mode==="short"?"Take a short break":
+  "Take a long break";
+ document.querySelectorAll(".tabs button").forEach(btn=>{
+  btn.classList.toggle("active",btn.dataset.mode===mode);
+ });
+ display();
+}
+
+function beep(){
+ try{
+  const audio=new (window.AudioContext||window.webkitAudioContext)();
+  const oscillator=audio.createOscillator();
+  const gain=audio.createGain();
+  oscillator.connect(gain);
+  gain.connect(audio.destination);
+  oscillator.frequency.value=800;
+  gain.gain.value=0.15;
+  oscillator.start();
+  oscillator.stop(audio.currentTime+0.4);
+ }catch(e){}
+}
+
+function completeSession(){
+ stopTimer();
+ beep();
+
+ if(mode==="focus"){
+  sessions++;
+  sessionsDisplay.textContent=sessions;
+  message.textContent="Great work! Focus session completed.";
+
+  if(sessions%4===0){
+   selectMode("long");
+  }else{
+   selectMode("short");
+  }
+ }else{
+  message.textContent="Break finished. Ready to focus again?";
+  selectMode("focus");
+ }
+}
+
+function startTimer(){
+ if(timer!==null)return;
+
+ startBtn.textContent="Pause";
+ timer=setInterval(()=>{
+  if(remaining>0){
+   remaining--;
+   display();
+  }else{
+   completeSession();
+  }
+ },1000);
+}
+
+startBtn.addEventListener("click",()=>{
+ if(timer!==null){
+  stopTimer();
+ }else{
+  startTimer();
+ }
+});
+
+resetBtn.addEventListener("click",()=>{
+ stopTimer();
+ remaining=duration(mode);
+ display();
+});
+
+document.querySelectorAll(".tabs button").forEach(btn=>{
+ btn.addEventListener("click",()=>selectMode(btn.dataset.mode));
+});
+
+Object.values(settings).forEach(input=>{
+ input.addEventListener("change",()=>{
+  if(!validSettings()){
+   input.value=input===settings.focus?25:
+    input===settings.short?5:15;
+  }
+  if(timer===null){
+   remaining=duration(mode);
+   display();
+  }
+ });
+});
+
+display();
+</script>
+</body>
+</html>

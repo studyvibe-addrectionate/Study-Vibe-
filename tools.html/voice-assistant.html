@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Assistant | Study Vibe</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:20px;font-family:Arial,sans-serif;
+ background:linear-gradient(135deg,#eaf1ff,#f8faff);
+ color:#172554;min-height:100vh
+}
+.container{
+ max-width:700px;margin:25px auto;background:white;
+ padding:25px;border-radius:22px;
+ box-shadow:0 10px 35px #1e40af18
+}
+.brand{text-align:center;color:#2563eb;font-weight:bold;letter-spacing:1px}
+h1{text-align:center;margin:12px 0 5px}
+.subtitle{text-align:center;color:#64748b;font-size:14px}
+select,textarea{
+ width:100%;padding:13px;border:1px solid #cbd5e1;
+ border-radius:10px;font-size:15px;background:white
+}
+label{display:block;font-weight:bold;margin:18px 0 8px}
+.mic-area{text-align:center;margin:25px 0}
+#mic{
+ width:100px;height:100px;border:0;border-radius:50%;
+ background:#2563eb;color:white;font-size:38px;
+ cursor:pointer;box-shadow:0 8px 22px #2563eb40
+}
+#mic.listening{background:#dc2626;animation:pulse 1s infinite}
+@keyframes pulse{
+ 50%{box-shadow:0 0 0 15px #2563eb33}
+}
+button:disabled{opacity:.55;cursor:not-allowed}
+#status{text-align:center;color:#64748b;margin-top:14px}
+textarea{height:130px;resize:vertical;line-height:1.5}
+.buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}
+button.action{
+ flex:1;min-width:110px;border:0;border-radius:10px;
+ padding:13px;font-weight:bold;cursor:pointer
+}
+.primary{background:#2563eb;color:white}
+.secondary{background:#dbeafe;color:#1e40af}
+.danger{background:#fee2e2;color:#b91c1c}
+.chat{
+ margin-top:25px;padding:15px;background:#f1f5ff;
+ border-radius:12px;min-height:80px;
+ max-height:400px;overflow-y:auto
+}
+.chat p{margin:8px 0;line-height:1.6;overflow-wrap:anywhere;white-space:pre-wrap}
+.user{color:#1d4ed8}
+.assistant{color:#334155}
+.back{display:block;text-align:center;margin-top:22px;color:#2563eb;text-decoration:none}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+ <div class="brand">STUDY VIBE</div>
+ <h1>Voice Assistant</h1>
+ <p class="subtitle">Speak, listen and interact with your AI study assistant.</p>
+
+ <label for="language">Choose your language</label>
+ <select id="language">
+  <option value="en-US">English</option>
+  <option value="bn-BD">বাংলা (Bangladesh)</option>
+ </select>
+
+ <div class="mic-area">
+  <button id="mic" aria-label="Start voice recognition">🎙️</button>
+  <p id="status" aria-live="polite">Tap the microphone and speak.</p>
+ </div>
+
+ <label for="transcript">Your speech / message</label>
+ <textarea id="transcript" placeholder="Speak or type your question here..."></textarea>
+
+ <div class="buttons">
+  <button class="action primary" id="ask">Ask AI Assistant</button>
+  <button class="action secondary" id="speak">🔊 Speak Text</button>
+  <button class="action secondary" id="copy">Copy Text</button>
+  <button class="action danger" id="clear">Clear</button>
+ </div>
+
+ <div class="chat" id="chat" aria-live="polite">
+  <p class="assistant"><strong>Study Vibe:</strong> Hello! I am your AI study assistant. Ask me anything!</p>
+ </div>
+
+ <a class="back" href="../index.html">← Back to Study Vibe</a>
+
+</div>
+
+<script>
+const SpeechRecognition =
+ window.SpeechRecognition || window.webkitSpeechRecognition;
+
+const mic = document.getElementById("mic");
+const statusBox = document.getElementById("status");
+const transcript = document.getElementById("transcript");
+const language = document.getElementById("language");
+const chat = document.getElementById("chat");
+const askButton = document.getElementById("ask");
+
+let recognition = null;
+let listening = false;
+
+function addMessage(who, message) {
+ const p = document.createElement("p");
+ p.className = who === "You" ? "user" : "assistant";
+
+ const strong = document.createElement("strong");
+ strong.textContent = who + ": ";
+
+ p.appendChild(strong);
+ p.appendChild(document.createTextNode(message));
+ chat.appendChild(p);
+ chat.scrollTop = chat.scrollHeight;
+}
+
+function stopRecognition() {
+ if (recognition && listening) {
+  recognition.stop();
+ }
+}
+
+if (SpeechRecognition) {
+ recognition = new SpeechRecognition();
+ recognition.continuous = false;
+ recognition.interimResults = true;
+
+ recognition.onstart = () => {
+  listening = true;
+  mic.classList.add("listening");
+  mic.textContent = "⏹";
+  statusBox.textContent = "Listening... Speak now.";
+ };
+
+ recognition.onresult = (event) => {
+  let finalText = "";
+  let interimText = "";
+
+  for (let i = event.resultIndex; i < event.results.length; i++) {
+   const spokenText = event.results[i][0].transcript;
+
+   if (event.results[i].isFinal) {
+    finalText += spokenText;
+   } else {
+    interimText += spokenText;
+   }
+  }
+
+  if (finalText) {
+   transcript.value += (transcript.value ? " " : "") + finalText;
+  } else if (interimText) {
+   statusBox.textContent = "Hearing: " + interimText;
+  }
+ };
+
+ recognition.onerror = (event) => {
+  statusBox.textContent =
+   "Microphone error: " + event.error +
+   ". Check microphone permission and try again.";
+ };
+
+ recognition.onend = () => {
+  listening = false;
+  mic.classList.remove("listening");
+  mic.textContent = "🎙️";
+
+  if (statusBox.textContent === "Listening... Speak now.") {
+   statusBox.textContent = "Listening finished. Tap Ask AI Assistant.";
+  }
+ };
+
+} else {
+ mic.disabled = true;
+ statusBox.textContent =
+  "Speech recognition is not supported. Please try Chrome.";
+}
+
+mic.addEventListener("click", () => {
+ if (!recognition) return;
+
+ if (listening) {
+  stopRecognition();
+ } else {
+  recognition.lang = language.value;
+
+  try {
+   recognition.start();
+  } catch (error) {
+   statusBox.textContent = "Please wait and try again.";
+  }
+ }
+});
+
+function speakText(text) {
+ if (!("speechSynthesis" in window)) {
+  statusBox.textContent = "Speech output is not supported.";
+  return;
+ }
+
+ speechSynthesis.cancel();
+
+ const utterance = new SpeechSynthesisUtterance(text);
+ utterance.lang = language.value;
+ utterance.rate = 1;
+
+ speechSynthesis.speak(utterance);
+}
+
+// Send the student's question to the existing Gemini API.
+askButton.addEventListener("click", async () => {
+
+ const text = transcript.value.trim();
+
+ if (!text) {
+  statusBox.textContent = "Please speak or type a question first.";
+  return;
+ }
+
+ stopRecognition();
+
+ addMessage("You", text);
+
+ askButton.disabled = true;
+ askButton.textContent = "Thinking...";
+ statusBox.textContent = "Study Vibe AI is preparing your answer...";
+
+ try {
+
+  const selectedLanguage =
+   language.value === "bn-BD" ? "Bangla" : "English";
+
+  const response = await fetch("/api/study", {
+   method: "POST",
+   headers: {
+    "Content-Type": "application/json"
+   },
+   body: JSON.stringify({
+    task: "answer",
+    subject: "General Study",
+    topic: "Voice Assistant",
+    difficulty: "Intermediate",
+    language: selectedLanguage,
+    question: text,
+    textbook: ""
+   })
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+   throw new Error(data.error || "The AI request failed.");
+  }
+
+  if (!data.answer) {
+   throw new Error("The AI returned an empty answer.");
+  }
+
+  // Display the actual Gemini answer.
+  addMessage("Study Vibe AI", data.answer);
+
+  // Speak the actual Gemini answer, not the student's question.
+  speakText(data.answer);
+
+  statusBox.textContent = "Answer received! Ask another question anytime.";
+
+ } catch (error) {
+
+  addMessage("Study Vibe", "Sorry! " + error.message);
+
+  statusBox.textContent = error.message;
+
+ } finally {
+
+  askButton.disabled = false;
+  askButton.textContent = "Ask AI Assistant";
+
+ }
+});
+
+// Read the text currently inside the message box.
+document.getElementById("speak").addEventListener("click", () => {
+ const text = transcript.value.trim();
+
+ if (!text) {
+  statusBox.textContent = "Please enter text first.";
+  return;
+ }
+
+ speakText(text);
+});
+
+// Copy the message.
+document.getElementById("copy").addEventListener("click", async () => {
+ try {
+  await navigator.clipboard.writeText(transcript.value);
+  statusBox.textContent = "Text copied!";
+ } catch (error) {
+  statusBox.textContent = "Copy unavailable. Please copy manually.";
+ }
+});
+
+// Clear the conversation.
+document.getElementById("clear").addEventListener("click", () => {
+ stopRecognition();
+ transcript.value = "";
+ chat.innerHTML = "";
+ speechSynthesis.cancel();
+ statusBox.textContent = "Cleared. Ready for a new conversation.";
+});
+</script>
+
+</body>
+</html>

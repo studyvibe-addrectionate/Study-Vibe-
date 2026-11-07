@@ -1,0 +1,18 @@
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Database and user data
+*.sqlite
+*.sqlite3
+*.db
+*-wal
+*-shm
+
+# Local development
+.vscode/
+.DS_Store

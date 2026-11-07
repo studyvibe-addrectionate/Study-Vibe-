@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#172d55">
+  <title>Study Vibe | Premium Payment</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px 14px;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #101a35, #234b7c);
+      color: #1b2942;
+    }
+
+    nav {
+      max-width: 600px;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 540px;
+      margin: auto;
+      padding: 26px;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 15px 45px #0004;
+    }
+
+    .brand {
+      text-align: center;
+      font-size: 29px;
+      font-weight: bold;
+      color: #183c75;
+    }
+
+    .tagline {
+      text-align: center;
+      color: #ae8431;
+      margin: 7px 0 24px;
+    }
+
+    h2 { text-align: center; }
+
+    .subtitle {
+      text-align: center;
+      color: #69758a;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .plan {
+      background: #f0f4fb;
+      border: 1px solid #dbe4f2;
+      padding: 19px;
+      border-radius: 13px;
+      margin: 22px 0;
+    }
+
+    .plan-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .price {
+      font-size: 27px;
+      font-weight: bold;
+      color: #183c75;
+    }
+
+    .muted {
+      color: #69758a;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .features {
+      padding-left: 20px;
+      line-height: 1.9;
+      font-size: 14px;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin: 24px 0 12px;
+    }
+
+    .payment-option {
+      border: 1px solid #d8dfeb;
+      border-radius: 11px;
+      padding: 15px;
+      margin: 11px 0;
+    }
+
+    .payment-option:has(input:checked) {
+      border: 2px solid #244f91;
+      background: #f2f6ff;
+    }
+
+    .payment-option label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .payment-option input {
+      accent-color: #244f91;
+    }
+
+    .details {
+      margin: 12px 0 0 27px;
+      font-size: 14px;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .details strong { color: #183c75; }
+
+    .account-number {
+      display: block;
+      margin-top: 5px;
+      color: #183c75;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .field-label {
+      display: block;
+      font-weight: bold;
+      margin: 18px 0 7px;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="tel"] {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #cbd4e2;
+      border-radius: 9px;
+      font-size: 15px;
+    }
+
+    .instructions {
+      background: #f0f4fb;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #46546b;
+      margin-top: 18px;
+    }
+
+    .consent {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #58667b;
+      margin: 18px 0;
+    }
+
+    .consent input { margin-top: 3px; }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .submit-button {
+      background: #183c75;
+      color: white;
+    }
+
+    .free-button {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      background: #eef1f6;
+      color: #183c75;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 12px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    #message {
+      display: none;
+      padding: 14px;
+      margin-top: 16px;
+      border-radius: 9px;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .note {
+      text-align: center;
+      font-size: 12px;
+      color: #69758a;
+      line-height: 1.7;
+      margin-top: 22px;
+    }
+
+    @media(max-width: 400px) {
+      .container { padding: 19px 15px; }
+      .brand { font-size: 26px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<nav aria-label="Main navigation">
+  <a href="index.html">Home</a>
+  <a href="index.html#features">Features</a>
+  <a href="index.html#plans">Plans</a>
+  <a href="login.html">Login</a>
+</nav>
+
+<main class="container">
+
+  <div class="brand">Study Vibe</div>
+  <div class="tagline">From Confusion to Confidence</div>
+
+  <h2>Upgrade to Premium</h2>
+
+  <p class="subtitle">
+    Unlock advanced AI learning and writing tools.
+  </p>
+
+  <section class="plan">
+    <div class="plan-top">
+      <div>
+        <strong>Premium Plan</strong>
+        <div class="muted">By Addrectionate</div>
+      </div>
+      <div style="text-align:right">
+        <div class="price">৳299</div>
+        <div class="muted">per month</div>
+      </div>
+    </div>
+
+    <ul class="features">
+      <li>AI Writing Studio</li>
+      <li>Advanced academic writing tools</li>
+      <li>MCQ questions with explanations</li>
+      <li>Practice exams with explanations</li>
+      <li>Mathematical graph plotting</li>
+      <li>Premium educational utilities</li>
+      <li>All Free plan study features</li>
+      <li>Up to 200 AI requests per month</li>
+    </ul>
+  </section>
+
+  <div id="accountStatus" class="instructions">
+    Checking your Study Vibe login...
+  </div>
+
+  <form id="paymentForm">
+
+    <div class="section-title">1. Choose payment method</div>
+
+    <div class="payment-option">
+      <label>
+        <input type="radio" name="paymentMethod"
+          value="bkash" required>
+        bKash
+      </label>
+      <div class="details">
+        Payment number:
+        <span class="account-number">01329290456</span>
+      </div>
+    </div>
+
+    <div class="payment-option">
+      <label>
+        <input type="radio" name="paymentMethod"
+          value="nagad">
+        Nagad
+      </label>
+      <div class="details">
+        Payment number:
+        <span class="account-number">01329290456</span>
+      </div>
+    </div>
+
+    <div class="payment-option">
+      <label>
+        <input type="radio" name="paymentMethod"
+          value="sonali_bank">
+        Sonali Bank
+      </label>
+      <div class="details">
+        Account holder: <strong>Nafisa Maliyat Mouly</strong><br>
+        Branch: <strong>Chattogram Cantonment</strong><br>
+        Account type: <strong>Personal Savings</strong><br>
+        Account number:
+        <span class="account-number">
+          [ADD YOUR ACCOUNT NUMBER]
+        </span>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <strong>Payment instructions</strong><br>
+      1. Select your preferred payment method.<br>
+      2. Make the payment of ৳299 using the displayed details.<br>
+      3. Enter the sender number and transaction/reference ID.<br>
+      4. Your payment will be checked before Premium activation.
+    </div>
+
+    <div class="section-title">2. Payment information</div>
+
+    <p id="loggedInEmail" class="muted">
+      Your account email will appear here after login.
+    </p>
+
+    <label class="field-label" for="senderNumber">
+      Sender mobile number / contact number
+    </label>
+    <input type="tel" id="senderNumber" required
+      placeholder="01XXXXXXXXX" maxlength="20">
+
+    <label class="field-label" for="transactionId">
+      Transaction / Reference ID
+    </label>
+    <input type="text" id="transactionId" required
+      maxlength="100" placeholder="Enter transaction ID">
+
+    <label class="consent">
+      <input type="checkbox" id="consent" required>
+      <span>
+        I confirm that the payment information I provide is accurate.
+        I understand that Premium will only be activated after payment
+        verification.
+      </span>
+    </label>
+
+    <button class="submit-button" id="submitButton" type="submit">
+      Submit Payment Details
+    </button>
+
+  </form>
+
+  <div id="message" role="status" aria-live="polite"></div>
+
+  <a class="free-button" href="index.html">
+    Continue with Free Features
+  </a>
+
+  <p class="note">
+    Payment submissions must be verified before Premium activation.
+    Never share your PIN, OTP, password or card security code.
+    <br><br>
+    A product by Addrectionate
+  </p>
+
+</main>
+
+<script>
+  const form = document.getElementById("paymentForm");
+  const message = document.getElementById("message");
+  const submitButton = document.getElementById("submitButton");
+  const accountStatus = document.getElementById("accountStatus");
+  const loggedInEmail = document.getElementById("loggedInEmail");
+
+  let currentUser = null;
+
+  function showMessage(text, success = false) {
+    message.style.display = "block";
+    message.style.background = success ? "#eaf8ef" : "#fff0ee";
+    message.style.color = success ? "#176334" : "#963b30";
+    message.textContent = text;
+  }
+
+  async function checkLogin() {
+    try {
+      const response = await fetch("/api/auth/me", {
+        credentials: "same-origin"
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.loggedIn || !data.user) {
+        currentUser = null;
+        accountStatus.textContent =
+          "Please log in to your Study Vibe account before submitting payment.";
+        form.querySelectorAll("input, button").forEach(element => {
+          element.disabled = true;
+        });
+        submitButton.disabled = true;
+        return;
+      }
+
+      currentUser = data.user;
+
+      loggedInEmail.textContent =
+        "Logged in as: " + currentUser.email;
+
+      accountStatus.textContent =
+        currentUser.plan === "premium"
+          ? "You already have Premium access."
+          : "You are logged in. Complete your payment details below.";
+
+      if (currentUser.plan === "premium") {
+        form.querySelectorAll("input, button").forEach(element => {
+          element.disabled = true;
+        });
+        submitButton.disabled = true;
+      }
+
+    } catch (error) {
+      currentUser = null;
+      accountStatus.textContent =
+        "Could not verify your login. Refresh the page or log in again.";
+
+      form.querySelectorAll("input, button").forEach(element => {
+        element.disabled = true;
+      });
+      submitButton.disabled = true;
+    }
+  }
+
+  checkLogin();
+
+  form.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    if (!form.reportValidity()) return;
+
+    if (!currentUser) {
+      showMessage("Please log in before submitting payment.");
+      return;
+    }
+
+    const selectedMethod = document.querySelector(
+      'input[name="paymentMethod"]:checked'
+    );
+
+    if (!selectedMethod) {
+      showMessage("Please select a payment method.");
+      return;
+    }
+
+    const payload = {
+      provider: selectedMethod.value,
+      senderNumber: document.getElementById("senderNumber").value.trim(),
+      transactionId: document.getElementById("transactionId").value.trim()
+    };
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+
+    try {
+      const response = await fetch("/api/payments/submit", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        showMessage(data.error || "Payment submission failed.");
+        return;
+      }
+
+      showMessage(
+        "Your payment details have been submitted successfully. " +
+        "Your submission is pending verification. " +
+        "Premium will activate only after approval. " +
+        "Reference: " + data.paymentId,
+        true
+      );
+
+      form.reset();
+
+      form.querySelectorAll("input").forEach(element => {
+        element.disabled = true;
+      });
+
+      submitButton.textContent = "Payment Submitted";
+
+    } catch (error) {
+      console.error("Payment submission error:", error);
+      showMessage("Could not contact the server. Please try again.");
+    } finally {
+      if (submitButton.textContent !== "Payment Submitted") {
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit Payment Details";
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

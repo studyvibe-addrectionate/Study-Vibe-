@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Library | Study Vibe</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f4f7fc;
+    color: #172554;
+}
+
+header {
+    background: #102a56;
+    color: white;
+    padding: 22px 6%;
+}
+
+header h1 {
+    font-size: 25px;
+}
+
+header p {
+    margin-top: 7px;
+    color: #cbd5e1;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 18px;
+}
+
+.welcome {
+    margin-bottom: 25px;
+}
+
+.welcome h2 {
+    font-size: 25px;
+    margin-bottom: 8px;
+}
+
+.welcome p {
+    color: #64748b;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat {
+    background: white;
+    padding: 20px;
+    border-radius: 13px;
+    box-shadow: 0 3px 12px #00000008;
+}
+
+.stat h3 {
+    font-size: 25px;
+    color: #2563eb;
+    margin-bottom: 5px;
+}
+
+.stat p {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.panel {
+    background: white;
+    padding: 22px;
+    border-radius: 15px;
+    margin-bottom: 22px;
+    box-shadow: 0 3px 12px #00000008;
+}
+
+.panel h3 {
+    margin-bottom: 16px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dbe3ef;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background: white;
+}
+
+button {
+    border: none;
+    padding: 11px 16px;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+    margin: 3px;
+    font-weight: 600;
+}
+
+button:hover {
+    opacity: .85;
+}
+
+.secondary {
+    background: #e2e8f0;
+    color: #172554;
+}
+
+.danger {
+    background: #dc2626;
+}
+
+.search-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.search-row input {
+    flex: 1;
+    min-width: 150px;
+}
+
+.file-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 15px;
+}
+
+.file-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    background: #fff;
+}
+
+.file-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.file-card h4 {
+    overflow-wrap: anywhere;
+    margin-bottom: 7px;
+}
+
+.file-card p {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.favorite {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.empty {
+    text-align: center;
+    color: #64748b;
+    padding: 30px 10px;
+    grid-column: 1 / -1;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+@media(max-width:600px) {
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    header h1 {
+        font-size: 21px;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>📚 My Library</h1>
+    <p>Study Vibe by Addrectionate</p>
+</header>
+
+<div class="container">
+
+    <section class="welcome">
+        <h2>Your Personal Study Library</h2>
+        <p>Save, organize and access your study materials in one place.</p>
+    </section>
+
+    <section class="stats">
+        <div class="stat">
+            <h3 id="totalFiles">0</h3>
+            <p>Total Materials</p>
+        </div>
+
+        <div class="stat">
+            <h3 id="totalFolders">0</h3>
+            <p>Subjects</p>
+        </div>
+
+        <div class="stat">
+            <h3 id="favoriteCount">0</h3>
+            <p>Favourites</p>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h3>➕ Add Study Material</h3>
+
+        <input type="text" id="fileTitle"
+               placeholder="Material name">
+
+        <select id="subject">
+            <option value="">Select Subject</option>
+            <option>Physics</option>
+            <option>Chemistry</option>
+            <option>Biology</option>
+            <option>Mathematics</option>
+            <option>English</option>
+            <option>ICT</option>
+            <option>Other</option>
+        </select>
+
+        <select id="category">
+            <option value="Notes">Notes</option>
+            <option value="PDF">PDF</option>
+            <option value="MCQ">MCQ</option>
+            <option value="Summary">Summary</option>
+            <option value="Question Paper">Question Paper</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <input type="file" id="materialFile">
+
+        <button onclick="addMaterial()">Save to Library</button>
+
+        <p id="message" style="margin-top:12px;font-size:13px;"></p>
+    </section>
+
+    <section class="panel">
+        <h3>🔎 Find Materials</h3>
+
+        <div class="search-row">
+            <input type="text" id="search"
+                   placeholder="Search materials..."
+                   oninput="renderMaterials()">
+
+            <select id="filterSubject"
+                    onchange="renderMaterials()">
+                <option value="">All Subjects</option>
+                <option>Physics</option>
+                <option>Chemistry</option>
+                <option>Biology</option>
+                <option>Mathematics</option>
+                <option>English</option>
+                <option>ICT</option>
+                <option>Other</option>
+            </select>
+        </div>
+
+        <button class="secondary" onclick="showFavorites()">
+            ⭐ Favourites
+        </button>
+
+        <button class="secondary" onclick="showAll()">
+            Show All
+        </button>
+    </section>
+
+    <section class="panel">
+        <h3>📂 My Study Materials</h3>
+        <div class="file-list" id="fileList">
+            <div class="empty">Loading library...</div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h3>💾 Backup Your Library</h3>
+        <p style="color:#64748b;font-size:13px;margin-bottom:12px;">
+            Export your library information or restore it from a backup.
+        </p>
+
+        <button onclick="exportBackup()">Export Backup</button>
+
+        <button class="secondary"
+                onclick="document.getElementById('backupFile').click()">
+            Import Backup
+        </button>
+
+        <input type="file" id="backupFile"
+               accept=".json,application/json"
+               hidden onchange="importBackup(event)">
+    </section>
+
+</div>
+
+<footer>
+    Study Vibe by Addrectionate<br>
+    From Confusion to Confidence ❤️
+</footer>
+
+<script>
+const DB_NAME = "StudyVibeLibrary";
+const STORE_NAME = "materials";
+
+let db;
+let favoritesOnly = false;
+
+function openDatabase() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+
+        request.onupgradeneeded = event => {
+            const database = event.target.result;
+
+            if (!database.objectStoreNames.contains(STORE_NAME)) {
+                const store = database.createObjectStore(
+                    STORE_NAME,
+                    { keyPath: "id", autoIncrement: true }
+                );
+
+                store.createIndex("subject", "subject");
+            }
+        };
+
+        request.onsuccess = event => {
+            db = event.target.result;
+            resolve(db);
+        };
+
+        request.onerror = () => reject(request.error);
+    });
+}
+
+function getAllMaterials() {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, "readonly");
+        const request = transaction.objectStore(STORE_NAME).getAll();
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+function addToDatabase(material) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, "readwrite");
+        const request = transaction.objectStore(STORE_NAME).add(material);
+
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+function updateMaterial(material) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, "readwrite");
+        const request = transaction.objectStore(STORE_NAME).put(material);
+
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+function deleteFromDatabase(id) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, "readwrite");
+        const request = transaction.objectStore(STORE_NAME).delete(id);
+
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function addMaterial() {
+    const title = document.getElementById("fileTitle").value.trim();
+    const subject = document.getElementById("subject").value;
+    const category = document.getElementById("category").value;
+    const file = document.getElementById("materialFile").files[0];
+    const message = document.getElementById("message");
+
+    if (!title || !subject) {
+        message.textContent = "Please enter a name and select a subject.";
+        return;
+    }
+
+    if (!file) {
+        message.textContent = "Please select a file to save.";
+        return;
+    }
+
+    if (file.size > 25 * 1024 * 1024) {
+        message.textContent = "File is too large. Maximum size is 25 MB.";
+        return;
+    }
+
+    try {
+        await addToDatabase({
+            title,
+            subject,
+            category,
+            fileName: file.name,
+            fileType: file.type,
+            file,
+            favorite: false,
+            date: new Date().toISOString()
+        });
+
+        document.getElementById("fileTitle").value = "";
+        document.getElementById("materialFile").value = "";
+
+        message.textContent = "Successfully saved to your library!";
+
+        renderMaterials();
+    } catch (error) {
+        message.textContent =
+            "Could not save file. Browser storage may be full.";
+    }
+}
+
+async function renderMaterials() {
+    if (!db) return;
+
+    const materials = await getAllMaterials();
+
+    const search = document.getElementById("search")
+        .value.toLowerCase();
+
+    const subject = document.getElementById("filterSubject").value;
+
+    const filtered = materials.filter(item => {
+        return (
+            item.title.toLowerCase().includes(search) ||
+            item.fileName.toLowerCase().includes(search)
+        ) &&
+        (!subject || item.subject === subject) &&
+        (!favoritesOnly || item.favorite);
+    });
+
+    document.getElementById("totalFiles").textContent = materials.length;
+
+    document.getElementById("totalFolders").textContent =
+        new Set(materials.map(item => item.subject)).size;
+
+    document.getElementById("favoriteCount").textContent =
+        materials.filter(item => item.favorite).length;
+
+    const list = document.getElementById("fileList");
+
+    if (!filtered.length) {
+        list.innerHTML = '<div class="empty">No materials found. Add your first study material!</div>';
+        return;
+    }
+
+    list.innerHTML = "";
+
+    filtered.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "file-card";
+
+        const icon = item.category === "PDF" || item.fileType === "application/pdf"
+            ? "📕" : "📄";
+
+        const heading = document.createElement("h4");
+        heading.textContent = item.title;
+
+        const iconElement = document.createElement("div");
+        iconElement.className = "file-icon";
+        iconElement.textContent = icon;
+
+        const details = document.createElement("p");
+        details.textContent =
+            item.subject + " • " + item.category + " • " +
+            (item.fileName || "File");
+
+        const date = document.createElement("p");
+        date.textContent = new Date(item.date).toLocaleDateString();
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+
+        const openButton = document.createElement("button");
+        openButton.textContent = "Open";
+        openButton.onclick = () => openMaterial(item.id);
+
+        const downloadButton = document.createElement("button");
+        downloadButton.textContent = "Download";
+        downloadButton.className = "secondary";
+        downloadButton.onclick = () => downloadMaterial(item.id);
+
+        const favoriteButton = document.createElement("button");
+        favoriteButton.textContent = item.favorite ? "★ Saved" : "☆ Favourite";
+        favoriteButton.className = "favorite";
+        favoriteButton.onclick = () => toggleFavorite(item.id);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.className = "danger";
+        deleteButton.onclick = () => removeMaterial(item.id);
+
+        actions.append(openButton, downloadButton, favoriteButton, deleteButton);
+        card.append(iconElement, heading, details, date, actions);
+        list.appendChild(card);
+    });
+}
+
+async function openMaterial(id) {
+    const item = (await getAllMaterials()).find(x => x.id === id);
+    if (!item) return;
+
+    const url = URL.createObjectURL(item.file);
+    const tab = window.open(url, "_blank");
+
+    if (tab) {
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+    } else {
+        alert("Allow pop-ups to open this material.");
+        URL.revokeObjectURL(url);
+    }
+}
+
+async function downloadMaterial(id) {
+    const item = (await getAllMaterials()).find(x => x.id === id);
+    if (!item) return;
+
+    const url = URL.createObjectURL(item.file);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = item.fileName || item.title;
+    link.click();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function toggleFavorite(id) {
+    const item = (await getAllMaterials()).find(x => x.id === id);
+    if (!item) return;
+
+    item.favorite = !item.favorite;
+    await updateMaterial(item);
+    renderMaterials();
+}
+
+async function removeMaterial(id) {
+    if (!confirm("Delete this material permanently?")) return;
+
+    await deleteFromDatabase(id);
+    renderMaterials();
+}
+
+function showFavorites() {
+    favoritesOnly = true;
+    renderMaterials();
+}
+
+function showAll() {
+    favoritesOnly = false;
+    renderMaterials();
+}
+
+async function exportBackup() {
+    const materials = await getAllMaterials();
+
+    const backup = [];
+
+    for (const item of materials) {
+        const buffer = await item.file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+
+        let binary = "";
+        const chunkSize = 32768;
+
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+            binary += String.fromCharCode(
+                ...bytes.subarray(i, i + chunkSize)
+            );
+        }
+
+        backup.push({
+            ...item,
+            file: btoa(binary)
+        });
+    }
+
+    const blob = new Blob(
+        [JSON.stringify(backup)],
+        { type: "application/json" }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "study-vibe-library-backup.json";
+    link.click();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function importBackup(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+        if (file.size > 100 * 1024 * 1024) {
+            throw new Error("Backup exceeds the 100 MB import limit.");
+        }
+
+        const backup = JSON.parse(await file.text());
+
+        if (!Array.isArray(backup)) {
+            throw new Error("Invalid backup file.");
+        }
+
+        for (const item of backup) {
+            if (
+                typeof item.title !== "string" ||
+                typeof item.file !== "string" ||
+                typeof item.subject !== "string" ||
+                typeof item.fileName !== "string"
+            ) {
+                throw new Error("Invalid backup data.");
+            }
+
+            const binary = atob(item.file);
+            const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+
+            const restoredFile = new File(
+                [bytes],
+                item.fileName,
+                { type: item.fileType || "" }
+            );
+
+            const { id, ...rest } = item;
+
+            await addToDatabase({
+                ...rest,
+                file: restoredFile,
+                favorite: Boolean(item.favorite),
+                date: item.date || new Date().toISOString()
+            });
+        }
+
+        alert("Library backup imported successfully!");
+        renderMaterials();
+
+    } catch (error) {
+        alert("Import failed: " + error.message);
+    }
+
+    event.target.value = "";
+}
+
+openDatabase()
+    .then(() => renderMaterials())
+    .catch(() => {
+        document.getElementById("fileList").textContent =
+            "Your browser does not support library storage.";
+    });
+
+</script>
+
+</body>
+</html>

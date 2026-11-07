@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Progress Tracker | Study Vibe</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f4f7fc;
+    color: #172554;
+}
+
+header {
+    background: #102a56;
+    color: white;
+    padding: 23px 6%;
+}
+
+header h1 {
+    font-size: 25px;
+}
+
+header p {
+    margin-top: 7px;
+    color: #cbd5e1;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 18px;
+}
+
+.welcome {
+    margin-bottom: 25px;
+}
+
+.welcome h2 {
+    font-size: 25px;
+    margin-bottom: 8px;
+}
+
+.welcome p {
+    color: #64748b;
+    line-height: 1.5;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 25px;
+}
+
+.stat {
+    background: white;
+    padding: 20px;
+    border-radius: 13px;
+    box-shadow: 0 3px 12px #00000008;
+}
+
+.stat h3 {
+    color: #2563eb;
+    font-size: 27px;
+    margin-bottom: 7px;
+}
+
+.stat p {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.panel {
+    background: white;
+    padding: 22px;
+    border-radius: 14px;
+    margin-bottom: 22px;
+    box-shadow: 0 3px 12px #00000008;
+}
+
+.panel h3 {
+    margin-bottom: 17px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin: 7px 0;
+    border: 1px solid #dbe3ef;
+    border-radius: 8px;
+    background: white;
+}
+
+button {
+    padding: 11px 16px;
+    margin: 4px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: .85;
+}
+
+.secondary {
+    background: #e2e8f0;
+    color: #172554;
+}
+
+.danger {
+    background: #dc2626;
+}
+
+.subject-card {
+    border: 1px solid #e2e8f0;
+    padding: 15px;
+    border-radius: 11px;
+    margin-bottom: 12px;
+}
+
+.subject-card h4 {
+    margin-bottom: 10px;
+}
+
+.progress-bg {
+    background: #e2e8f0;
+    height: 10px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 10px 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #2563eb;
+    border-radius: 20px;
+    transition: width .3s;
+}
+
+.task {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.task span {
+    overflow-wrap: anywhere;
+}
+
+.task.done span {
+    text-decoration: line-through;
+    color: #94a3b8;
+}
+
+.task button {
+    flex-shrink: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 480px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+th {
+    background: #eff6ff;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+.empty {
+    color: #64748b;
+    text-align: center;
+    padding: 20px;
+}
+
+.chart {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 12px;
+    height: 180px;
+    padding: 15px 5px 0;
+    border-bottom: 1px solid #cbd5e1;
+}
+
+.bar-group {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 7px;
+}
+
+.bar {
+    width: min(38px, 75%);
+    background: #2563eb;
+    border-radius: 6px 6px 0 0;
+    min-height: 2px;
+}
+
+.bar-group small {
+    color: #64748b;
+    font-size: 11px;
+}
+
+.goal-message {
+    background: #eff6ff;
+    padding: 14px;
+    border-radius: 10px;
+    margin-top: 12px;
+    line-height: 1.5;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+@media(max-width:700px) {
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .panel {
+        padding: 16px;
+    }
+
+    header h1 {
+        font-size: 21px;
+    }
+}
+
+@media(max-width:380px) {
+    .stats {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>📊 Progress Tracker</h1>
+    <p>Study Vibe by Addrectionate</p>
+</header>
+
+<div class="container">
+
+    <section class="welcome">
+        <h2>Track Your Learning Journey</h2>
+        <p>Set goals, track study hours, complete topics and monitor your academic performance.</p>
+    </section>
+
+    <!-- OVERVIEW -->
+
+    <section class="stats">
+
+        <div class="stat">
+            <h3 id="totalHours">0</h3>
+            <p>Total Study Hours</p>
+        </div>
+
+        <div class="stat">
+            <h3 id="completedTasks">0</h3>
+            <p>Completed Tasks</p>
+        </div>
+
+        <div class="stat">
+            <h3 id="averageMarks">0%</h3>
+            <p>Average Exam Marks</p>
+        </div>
+
+        <div class="stat">
+            <h3 id="streak">0 🔥</h3>
+            <p>Study Streak</p>
+        </div>
+
+    </section>
+
+    <!-- DAILY STUDY HOURS -->
+
+    <section class="panel">
+
+        <h3>⏱️ Record Study Hours</h3>
+
+        <input type="date" id="studyDate">
+
+        <input type="number" id="studyHours"
+               placeholder="Study hours"
+               min="0" max="24" step="0.25">
+
+        <input type="text" id="studyNote"
+               placeholder="What did you study?">
+
+        <button onclick="addStudy()">Save Study Record</button>
+
+    </section>
+
+    <!-- DAILY GOAL -->
+
+    <section class="panel">
+
+        <h3>🎯 Daily Study Goal</h3>
+
+        <input type="number" id="dailyGoal"
+               placeholder="Target hours per day"
+               min="0.25" max="24" step="0.25">
+
+        <button onclick="saveGoal()">Set Daily Goal</button>
+
+        <div class="goal-message" id="goalStatus">
+            Set your daily study target.
+        </div>
+
+    </section>
+
+    <!-- SUBJECT PROGRESS -->
+
+    <section class="panel">
+
+        <h3>📚 Subject-wise Progress</h3>
+
+        <input type="text" id="subjectName"
+               placeholder="Subject name">
+
+        <input type="number" id="totalTopics"
+               placeholder="Total topics or chapters"
+               min="1" step="1">
+
+        <input type="number" id="finishedTopics"
+               placeholder="Completed topics"
+               min="0" step="1">
+
+        <button onclick="addSubject()">Add / Update Subject</button>
+
+        <div id="subjectsList" style="margin-top:20px;">
+            <p class="empty">No subjects added yet.</p>
+        </div>
+
+    </section>
+
+    <!-- TASKS -->
+
+    <section class="panel">
+
+        <h3>✅ Study Tasks</h3>
+
+        <input type="text" id="taskInput"
+               placeholder="Enter a task or chapter">
+
+        <select id="taskSubject">
+            <option value="">General</option>
+        </select>
+
+        <button onclick="addTask()">Add Task</button>
+
+        <div id="taskList" style="margin-top:15px;">
+            <p class="empty">No tasks yet.</p>
+        </div>
+
+    </section>
+
+    <!-- EXAM RECORDS -->
+
+    <section class="panel">
+
+        <h3>📝 Exam Performance</h3>
+
+        <input type="text" id="examName"
+               placeholder="Exam name">
+
+        <input type="text" id="examSubject"
+               placeholder="Subject">
+
+        <input type="number" id="obtainedMarks"
+               placeholder="Obtained marks"
+               min="0">
+
+        <input type="number" id="totalMarks"
+               placeholder="Total marks"
+               min="1">
+
+        <button onclick="addExam()">Save Exam Result</button>
+
+        <div class="table-wrap" style="margin-top:20px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exam</th>
+                        <th>Subject</th>
+                        <th>Result</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="examList">
+                    <tr>
+                        <td colspan="5" class="empty">No exam records yet.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+
+    <!-- WEEKLY CHART -->
+
+    <section class="panel">
+
+        <h3>📈 Weekly Study Report</h3>
+
+        <div class="chart" id="weeklyChart"></div>
+
+        <div class="goal-message" id="weeklySummary"></div>
+
+    </section>
+
+    <!-- BACKUP -->
+
+    <section class="panel">
+
+        <h3>💾 Backup Your Progress</h3>
+
+        <p style="color:#64748b;font-size:13px;margin-bottom:12px;">
+            Download your progress data or restore it later.
+        </p>
+
+        <button onclick="exportData()">Export Progress</button>
+
+        <button class="secondary"
+                onclick="document.getElementById('importFile').click()">
+            Import Progress
+        </button>
+
+        <input type="file" id="importFile"
+               accept=".json,application/json"
+               hidden onchange="importData(event)">
+
+        <button class="danger" onclick="resetData()">
+            Reset All Progress
+        </button>
+
+    </section>
+
+</div>
+
+<footer>
+    Study Vibe by Addrectionate<br>
+    From Confusion to Confidence ❤️
+</footer>
+
+<script>
+
+const STORAGE_KEY = "studyVibeProgressV1";
+
+let data = {
+    records: [],
+    subjects: [],
+    tasks: [],
+    exams: [],
+    dailyGoal: 4
+};
+
+const $ = id => document.getElementById(id);
+
+function today() {
+    const d = new Date();
+    return [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+function saveData() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        return true;
+    } catch (error) {
+        alert("Could not save data. Browser storage may be full.");
+        return false;
+    }
+}
+
+function loadData() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            const parsed = JSON.parse(saved);
+
+            if (
+                parsed &&
+                Array.isArray(parsed.records) &&
+                Array.isArray(parsed.subjects) &&
+                Array.isArray(parsed.tasks) &&
+                Array.isArray(parsed.exams)
+            ) {
+                data = {
+                    ...data,
+                    ...parsed
+                };
+            }
+        }
+    } catch (error) {
+        alert("Saved progress could not be read.");
+    }
+
+    $("studyDate").value = today();
+    $("dailyGoal").value = data.dailyGoal;
+
+    renderAll();
+}
+
+// STUDY HOURS
+
+function addStudy() {
+
+    const date = $("studyDate").value;
+    const hours = Number($("studyHours").value);
+    const note = $("studyNote").value.trim();
+
+    if (!date || !Number.isFinite(hours) || hours <= 0 || hours > 24) {
+        alert("Enter a valid date and study time (up to 24 hours).");
+        return;
+    }
+
+    data.records.push({
+        id: Date.now(),
+        date,
+        hours,
+        note
+    });
+
+    if (!saveData()) {
+        data.records.pop();
+        return;
+    }
+
+    $("studyHours").value = "";
+    $("studyNote").value = "";
+
+    renderAll();
+}
+
+// DAILY GOAL
+
+function saveGoal() {
+
+    const goal = Number($("dailyGoal").value);
+
+    if (!Number.isFinite(goal) || goal <= 0 || goal > 24) {
+        alert("Enter a valid daily goal between 0 and 24 hours.");
+        return;
+    }
+
+    data.dailyGoal = goal;
+    saveData();
+    renderGoal();
+}
+
+// SUBJECTS
+
+function addSubject() {
+
+    const name = $("subjectName").value.trim();
+    const total = Number($("totalTopics").value);
+    const finished = Number($("finishedTopics").value);
+
+    if (!name || !Number.isInteger(total) || total < 1 ||
+        !Number.isInteger(finished) || finished < 0 ||
+        finished > total) {
+        alert("Enter a subject and valid topic numbers.");
+        return;
+    }
+
+    const existing = data.subjects.find(
+        s => s.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (existing) {
+        existing.total = total;
+        existing.finished = finished;
+    } else {
+        data.subjects.push({
+            id: Date.now(),
+            name,
+            total,
+            finished
+        });
+    }
+
+    if (!saveData()) return;
+
+    $("subjectName").value = "";
+    $("totalTopics").value = "";
+    $("finishedTopics").value = "";
+
+    renderAll();
+}
+
+function deleteSubject(id) {
+
+    if (!confirm("Delete this subject?")) return;
+
+    data.subjects = data.subjects.filter(s => s.id !== id);
+
+    saveData();
+    renderAll();
+}
+
+// TASKS
+
+function addTask() {
+
+    const name = $("taskInput").value.trim();
+    const subject = $("taskSubject").value;
+
+    if (!name) {
+        alert("Enter a task first.");
+        return;
+    }
+
+    data.tasks.push({
+        id: Date.now(),
+        name,
+        subject,
+        done: false
+    });
+
+    if (!saveData()) {
+        data.tasks.pop();
+        return;
+    }
+
+    $("taskInput").value = "";
+    renderAll();
+}
+
+function toggleTask(id) {
+
+    const task = data.tasks.find(t => t.id === id);
+    if (!task) return;
+
+    task.done = !task.done;
+
+    if (!saveData()) {
+        task.done = !task.done;
+        return;
+    }
+
+    renderAll();
+}
+
+function deleteTask(id) {
+
+    data.tasks = data.tasks.filter(t => t.id !== id);
+
+    saveData();
+    renderAll();
+}
+
+// EXAMS
+
+function addExam() {
+
+    const name = $("examName").value.trim();
+    const subject = $("examSubject").value.trim();
+    const obtained = Number($("obtainedMarks").value);
+    const total = Number($("totalMarks").value);
+
+    if (!name || !subject || !Number.isFinite(obtained) ||
+        !Number.isFinite(total) || total <= 0 ||
+        obtained < 0 || obtained > total) {
+        alert("Enter valid exam information and marks.");
+        return;
+    }
+
+    data.exams.push({
+        id: Date.now(),
+        name,
+        subject,
+        obtained,
+        total,
+        date: today()
+    });
+
+    if (!saveData()) {
+        data.exams.pop();
+        return;
+    }
+
+    $("examName").value = "";
+    $("examSubject").value = "";
+    $("obtainedMarks").value = "";
+    $("totalMarks").value = "";
+
+    renderAll();
+}
+
+function deleteExam(id) {
+
+    data.exams = data.exams.filter(e => e.id !== id);
+
+    saveData();
+    renderAll();
+}
+
+// RENDER SUBJECTS
+
+function renderSubjects() {
+
+    const container = $("subjectsList");
+    const select = $("taskSubject");
+    const oldValue = select.value;
+
+    container.innerHTML = "";
+    select.innerHTML = '<option value="">General</option>';
+
+    data.subjects.forEach(subject => {
+
+        const percentage = Math.round(
+            subject.finished / subject.total * 100
+        );
+
+        const card = document.createElement("div");
+        card.className = "subject-card";
+
+        const heading = document.createElement("h4");
+        heading.textContent = subject.name;
+
+        const details = document.createElement("p");
+        details.textContent =
+            subject.finished + " / " + subject.total +
+            " topics completed (" + percentage + "%)";
+
+        const bg = document.createElement("div");
+        bg.className = "progress-bg";
+
+        const fill = document.createElement("div");
+        fill.className = "progress-fill";
+        fill.style.width = percentage + "%";
+
+        bg.appendChild(fill);
+
+        const button = document.createElement("button");
+        button.className = "danger";
+        button.textContent = "Delete";
+        button.onclick = () => deleteSubject(subject.id);
+
+        card.append(heading, details, bg, button);
+        container.appendChild(card);
+
+        const option = document.createElement("option");
+        option.value = subject.name;
+        option.textContent = subject.name;
+        select.appendChild(option);
+    });
+
+    select.value = oldValue;
+
+    if (!data.subjects.length) {
+        container.innerHTML =
+            '<p class="empty">Add your first subject.</p>';
+    }
+}
+
+// RENDER TASKS
+
+function renderTasks() {
+
+    const container = $("taskList");
+    container.innerHTML = "";
+
+    const completed = data.tasks.filter(t => t.done).length;
+
+    data.tasks.forEach(task => {
+
+        const row = document.createElement("div");
+        row.className = "task" + (task.done ? " done" : "");
+
+        const text = document.createElement("span");
+        text.textContent = task.name + " (" + (task.subject || "General") + ")";
+
+        const check = document.createElement("button");
+        check.className = "secondary";
+        check.textContent = task.done ? "Undo" : "Complete";
+        check.onclick = () => toggleTask(task.id);
+
+        const remove = document.createElement("button");
+        remove.className = "danger";
+        remove.textContent = "Delete";
+        remove.onclick = () => deleteTask(task.id);
+
+        row.append(text, check, remove);
+        container.appendChild(row);
+    });
+
+    if (!data.tasks.length) {
+        container.innerHTML =
+            '<p class="empty">Add your first study task.</p>';
+    }
+
+    $("completedTasks").textContent = completed;
+}
+
+// RENDER EXAMS
+
+function renderExams() {
+
+    const body = $("examList");
+    body.innerHTML = "";
+
+    if (!data.exams.length) {
+        body.innerHTML =
+            '<tr><td colspan="5" class="empty">No exam records yet.</td></tr>';
+        return;
+    }
+
+    data.exams.forEach(exam => {
+
+        const row = document.createElement("tr");
+
+        const values = [
+            exam.name,
+            exam.subject,
+            exam.obtained + " / " + exam.total +
+            " (" + Math.round(exam.obtained / exam.total * 100) + "%)",
+            exam.date
+        ];
+
+        values.forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+
+        const action = document.createElement("td");
+        const button = document.createElement("button");
+
+        button.className = "danger";
+        button.textContent = "Delete";
+        button.onclick = () => deleteExam(exam.id);
+
+        action.appendChild(button);
+        row.appendChild(action);
+        body.appendChild(row);
+    });
+
+    const totalObtained = data.exams.reduce(
+        (sum, e) => sum + e.obtained, 0
+    );
+
+    const totalPossible = data.exams.reduce(
+        (sum, e) => sum + e.total, 0
+    );
+
+    $("averageMarks").textContent =
+        totalPossible
+        ? Math.round(totalObtained / totalPossible * 100) + "%"
+        : "0%";
+}
+
+// GOAL
+
+function renderGoal() {
+
+    const date = today();
+
+    const hours = data.records
+        .filter(r => r.date === date)
+        .reduce((sum, r) => sum + r.hours, 0);
+
+    const percentage = Math.min(
+        100,
+        Math.round(hours / data.dailyGoal * 100)
+    );
+
+    $("goalStatus").textContent =
+        "Today's study: " + hours.toFixed(2) +
+        " hours / Goal: " + data.dailyGoal +
+        " hours (" + percentage + "% completed)";
+}
+
+// WEEKLY CHART
+
+function renderChart() {
+
+    const chart = $("weeklyChart");
+    chart.innerHTML = "";
+
+    const days = [];
+
+    for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+
+        const key = [
+            date.getFullYear(),
+            String(date.getMonth() + 1).padStart(2, "0"),
+            String(date.getDate()).padStart(2, "0")
+        ].join("-");
+
+        const hours = data.records
+            .filter(r => r.date === key)
+            .reduce((sum, r) => sum + r.hours, 0);
+
+        days.push({
+            label: date.toLocaleDateString("en", {weekday: "short"}),
+            hours
+        });
+    }
+
+    const max = Math.max(
+        1,
+        ...days.map(d => d.hours)
+    );
+
+    days.forEach(day => {
+
+        const group = document.createElement("div");
+        group.className = "bar-group";
+
+        const value = document.createElement("small");
+        value.textContent = day.hours + "h";
+
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.height = (day.hours / max * 130) + "px";
+
+        const label = document.createElement("small");
+        label.textContent = day.label;
+
+        group.append(value, bar, label);
+        chart.appendChild(group);
+    });
+
+    const weeklyTotal = days.reduce(
+        (sum, d) => sum + d.hours, 0
+    );
+
+    $("weeklySummary").textContent =
+        "You studied " + weeklyTotal.toFixed(2) +
+        " hours during the last 7 days.";
+}
+
+// STREAK
+
+function calculateStreak() {
+
+    const studiedDates = new Set(
+        data.records.filter(r => r.hours > 0).map(r => r.date)
+    );
+
+    let streak = 0;
+    const date = new Date();
+
+    const key = d => [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, "0"),
+        String(d.getDate()).padStart(2, "0")
+    ].join("-");
+
+    if (!studiedDates.has(key(date))) {
+        date.setDate(date.getDate() - 1);
+    }
+
+    while
+(studiedDates.has(key(date))) {
+        streak++;
+        date.setDate(date.getDate() - 1);
+    }
+
+    $("streak").textContent = streak + " 🔥";
+}
+
+// TOTAL HOURS
+
+function renderStats() {
+
+    const hours = data.records.reduce(
+        (sum, r) => sum + r.hours, 0
+    );
+
+    $("totalHours").textContent = hours.toFixed(1);
+
+    const completed = data.tasks.filter(t => t.done).length;
+
+    $("completedTasks").textContent = completed;
+
+    const obtained = data.exams.reduce(
+        (sum, e) => sum + e.obtained, 0
+    );
+
+    const possible =
+data.exams.reduce(
+        (sum, e) => sum + e.total, 0
+    );
+
+    $("averageMarks").textContent =
+        possible
+        ? Math.round(obtained / possible * 100) + "%"
+        : "0%";
+
+    calculateStreak();
+}
+
+// UPDATE EVERYTHING
+
+function renderAll() {
+    renderSubjects();
+    renderTasks();
+    renderExams();
+    renderStats();
+    renderGoal();
+    renderChart();
+}
+
+// BACKUP
+
+function exportData() {
+
+    const blob = new Blob(
+        [JSON.stringify(data, null, 2)],
+        {type: "application/json"}
+    );
+const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "study-vibe-progress-backup.json";
+    link.click();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function importData(event) {
+
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+        if (file.size > 5 * 1024 * 1024) {
+            throw new Error("Backup file is too large.");
+        }
+
+        const imported = JSON.parse(await file.text());
+
+        if (
+            !imported ||
+            !Array.isArray(imported.records) ||
+            !
+Array.isArray(imported.records) ||
+            !Array.isArray(imported.subjects) ||
+            !Array.isArray(imported.tasks) ||
+            !Array.isArray(imported.exams) ||
+            !Number.isFinite(imported.dailyGoal) ||
+            imported.dailyGoal <= 0 ||
+            imported.dailyGoal > 24
+        ) {
+            throw new Error("Invalid progress backup.");
+        }
+
+        if (!confirm("Replace your current progress with this backup?")) {
+            return;
+        }
+
+        data = imported;
+
+        if (saveData()) {
+            renderAll();
+            alert("Progress restored successfully!");
+        }
+
+    } catch (error) {
+        alert("Import failed: " + error.message);
+    }
+event.target.value = "";
+}
+
+// RESET
+
+function resetData() {
+
+    if (!confirm("Are you sure? This will permanently delete all progress saved in this browser. Export a backup first if needed.")) {
+        return;
+    }
+
+    const previous = data;
+
+    data = {
+        records: [],
+        subjects: [],
+        tasks: [],
+        exams: [],
+        dailyGoal: 4
+    };
+
+    if (saveData()) {
+        $("dailyGoal").value = 4;
+        renderAll();
+    } else {
+        data = previous;
+    }
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>

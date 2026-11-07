@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Planner | Study Vibe</title>
+<style>
+:root{
+  --bg:#0b1220;--panel:#151f32;--text:#edf3ff;
+  --muted:#9aabc5;--line:#293750;--accent:#79aaff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;padding:20px;background:var(--bg);
+  color:var(--text);font-family:Arial,sans-serif;
+}
+header{text-align:center;margin-bottom:25px}
+.brand{font-size:12px;letter-spacing:2px;color:#b8c9e8}
+h1{color:#8db9ff;margin:10px 0}
+header p{color:var(--muted)}
+.container{max-width:900px;margin:auto}
+.card{
+  background:var(--panel);border:1px solid var(--line);
+  padding:20px;border-radius:14px;margin-bottom:18px;
+}
+h2{font-size:19px;margin-top:0}
+form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+input,select,textarea{
+  width:100%;padding:12px;border-radius:8px;
+  background:#0d1729;color:white;border:1px solid var(--line);
+  font-size:14px;
+}
+textarea{grid-column:1/-1;resize:vertical}
+button{
+  border:0;border-radius:8px;padding:12px 15px;
+  background:var(--accent);color:#081326;
+  font-weight:bold;cursor:pointer;
+}
+form button{grid-column:1/-1}
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+}
+.stat{
+  background:#0d1729;padding:15px;border-radius:10px;text-align:center;
+}
+.stat strong{display:block;font-size:25px;color:#8db9ff}
+.stat span{font-size:12px;color:var(--muted)}
+.progress{
+  height:10px;background:#293750;border-radius:20px;overflow:hidden;
+  margin-top:12px;
+}
+.progress div{height:100%;background:#63d6a4;width:0%;transition:.3s}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
+.filters button{
+  background:#263957;color:white;padding:9px 13px;
+}
+.filters button.active{background:var(--accent);color:#081326}
+.task{
+  background:#0d1729;border:1px solid var(--line);
+  padding:14px;border-radius:10px;margin-bottom:10px;
+}
+.task-top{display:flex;justify-content:space-between;gap:10px}
+.task h3{margin:0 0 8px;font-size:16px}
+.task p{color:var(--muted);font-size:13px;margin:5px 0}
+.task.done{opacity:.6}
+.task.done h3{text-decoration:line-through}
+.priority{
+  font-size:11px;padding:5px 8px;border-radius:6px;
+  background:#293750;white-space:nowrap;height:max-content;
+}
+.task-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.task-actions button{font-size:12px;padding:8px 10px}
+.complete{background:#63d6a4}
+.delete{background:#ff8585}
+.empty{text-align:center;color:var(--muted);padding:25px}
+.today{color:#8db9ff;font-weight:bold}
+footer{text-align:center;color:var(--muted);font-size:12px;margin:25px}
+@media(max-width:550px){
+ body{padding:12px}
+ form{grid-template-columns:1fr}
+ form button,textarea{grid-column:1}
+ .stats{gap:6px}
+ .stat{padding:12px 5px}
+ .stat strong{font-size:21px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">STUDY VIBE BY ADDRECTIONATE</div>
+  <h1>My Study Planner</h1>
+  <p>Plan your study. Track your progress. Reach your goals.</p>
+</header>
+
+<div class="container">
+
+<section class="card">
+  <h2>Today's Progress</h2>
+  <div class="stats">
+    <div class="stat"><strong id="total">0</strong><span>Total Tasks</span></div>
+    <div class="stat"><strong id="completed">0</strong><span>Completed</span></div>
+    <div class="stat"><strong id="pending">0</strong><span>Pending</span></div>
+  </div>
+  <div class="progress"><div id="progressBar"></div></div>
+  <p id="progressText" style="color:var(--muted);font-size:13px">0% completed</p>
+</section>
+
+<section class="card">
+  <h2>Add a Study Task</h2>
+  <form id="taskForm">
+    <input id="subject" placeholder="Subject (e.g. Chemistry)" required>
+    <input id="topic" placeholder="Topic or chapter" required>
+    <input id="date" type="date" required>
+    <select id="priority">
+      <option value="High">High Priority</option>
+      <option value="Medium" selected>Medium Priority</option>
+      <option value="Low">Low Priority</option>
+    </select>
+    <input id="duration" type="number" min="1" placeholder="Study duration (minutes)">
+    <textarea id="notes" rows="2" placeholder="Notes (optional)"></textarea>
+    <button type="submit">+ Add Study Task</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>My Tasks</h2>
+  <div class="filters">
+    <button class="active" data-filter="all">All</button>
+    <button data-filter="pending">Pending</button>
+    <button data-filter="completed">Completed</button>
+    <button data-filter="today">Today</button>
+  </div>
+  <div id="taskList"></div>
+</section>
+
+</div>
+
+<footer>Study Vibe • From Confusion to Confidence</footer>
+
+<script>
+const STORAGE_KEY="studyVibePlannerTasks";
+
+let tasks=[];
+try{
+  tasks=JSON.parse(localStorage.getItem(STORAGE_KEY))||[];
+  if(!Array.isArray(tasks)) tasks=[];
+}catch(e){tasks=[]}
+
+let currentFilter="all";
+
+const $=id=>document.getElementById(id);
+const today=()=>{
+ const d=new Date();
+ const offset=d.getTimezoneOffset();
+ return new Date(d.getTime()-offset*60000).toISOString().slice(0,10);
+};
+
+$("date").value=today();
+
+function save(){
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(tasks));
+}
+
+function updateStats(){
+ const total=tasks.length;
+ const completed=tasks.filter(t=>t.done).length;
+ const pending=total-completed;
+ const percent=total?Math.round(completed/total*100):0;
+
+ $("total").textContent=total;
+ $("completed").textContent=completed;
+ $("pending").textContent=pending;
+ $("progressBar").style.width=percent+"%";
+ $("progressText").textContent=percent+"% of all tasks completed";
+}
+
+function render(){
+ updateStats();
+
+ const list=$("taskList");
+ list.innerHTML="";
+
+ let filtered=tasks.filter(t=>{
+  if(currentFilter==="pending")return !t.done;
+  if(currentFilter==="completed")return t.done;
+  if(currentFilter==="today")return t.date===today();
+  return true;
+ });
+
+ filtered.sort((a,b)=>a.date.localeCompare(b.date));
+
+ if(filtered.length===0){
+  list.innerHTML='<div class="empty">No study tasks here yet. Add a task to get started!</div>';
+  return;
+ }
+
+ filtered.forEach(t=>{
+  const div=document.createElement("div");
+  div.className="task"+(t.done?" done":"");
+
+  const top=document.createElement("div");
+  top.className="task-top";
+
+  const details=document.createElement("div");
+  const heading=document.createElement("h3");
+  heading.textContent=t.subject+" — "+t.topic;
+  details.appendChild(heading);
+
+  const meta=document.createElement("p");
+  meta.textContent="📅 "+t.date+"  •  ⏱ "+(t.duration?t.duration+" minutes":"Not set");
+  details.appendChild(meta);
+
+  if(t.notes){
+   const note=document.createElement("p");
+   note.textContent="Note: "+t.notes;
+   details.appendChild(note);
+  }
+
+  const badge=document.createElement("span");
+  badge.className="priority";
+  badge.textContent=t.priority;
+
+  top.append(details,badge);
+  div.appendChild(top);
+
+  const actions=document.createElement("div");
+  actions.className="task-actions";
+
+  const completeBtn=document.createElement("button");
+  completeBtn.className="complete";
+  completeBtn.textContent=t.done?"Undo":"Mark Complete";
+  completeBtn.onclick=()=>toggleTask(t.id);
+
+  const deleteBtn=document.createElement("button");
+  deleteBtn.className="delete";
+  deleteBtn.textContent="Delete";
+  deleteBtn.onclick=()=>deleteTask(t.id);
+
+  actions.append(completeBtn,deleteBtn);
+  div.appendChild(actions);
+  list.appendChild(div);
+ });
+}
+
+$("taskForm").addEventListener("submit",e=>{
+ e.preventDefault();
+
+ const task={
+  id:Date.now().toString()+Math.random().toString(16).slice(2),
+  subject:$("subject").value.trim(),
+  topic:$("topic").value.trim(),
+  date:$("date").value,
+  priority:$("priority").value,
+  duration:$("duration").value,
+  notes:$("notes").value.trim(),
+  done:false
+ };
+
+ if(!task.subject||!task.topic||!task.date)return;
+
+ tasks.push(task);
+ save();
+ render();
+
+ $("taskForm").reset();
+ $("date").value=today();
+ $("priority").value="Medium";
+});
+
+function toggleTask(id){
+ tasks=tasks.map(t=>t.id===id?{...t,done:!t.done}:t);
+ save();
+ render();
+}
+
+function deleteTask(id){
+ if(!confirm("Delete this study task?"))return;
+ tasks=tasks.filter(t=>t.id!==id);
+ save();
+ render();
+}
+
+document.querySelectorAll(".filters button").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  currentFilter=btn.dataset.filter;
+  document.querySelectorAll(".filters button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  render();
+ });
+});
+
+render();
+</script>
+</body>
+</html>

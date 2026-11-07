@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6046d9">
+<title>Handwritten Notes & Diagrams | Study Vibe</title>
+
+<style>
+:root {
+  --primary:#6046d9;
+  --dark:#4530ae;
+  --bg:#f6f5ff;
+  --text:#24213b;
+  --muted:#6e6a83;
+  --border:#e6e2f3;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;line-height:1.5
+}
+button,input,textarea{font:inherit}
+header{
+  background:white;border-bottom:1px solid var(--border);
+  padding:13px 4%;display:flex;justify-content:space-between;
+  align-items:center;gap:14px;flex-wrap:wrap;
+  position:sticky;top:0;z-index:5
+}
+.brand{color:var(--primary);font-size:1.35rem;font-weight:800;text-decoration:none}
+.brand small{display:block;color:var(--muted);font-size:.68rem}
+nav{display:flex;gap:16px;flex-wrap:wrap}
+nav a{color:var(--text);text-decoration:none}
+.wrap{width:min(1120px,94%);margin:26px auto 50px}
+.intro{
+  padding:25px;border-radius:18px;margin-bottom:20px;
+  background:linear-gradient(135deg,#eeebff,#fff);
+  border:1px solid var(--border)
+}
+.intro h1{margin:0 0 7px;color:#342477;font-size:clamp(1.5rem,4vw,2.2rem)}
+.intro p{margin:0;color:var(--muted)}
+.panel{
+  background:white;border:1px solid var(--border);
+  border-radius:16px;padding:20px;margin-bottom:18px;
+  box-shadow:0 5px 20px #24213b08
+}
+.panel h2{margin:0 0 14px;font-size:1.15rem}
+label{display:block;font-weight:700;font-size:.9rem;margin-bottom:6px}
+input[type=text],textarea{
+  width:100%;border:1px solid var(--border);border-radius:10px;
+  padding:11px 12px;background:white;color:var(--text)
+}
+textarea{min-height:150px;resize:vertical;line-height:1.7}
+.field{margin-bottom:14px}
+.toolbar{
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  padding:12px;background:#f8f7ff;
+  border:1px solid var(--border);border-radius:12px 12px 0 0
+}
+.tool,.action{
+  border:1px solid #dcd6f5;border-radius:9px;
+  padding:8px 11px;background:white;color:#342477;
+  cursor:pointer;font-weight:700
+}
+.tool.active,.action.primary{background:var(--primary);color:white;border-color:var(--primary)}
+.tool:hover,.action:hover{border-color:var(--primary)}
+.tool:disabled{opacity:.45;cursor:not-allowed}
+.spacer{flex:1}
+input[type=color]{width:38px;height:36px;padding:2px;border:1px solid var(--border);border-radius:8px}
+input[type=range]{width:95px}
+.canvas-shell{
+  border:1px solid var(--border);border-top:0;
+  border-radius:0 0 12px 12px;overflow:hidden;background:white;
+  touch-action:none
+}
+#drawingCanvas{
+  display:block;width:100%;height:auto;background:white;
+  touch-action:none
+}
+.hint{color:var(--muted);font-size:.83rem;margin:9px 2px 0}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}
+.action.danger{color:#a32929;border-color:#f0caca}
+.status{min-height:22px;color:#16794b;font-size:.88rem;margin-top:8px}
+.image-info{
+  background:#f8f7ff;padding:12px;border-radius:10px;
+  color:var(--muted);font-size:.88rem;margin-top:12px
+}
+footer{text-align:center;color:var(--muted);padding:22px;font-size:.85rem}
+@media(max-width:760px){
+  header{justify-content:center}
+  nav{justify-content:center;gap:12px}
+  .panel{padding:14px}
+  .toolbar{gap:6px}
+  .tool{padding:7px 9px;font-size:.83rem}
+}
+@media print{
+  body{background:white}
+  header,.intro,.toolbar,.actions,.hint,footer,.status,.image-info{display:none!important}
+  .wrap{width:100%;margin:0}
+  .panel{border:0;box-shadow:none;padding:0}
+  #noteTitle{border:0;font-size:20px;font-weight:bold}
+  #typedNotes{border:0}
+  .canvas-shell{border:1px solid #bbb}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <a class="brand" href="index.html">
+    Study Vibe<small>BY ADDRECTIONATE</small>
+  </a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="mcq.html">MCQ Generator</a>
+    <a href="exam.html">MCQ Exam</a>
+    <a href="login.html">Log in</a>
+  </nav>
+</header>
+
+<main class="wrap">
+
+<section class="intro">
+  <h1>Handwritten Notes & Diagrams</h1>
+  <p>Write, draw, upload images and create your own digital study notebook.</p>
+</section>
+
+<section class="panel">
+
+  <div class="field">
+    <label for="noteTitle">Note title</label>
+    <input id="noteTitle" type="text"
+      placeholder="e.g. Biology — Cell Structure">
+  </div>
+
+  <div class="field">
+    <label for="typedNotes">Typed notes (optional)</label>
+    <textarea id="typedNotes"
+      placeholder="Write definitions, explanations, formulas or reminders..."></textarea>
+  </div>
+
+</section>
+
+<section class="panel">
+
+<h2>✍️ Handwriting, Images & Diagram Board</h2>
+
+<div class="toolbar" role="toolbar">
+
+  <button class="tool active" data-tool="pen" type="button">✏️ Pen</button>
+  <button class="tool" data-tool="eraser" type="button">Eraser</button>
+  <button class="tool" data-tool="line" type="button">Line</button>
+  <button class="tool" data-tool="arrow" type="button">Arrow</button>
+  <button class="tool" data-tool="rect" type="button">Rectangle</button>
+  <button class="tool" data-tool="circle" type="button">Circle</button>
+  <button class="tool" data-tool="text" type="button">Text</button>
+
+  <button class="tool" id="uploadBtn" type="button">📷 Add Image</button>
+
+  <button class="tool" data-tool="select" type="button">↖ Select Image</button>
+
+  <input type="file" id="imageUpload"
+    accept="image/png,image/jpeg,image/webp,image/gif"
+    multiple hidden>
+
+  <span class="spacer"></span>
+
+  <label for="inkColor" style="margin:0">Ink</label>
+  <input id="inkColor" type="color" value="#24213b">
+
+  <label for="brushSize" style="margin:0">Size</label>
+  <input id="brushSize" type="range" min="1" max="18" value="3">
+
+  <button class="tool" id="undoBtn" type="button">↶ Undo</button>
+  <button class="tool" id="gridBtn" type="button">Grid: Off</button>
+
+</div>
+
+<div class="canvas-shell">
+  <canvas id="drawingCanvas" width="1200" height="760"></canvas>
+</div>
+
+<p class="hint">
+  Upload images, select an image, then drag it to move.
+  Use the bottom-right handle to resize and the top handle to rotate.
+  Use the Delete button to remove a selected image.
+</p>
+
+<div class="image-info">
+  💡 Tip: Download a diagram, chart, illustration or educational image
+  to your device and insert it here. You can draw and write over it.
+</div>
+
+<div class="actions">
+  <button class="action" id="deleteImageBtn" type="button" disabled>
+    Delete Selected Image
+  </button>
+
+  <button class="action primary" id="saveBtn" type="button">
+    Save Notes on This Device
+  </button>
+
+  <button class="action" id="pngBtn" type="button">
+    Download as PNG
+  </button>
+
+  <button class="action" id="printBtn" type="button">
+    Print / Save as PDF
+  </button>
+
+  <button class="action danger" id="clearBtn" type="button">
+    Clear Board
+  </button>
+</div>
+
+<div class="status" id="status" role="status" aria-live="polite"></div>
+
+</section>
+</main>
+
+<footer>Study Vibe by Addrectionate · From Confusion to Confidence</footer>
+
+<script>
+const canvas = document.getElementById("drawingCanvas");
+const ctx = canvas.getContext("2d");
+
+// Separate transparent drawing layer
+const baseCanvas = document.createElement("canvas");
+baseCanvas.width = canvas.width;
+baseCanvas.height = canvas.height;
+const baseCtx = baseCanvas.getContext("2d");
+
+const statusBox = document.getElementById("status");
+const titleInput = document.getElementById("noteTitle");
+const typedNotes = document.getElementById("typedNotes");
+const colorInput = document.getElementById("inkColor");
+const sizeInput = document.getElementById("brushSize");
+const undoButton = document.getElementById("undoBtn");
+const deleteButton = document.getElementById("deleteImageBtn");
+
+let tool = "pen";
+let drawing = false;
+let start = null;
+let last = null;
+let snapshot = null;
+let showGrid = false;
+
+let images = [];
+let selectedImage = null;
+let history = [];
+let actionChanged = false;
+let activeHandle = null;
+let dragOffset = {x:0,y:0};
+let initialImageState = null;
+
+function setStatus(message) {
+  statusBox.textContent = message;
+}
+
+function cloneImages() {
+  return images.map(item => ({
+    img:item.img,
+    src:item.src,
+    x:item.x,
+    y:item.y,
+    w:item.w,
+    h:item.h,
+    rotation:item.rotation
+  }));
+}
+
+function saveHistory() {
+  if (history.length >= 30) history.shift();
+
+  history.push({
+    drawing:baseCtx.getImageData(0,0,baseCanvas.width,baseCanvas.height),
+    images:cloneImages()
+  });
+
+  undoButton.disabled = history.length <= 1;
+}
+
+function restoreHistory() {
+  if (history.length <= 1) return;
+
+  history.pop();
+  const previous = history[history.length-1];
+
+  baseCtx.putImageData(previous.drawing,0,0);
+  images = cloneImagesFrom(previous.images);
+  selectedImage = null;
+
+  updateControls();
+  render();
+  undoButton.disabled = history.length <= 1;
+}
+
+function cloneImagesFrom(list) {
+  return list.map(item => ({...item}));
+}
+
+function render(showSelection = true) {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  if (showGrid) {
+    ctx.strokeStyle = "#e9e5f7";
+    ctx.lineWidth = 1;
+
+    for(let x=0;x<=canvas.width;x+=40) {
+      ctx.beginPath();
+      ctx.moveTo(x,0);
+      ctx.lineTo(x,canvas.height);
+      ctx.stroke();
+    }
+
+    for(let y=0;y<=canvas.height;y+=40) {
+      ctx.beginPath();
+      ctx.moveTo(0,y);
+      ctx.lineTo(canvas.width,y);
+      ctx.stroke();
+    }
+  }
+
+  ctx.drawImage(baseCanvas,0,0);
+
+  images.forEach(item => {
+    ctx.save();
+    ctx.translate(item.x+item.w/2,item.y+item.h/2);
+    ctx.rotate(item.rotation);
+    ctx.drawImage(item.img,-item.w/2,-item.h/2,item.w,item.h);
+    ctx.restore();
+  });
+
+  if(showSelection && selectedImage) {
+    drawSelection(selectedImage);
+  }
+}
+
+function drawSelection(item) {
+  const cx=item.x+item.w/2;
+  const cy=item.y+item.h/2;
+
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(item.rotation);
+
+  ctx.strokeStyle="#6046d9";
+  ctx.lineWidth=3;
+  ctx.setLineDash([9,5]);
+  ctx.strokeRect(-item.w/2,-item.h/2,item.w,item.h);
+  ctx.setLineDash([]);
+
+  // Resize handle
+  ctx.fillStyle="#6046d9";
+  ctx.fillRect(item.w/2-9,item.h/2-9,18,18);
+
+  // Rotation handle
+  ctx.beginPath();
+  ctx.moveTo(0,-item.h/2);
+  ctx.lineTo(0,-item.h/2-32);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(0,-item.h/2-32,9,0,Math.PI*2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function updateControls() {
+  deleteButton.disabled = !selectedImage;
+  document.querySelectorAll("[data-tool]").forEach(button => {
+    button.classList.toggle("active",button.dataset.tool===tool);
+  });
+}
+
+function selectTool(next) {
+  tool=next;
+  updateControls();
+  canvas.style.cursor=tool==="text"?"text":
+    tool==="select"?"default":"crosshair";
+}
+
+document.querySelectorAll("[data-tool]").forEach(button => {
+  button.addEventListener("click",()=>selectTool(button.dataset.tool));
+});
+
+function pointFromEvent(event) {
+  const rect=canvas.getBoundingClientRect();
+  return {
+    x:(event.clientX-rect.left)*canvas.width/rect.width,
+    y:(event.clientY-rect.top)*canvas.height/rect.height
+  };
+}
+
+function localPoint(item,point) {
+  const cx=item.x+item.w/2;
+  const cy=item.y+item.h/2;
+  const dx=point.x-cx;
+  const dy=point.y-cy;
+  const angle=-item.rotation;
+
+  return {
+    x:dx*Math.cos(angle)-dy*Math.sin(angle),
+    y:dx*Math.sin(angle)+dy*Math.cos(angle)
+  };
+}
+
+function hitTest(item,point) {
+  const p=localPoint(item,point);
+  return Math.abs(p.x)<=item.w/2 &&
+         Math.abs(p.y)<=item.h/2;
+}
+
+function getHandle(item,point) {
+  const p=localPoint(item,point);
+
+  const resizeX=item.w/2;
+  const resizeY=item.h/2;
+
+  if(Math.hypot(p.x-resizeX,p.y-resizeY)<23) return "resize";
+
+  if(Math.hypot(p.x,p.y+item.h/2+32)<20) return "rotate";
+
+  return null;
+}
+
+function selectImageAt(point) {
+  for(let i=images.length-1;i>=0;i--) {
+    if(hitTest(images[i],point)) return images[i];
+  }
+  return null;
+}
+
+function setStroke() {
+  baseCtx.lineWidth=Number(sizeInput.value);
+  baseCtx.lineCap="round";
+  baseCtx.lineJoin="round";
+  baseCtx.strokeStyle=colorInput.value;
+}
+
+function drawArrow(from,to) {
+  const head=18;
+  const angle=Math.atan2(to.y-from.y,to.x-from.x);
+
+  baseCtx.beginPath();
+  baseCtx.moveTo(from.x,from.y);
+  baseCtx.lineTo(to.x,to.y);
+
+  baseCtx.moveTo(to.x,to.y);
+  baseCtx.lineTo(
+    to.x-head*Math.cos(angle-Math.PI/6),
+    to.y-head*Math.sin(angle-Math.PI/6)
+  );
+
+  baseCtx.moveTo(to.x,to.y);
+  baseCtx.lineTo(
+    to.x-head*Math.cos(angle+Math.PI/6),
+    to.y-head*Math.sin(angle+Math.PI/6)
+  );
+
+  baseCtx.stroke();
+}
+
+function drawShape(from,to) {
+  baseCtx.beginPath();
+
+  if(tool==="line") {
+    baseCtx.moveTo(from.x,from.y);
+    baseCtx.lineTo(to.x,to.y);
+  } else if(tool==="arrow") {
+    drawArrow(from,to);
+  } else if(tool==="rect") {
+    baseCtx.rect(from.x,from.y,to.x-from.x,to.y-from.y);
+  } else if(tool==="circle") {
+    const rx=Math.abs(to.x-from.x)/2;
+    const ry=Math.abs(to.y-from.y)/2;
+    baseCtx.ellipse(
+      (from.x+to.x)/2,(from.y+to.y)/2,
+      Math.max(rx,1),Math.max(ry,1),0,0,Math.PI*2
+    );
+  }
+
+  baseCtx.stroke();
+}
+
+function addText(point) {
+  const value=prompt("Enter a short diagram label:");
+  if(!value || !value.trim()) return;
+
+  baseCtx.save();
+  baseCtx.fillStyle=colorInput.value;
+  baseCtx.font=`${Math.max(18,Number(sizeInput.value)*7)}px Arial`;
+  baseCtx.fillText(value.trim().slice(0,100),point.x,point.y);
+  baseCtx.restore();
+
+  saveHistory();
+  render();
+}
+
+canvas.addEventListener("pointerdown",event => {
+  event.preventDefault();
+  const point=pointFromEvent(event);
+
+  if(tool==="select") {
+    if(selectedImage) {
+      const handle=getHandle(selectedImage,point);
+
+      if(handle) {
+        activeHandle=handle;
+        initialImageState={...selectedImage};
+        actionChanged=true;
+        canvas.setPointerCapture(event.pointerId);
+        return;
+      }
+    }
+
+    const hit=selectImageAt(point);
+    selectedImage=hit;
+
+    if(hit) {
+      activeHandle="drag";
+      dragOffset={
+        x:point.x-hit.x,
+        y:point.y-hit.y
+      };
+      initialImageState={...hit};
+      actionChanged=true;
+      canvas.setPointerCapture(event.pointerId);
+    } else {
+      activeHandle=null;
+    }
+
+    updateControls();
+    render();
+    return;
+  }
+
+  if(tool==="text") {
+    addText(point);
+    return;
+  }
+
+  drawing=true;
+  start=point;
+  last=point;
+  actionChanged=true;
+  setStroke();
+
+  if(["line","arrow","rect","circle"].includes(tool)) {
+    snapshot=baseCtx.getImageData(0,0,baseCanvas.width,baseCanvas.height);
+  }
+
+  canvas.setPointerCapture(event.pointerId);
+});
+
+canvas.addEventListener("pointermove",event => {
+  const point=pointFromEvent(event);
+
+  if(tool==="select" && activeHandle && selectedImage) {
+    event.preventDefault();
+
+    if(activeHandle==="drag") {
+      selectedImage.x=point.x-dragOffset.x;
+      selectedImage.y=point.y-dragOffset.y;
+    }
+
+    if(activeHandle==="resize") {
+      const p=localPoint(selectedImage,point);
+      selectedImage.w=Math.max(25,p.x+selectedImage.w/2);
+      selectedImage.h=Math.max(25,p.y+selectedImage.h/2);
+    }
+
+    if(activeHandle==="rotate") {
+      const cx=selectedImage.x+selectedImage.w/2;
+      const cy=selectedImage.y+selectedImage.h/2;
+      selectedImage.rotation=Math.atan2(point.y-cy,point.x-cx)+Math.PI/2;
+    }
+
+    render();
+    return;
+  }
+
+  if(!drawing) return;
+
+  event.preventDefault();
+  setStroke();
+
+  if(["line","arrow","rect","circle"].includes(tool)) {
+    baseCtx.putImageData(snapshot,0,0);
+    drawShape(start,point);
+  } else if(tool==="eraser") {
+    baseCtx.globalCompositeOperation="destination-out";
+    baseCtx.beginPath();
+    baseCtx.moveTo(last.x,last.y);
+    baseCtx.lineTo(point.x,point.y);
+    baseCtx.stroke();
+    baseCtx.globalCompositeOperation="source-over";
+  } else {
+    baseCtx.beginPath();
+    baseCtx.moveTo(last.x,last.y);
+    baseCtx.lineTo(point.x,point.y);
+    baseCtx.stroke();
+  }
+
+  last=point;
+  render();
+});
+
+function finishAction() {
+  if(drawing) {
+    drawing=false;
+    saveHistory();
+    render();
+  }
+
+  if(activeHandle) {
+    activeHandle=null;
+    if(actionChanged) saveHistory();
+    actionChanged=false;
+    initialImageState=null;
+    render();
+  }
+}
+
+canvas.addEventListener("pointerup",finishAction);
+canvas.addEventListener("pointercancel",finishAction);
+
+document.getElementById("undoBtn").addEventListener("click",restoreHistory);
+
+document.getElementById("uploadBtn").addEventListener("click",()=>{
+  document.getElementById("imageUpload").click();
+});
+
+document.getElementById("imageUpload").addEventListener("change",event=>{
+  const files=Array.from(event.target.files || []);
+  const valid=files.filter(file=>
+    ["image/png","image/jpeg","image/webp","image/gif"].includes(file.type)
+  );
+
+  if(!valid.length) {
+    setStatus("Please select PNG, JPG, WEBP or GIF images.");
+    event.target.value="";
+    return;
+  }
+
+  let loaded=0;
+
+  valid.forEach(file=>{
+    const reader=new FileReader();
+
+    reader.onload=()=>{
+      const img=new Image();
+
+      img.onload=()=>{
+        const maxW=420;
+        const maxH=320;
+        const scale=Math.min(1,maxW/img.width,maxH/img.height);
+
+        const w=img.width*scale;
+        const h=img.height*scale;
+
+        const item={
+          img,
+          src:reader.result,
+          x:(canvas.width-w)/2+(images.length*18),
+          y:(canvas.height-h)/2+(images.length*18),
+          w,h,rotation:0
+        };
+
+        images.push(item);
+        selectedImage=item;
+        loaded++;
+
+        selectTool("select");
+        render();
+        updateControls();
+
+        if(loaded===valid.length) {
+          saveHistory();
+          setStatus(loaded+" image(s) added successfully.");
+        }
+      };
+
+      img.onerror=()=>setStatus("Could not load one of the images.");
+      img.src=reader.result;
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+  event.target.value="";
+});
+
+deleteButton.addEventListener("click",()=>{
+  if(!selectedImage) return;
+
+  images=images.filter(item=>item!==selectedImage);
+  selectedImage=null;
+
+  saveHistory();
+  updateControls();
+  render();
+  setStatus("Selected image deleted.");
+});
+
+document.getElementById("gridBtn").addEventListener("click",event=>{
+  showGrid=!showGrid;
+  event.currentTarget.textContent="Grid: "+(showGrid?"On":"Off");
+  render();
+});
+
+document.getElementById("clearBtn").addEventListener("click",()=>{
+  if(!confirm("Clear the entire drawing board, including images?")) return;
+
+  baseCtx.clearRect(0,0,baseCanvas.width,baseCanvas.height);
+  images=[];
+  selectedImage=null;
+
+  saveHistory();
+  updateControls();
+  render();
+  setStatus("Drawing board cleared.");
+});
+
+function exportCanvas() {
+  const output=document.createElement("canvas");
+  output.width=canvas.width;
+  output.height=canvas.height;
+  const out=output.getContext("2d");
+
+  out.fillStyle="#ffffff";
+  out.fillRect(0,0,output.width,output.height);
+
+  if(showGrid) {
+    out.strokeStyle="#e9e5f7";
+    out.lineWidth=1;
+
+    for(let x=0;x<=output.width;x+=40) {
+      out.beginPath();out.moveTo(x,0);out.lineTo(x,output.height);out.stroke();
+    }
+
+    for(let y=0;y<=output.height;y+=40) {
+      out.beginPath();out.moveTo(0,y);out.lineTo(output.width,y);out.stroke();
+    }
+  }
+
+  out.drawImage(baseCanvas,0,0);
+
+  images.forEach(item=>{
+    out.save();
+    out.translate(item.x+item.w/2,item.y+item.h/2);
+    out.rotate(item.rotation);
+    out.drawImage(item.img,-item.w/2,-item.h/2,item.w,item.h);
+    out.restore();
+  });
+
+  return output;
+}
+
+function saveToDevice() {
+  try {
+    const output=exportCanvas();
+
+    const data={
+      title:titleInput.value,
+      notes:typedNotes.value,
+      board:baseCanvas.toDataURL("image/png"),
+      images:images.map(item=>({
+        src:item.src,
+        x:item.x,y:item.y,w:item.w,h:item.h,
+        rotation:item.rotation
+      })),
+      showGrid,
+      updatedAt:new Date().toISOString()
+    };
+
+    localStorage.setItem("studyVibeHandwrittenNotes",JSON.stringify(data));
+    setStatus("Notes and images saved on this device.");
+  } catch(error) {
+    setStatus("Could not save. Your browser storage may be full. Try using smaller images.");
+  }
+}
+
+function loadFromDevice() {
+  try {
+    const saved=JSON.parse(localStorage.getItem("studyVibeHandwrittenNotes")||"null");
+    if(!saved) return;
+
+    titleInput.value=saved.title||"";
+    typedNotes.value=saved.notes||"";
+    showGrid=!!saved.showGrid;
+    document.getElementById("gridBtn").textContent="Grid: "+(showGrid?"On":"Off");
+
+    if(saved.board) {
+const boardImage=new Image();
+
+      boardImage.onload=()=>{
+        baseCtx.clearRect(0,0,baseCanvas.width,baseCanvas.height);
+        baseCtx.drawImage(boardImage,0,0,baseCanvas.width,baseCanvas.height);
+
+        const savedImages=saved.images||[];
+        let remaining=savedImages.length;
+
+        if(!remaining) {
+          finishLoading();
+          return;
+        }
+
+        savedImages.forEach(data=>{
+          const img=new Image();
+
+          img.onload=()=>{
+            images.push({
+              img,
+              src:data.src,
+              x:data.x,y:data.y,w:data.w,h:data.h,
+              rotation:data.rotation||0
+            });
+
+            remaining--;
+            if(!remaining) finishLoading();
+};
+
+          img.onerror=()=>{
+            remaining--;
+            if(!remaining) finishLoading();
+          };
+
+          img.src=data.src;
+        });
+      };
+
+      boardImage.onload=boardImage.onload.bind(boardImage);
+      boardImage.src=saved.board;
+    } else {
+      finishLoading();
+    }
+  } catch(error) {
+    setStatus("A previous note could not be loaded.");
+  }
+}
+
+function finishLoading() {
+  selectedImage=null;
+  render();
+  history=[];
+  saveHistory();
+  updateControls();
+  setStatus("Your previous notes have been loaded.");
+}
+document.getElementById("saveBtn").addEventListener("click",saveToDevice);
+
+document.getElementById("pngBtn").addEventListener("click",()=>{
+  try {
+    const output=exportCanvas();
+    const link=document.createElement("a");
+
+    link.download=(titleInput.value.trim()||"study-vibe-notes")
+      .replace(/[^\w-]+/g,"-")+".png";
+
+    link.href=output.toDataURL("image/png");
+    link.click();
+    setStatus("Board downloaded as PNG.");
+  } catch(error) {
+    setStatus("Could not export the board.");
+  }
+});
+
+document.getElementById("printBtn").addEventListener("click",()=>{
+  selectedImage=null;
+  render(false);
+  updateControls();
+  window.print();
+render();
+});
+
+function initialise() {
+  baseCtx.clearRect(0,0,baseCanvas.width,baseCanvas.height);
+  render();
+  saveHistory();
+  updateControls();
+  loadFromDevice();
+}
+
+initialise();
+</script>
+
+</body>
+</html>

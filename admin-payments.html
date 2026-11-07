@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#172d55">
+  <title>Study Vibe | Admin Dashboard</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 22px 14px;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #eef2f8;
+      color: #1b2942;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, #101a35, #234b7c);
+      color: white;
+      padding: 24px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+    }
+
+    header h1 { margin: 0 0 8px; }
+
+    header p {
+      margin: 0;
+      color: #dbe6f7;
+      font-size: 14px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .account {
+      font-size: 13px;
+      color: #59677d;
+      overflow-wrap: anywhere;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 5px 20px #14294a12;
+      margin-bottom: 18px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stat {
+      background: #f4f7fc;
+      padding: 17px;
+      border-radius: 12px;
+      border: 1px solid #e0e7f1;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 25px;
+      color: #183c75;
+      margin-top: 7px;
+    }
+
+    .stat span {
+      font-size: 13px;
+      color: #69758a;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    select, button {
+      padding: 11px 13px;
+      border-radius: 8px;
+      border: 1px solid #cbd4e2;
+      font-size: 14px;
+    }
+
+    select { background: white; }
+
+    button {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .refresh {
+      background: #183c75;
+      color: white;
+      border: none;
+    }
+
+    .approve {
+      background: #e8f7ed;
+      color: #176334;
+      border: 1px solid #b9e3c7;
+    }
+
+    .reject {
+      background: #fff0ee;
+      color: #963b30;
+      border: 1px solid #f0c5bf;
+    }
+
+    .actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    #message {
+      display: none;
+      padding: 13px;
+      border-radius: 9px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 850px;
+      font-size: 13px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 13px 11px;
+      border-bottom: 1px solid #e7ecf3;
+      vertical-align: top;
+    }
+
+    th {
+      color: #526078;
+      background: #f7f9fc;
+    }
+
+    td { overflow-wrap: anywhere; }
+
+    .status {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .pending {
+      background: #fff5dc;
+      color: #815c0b;
+    }
+
+    .verified {
+      background: #e8f7ed;
+      color: #176334;
+    }
+
+    .failed {
+      background: #fff0ee;
+      color: #963b30;
+    }
+
+    .empty {
+      padding: 28px 12px;
+      text-align: center;
+      color: #69758a;
+    }
+
+    .small-note {
+      color: #69758a;
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 15px;
+    }
+
+    .logout {
+      background: white;
+      color: #183c75;
+    }
+
+    @media(max-width: 600px) {
+      .stats { grid-template-columns: 1fr; }
+      .panel { padding: 14px; }
+      header { padding: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<main class="container">
+
+  <header>
+    <h1>Study Vibe Admin</h1>
+    <p>Private payment management dashboard</p>
+  </header>
+
+  <div class="topbar">
+    <div class="account" id="adminAccount">
+      Checking administrator access...
+    </div>
+    <button class="logout" id="logoutButton" type="button">
+      Log out
+    </button>
+  </div>
+
+  <div id="message" role="status" aria-live="polite"></div>
+
+  <section class="stats">
+    <div class="stat">
+      <span>Pending payments</span>
+      <strong id="pendingCount">—</strong>
+    </div>
+
+    <div class="stat">
+      <span>Approved payments</span>
+      <strong id="approvedCount">—</strong>
+    </div>
+
+    <div class="stat">
+      <span>Rejected payments</span>
+      <strong id="rejectedCount">—</strong>
+    </div>
+  </section>
+
+  <section class="panel">
+
+    <div class="toolbar">
+      <div>
+        <h2 style="margin:0 0 5px">Payment submissions</h2>
+        <span style="font-size:13px;color:#69758a">
+          Review student payment information.
+        </span>
+      </div>
+
+      <div class="actions">
+        <select id="statusFilter" aria-label="Filter payment status">
+          <option value="pending">Pending</option>
+          <option value="verified">Approved</option>
+          <option value="failed">Rejected</option>
+        </select>
+
+        <button class="refresh" id="refreshButton" type="button">
+          Refresh
+        </button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Payment ID</th>
+            <th>Student email</th>
+            <th>Method</th>
+            <th>Amount</th>
+            <th>Sender number</th>
+            <th>Transaction ID</th>
+            <th>Date</th>
+            <th>Status / Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="paymentsBody">
+          <tr>
+            <td colspan="8" class="empty">
+              Loading payments...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="small-note">
+      Important: Check the transaction directly with the payment provider
+      or bank before approving it. A submitted transaction ID alone does
+      not prove that money was received. Approval activates one month of
+      Premium access.
+    </p>
+
+  </section>
+
+</main>
+
+<script>
+  const adminAccount = document.getElementById("adminAccount");
+  const message = document.getElementById("message");
+  const paymentsBody = document.getElementById("paymentsBody");
+  const statusFilter = document.getElementById("statusFilter");
+
+  let isAdmin = false;
+  let paymentCache = {
+    pending: [],
+    verified: [],
+    failed: []
+  };
+
+  function showMessage(text, success = false) {
+    message.style.display = "block";
+    message.style.background = success ? "#e8f7ed" : "#fff0ee";
+    message.style.color = success ? "#176334" : "#963b30";
+    message.textContent = text;
+  }
+
+  function clearMessage() {
+    message.style.display = "none";
+    message.textContent = "";
+  }
+
+  async function apiRequest(url, options = {}) {
+    const response = await fetch(url, {
+      credentials: "same-origin",
+      ...options,
+      headers: {
+        ...(options.headers || {})
+      }
+    });
+
+    let data = {};
+
+    try {
+      data = await response.json();
+    } catch {
+      data = {};
+    }
+
+    if (!response.ok) {
+      throw new Error(data.error || "Request failed.");
+    }
+
+    return data;
+  }
+
+  async function checkAdmin() {
+    try {
+      const data = await apiRequest("/api/auth/me");
+
+      if (!data.loggedIn || !data.user) {
+        window.location.href = "login.html";
+        return false;
+      }
+
+      adminAccount.textContent =
+        "Signed in as: " + data.user.email;
+
+      // The server remains the authority for admin access.
+      // This check only allows the dashboard to continue loading.
+      isAdmin = true;
+
+      return true;
+
+    } catch (error) {
+      showMessage(error.message);
+      adminAccount.textContent = "Could not verify your account.";
+      return false;
+    }
+  }
+
+  function makeCell(value) {
+    const cell = document.createElement("td");
+    cell.textContent =
+      value === null || value === undefined || value === ""
+        ? "—"
+        : String(value);
+    return cell;
+  }
+
+  function makeStatus(status) {
+    const span = document.createElement("span");
+    span.className = "status " + status;
+    span.textContent =
+      status === "verified" ? "Approved" :
+      status === "failed" ? "Rejected" :
+      "Pending";
+    return span;
+  }
+
+  function renderPayments(payments) {
+    paymentsBody.replaceChildren();
+
+    if (!payments.length) {
+      const row = document.createElement("tr");
+      const cell = document.createElement("td");
+
+      cell.colSpan = 8;
+      cell.className = "empty";
+      cell.textContent = "No payments found in this category.";
+
+      row.appendChild(cell);
+      paymentsBody.appendChild(row);
+      return;
+    }
+
+    payments.forEach(payment => {
+      const row = document.createElement("tr");
+
+      row.appendChild(makeCell(payment.id));
+      row.appendChild(makeCell(payment.email));
+      row.appendChild(makeCell(payment.provider));
+      row.appendChild(makeCell("৳" + payment.amount));
+      row.appendChild(makeCell(payment.sender_number));
+      row.appendChild(makeCell(payment.transaction_id));
+
+      const date = payment.created_at
+        ? new Date(payment.created_at.replace(" ", "T") + "Z")
+        : null;
+
+      row.appendChild(makeCell(
+        date && !Number.isNaN(date.getTime())
+          ? date.toLocaleString()
+          : payment.created_at
+      ));
+
+      const actionCell = document.createElement("td");
+      actionCell.appendChild(makeStatus(payment.status));
+
+      if (payment.status === "pending") {
+        const actions = document.createElement("div");
+        actions.className = "actions";
+        actions.style.marginTop = "9px";
+
+        const approveButton = document.createElement("button");
+        approveButton.className = "approve";
+        approveButton.textContent = "Approve";
+        approveButton.addEventListener("click", () => {
+          reviewPayment(payment.id, "approve");
+        });
+
+        const rejectButton = document.createElement("button");
+        rejectButton.className = "reject";
+        rejectButton.textContent = "Reject";
+        rejectButton.addEventListener("click", () => {
+          reviewPayment(payment.id, "reject");
+        });
+
+        actions.append(approveButton, rejectButton);
+        actionCell.appendChild(actions);
+      }
+
+      row.appendChild(actionCell);
+      paymentsBody.appendChild(row);
+    });
+  }
+
+  async function loadPayments() {
+    if (!isAdmin) return;
+
+    clearMessage();
+
+    paymentsBody.replaceChildren();
+
+    const loadingRow = document.createElement("tr");
+    const loadingCell = document.createElement("td");
+    loadingCell.colSpan = 8;
+    loadingCell.className = "empty";
+    loadingCell.textContent = "Loading payments...";
+    loadingRow.appendChild(loadingCell);
+    paymentsBody.appendChild(loadingRow);
+
+    try {
+      const statuses = ["pending", "verified", "failed"];
+
+      const results = await Promise.all(
+        statuses.map(status =>
+          apiRequest(
+            "/api/admin/payments?status=" + encodeURIComponent(status)
+          )
+        )
+      );
+
+      statuses.forEach((status, index) => {
+        paymentCache[status] = results[index].payments || [];
+      });
+
+      document.getElementById("pendingCount").textContent =
+        paymentCache.pending.length;
+
+      document.getElementById("approvedCount").textContent =
+        paymentCache.verified.length;
+
+      document.getElementById("rejectedCount").textContent =
+        paymentCache.failed.length;
+
+      renderPayments(paymentCache[statusFilter.value]);
+
+    } catch (error) {
+      paymentsBody.replaceChildren();
+
+      const row = document.createElement("tr");
+      const cell = document.createElement("td");
+
+      cell.colSpan = 8;
+      cell.className = "empty";
+      cell.textContent = error.message;
+
+      row.appendChild(cell);
+      paymentsBody.appendChild(row);
+
+      showMessage(error.message);
+    }
+  }
+
+  async function reviewPayment(paymentId, action) {
+    const approved = action === "approve";
+
+    const confirmed = window.confirm(
+      approved
+        ? "Have you personally verified that ৳299 was received? Approve this payment and activate Premium?"
+        : "Are you sure you want to reject this payment?"
+    );
+
+    if (!confirmed) return;
+
+    clearMessage();
+
+    try {
+      const result = await apiRequest(
+        "/api/admin/payments/" + paymentId + "/" + action,
+        { method: "POST" }
+      );
+
+      showMessage(result.message, true);
+
+      await loadPayments();
+
+    } catch (error) {
+      showMessage(error.message);
+    }
+  }
+
+  statusFilter.addEventListener("change", () => {
+    renderPayments(paymentCache[statusFilter.value]);
+  });
+
+  document.getElementById("refreshButton").addEventListener(
+    "click",
+    loadPayments
+  );
+
+  document.getElementById("logoutButton").addEventListener(
+    "click",
+    async () => {
+      try {
+        await apiRequest("/api/auth/logout", {
+          method: "POST"
+        });
+
+        window.location.href = "login.html";
+
+      } catch (error) {
+        showMessage(error.message);
+      }
+    }
+  );
+
+  async function startDashboard() {
+    const allowed = await checkAdmin();
+
+    if (allowed) {
+      await loadPayments();
+    }
+  }
+
+  startDashboard();
+</script>
+
+</body>
+</html>
