@@ -1679,7 +1679,15 @@ const payload = {
 
       generateButton.disabled = true;
       generateButton.textContent = "Generating...";
-      showStatus(studyStatus, "Connecting to the AI server...");
+      const waitingMessage = task === "short"
+  ? "⏳ Generating your short questions. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again."
+  : task === "notes"
+  ? "⏳ Preparing your study notes. Please wait while AI processes your material. Keep this page open."
+  : task === "summary"
+  ? "⏳ Preparing your lesson summary. Please keep this page open while AI works."
+  : "⏳ AI is processing your request. Please wait and keep this page open.";
+
+showStatus(studyStatus, waitingMessage);
       resultBox.textContent = "Please wait while your answer is generated.";
 
       try {

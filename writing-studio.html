@@ -256,9 +256,9 @@ function getFormData() {
 
 async function sendWritingRequest(data, buttonText) {
   generateBtn.disabled = true;
-  generateBtn.textContent = "Please wait...";
-  statusBox.textContent = "Your writing is being prepared...";
-  resultBox.textContent = "Generating...";
+  generateBtn.textContent = "⏳ Please wait. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again.";
+  statusBox.textContent = "⏳ Your writing is being prepared. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again.";
+  resultBox.textContent = "⏳ Generating. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again.";
 
   try {
     const response = await fetch("/api/writing", {

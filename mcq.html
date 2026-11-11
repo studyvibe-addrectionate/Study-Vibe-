@@ -1196,8 +1196,8 @@ $("generateBtn").addEventListener("click", async () => {
 
     setStatus(
       currentPlan === "premium"
-        ? "Generating 30 MCQs with answers and explanations. Please wait..."
-        : "Generating 30 MCQs with answers. Please wait..."
+        ? "⏳ Generating 30 MCQs with answers and explanations. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again."
+        : "⏳ Generating 30 MCQs with answers. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again."
     );
 
     const generated = await generateQuestions(
