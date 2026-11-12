@@ -1552,9 +1552,9 @@ solveMathButton.addEventListener("click", async () => {
 
   solveMathButton.disabled = true;
   solveMathButton.textContent = "Solving...";
-  mathStatus.textContent = "Connecting to the AI server...";
+  mathStatus.textContent = "Connecting to the AI server. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again.";
   mathStatus.className = "status";
-  mathSolution.textContent = "Please wait while AI solves your problem.";
+  mathSolution.textContent = "Solving your problem.This may take 5 to 10 minutes. Please keep this page open and do not click Generate again.";
 
   recognizedMath.textContent = question ||
     "Math problem submitted through image.";
@@ -1690,13 +1690,13 @@ const payload = {
       const waitingMessage = task === "short"
   ? "⏳ Generating your short questions. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again."
   : task === "notes"
-  ? "⏳ Preparing your study notes. Please wait while AI processes your material. Keep this page open."
+  ? "⏳ Preparing your study notes. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again."
   : task === "summary"
-  ? "⏳ Preparing your lesson summary. Please keep this page open while AI works."
-  : "⏳ AI is processing your request. Please wait and keep this page open.";
+  ? "⏳ Preparing your lesson summary. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again."
+  : "⏳ AI is processing your request. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again.";
 
 showStatus(studyStatus, waitingMessage);
-      resultBox.textContent = "Please wait while your answer is generated.";
+      resultBox.textContent = "This may take 5 to 10 minutes. Please keep this page open and do not click Generate again.";
 
       try {
         const response = await fetch("/api/study", {
