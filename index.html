@@ -1614,349 +1614,282 @@ solveMathButton.addEventListener("click", async () => {
     console.error("Math Help error:", error);
 
     mathSolution.textContent =
-      "We couldn't solve the problem.";
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Vibe | From Confusion to Confidence</title>
+  <meta name="description" content="Study Vibe by Addrectionate - Your AI-powered study assistant.">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    mathStatus.textContent =
-      error.message || "Could not connect to the AI server.";
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7faff;
+      color: #17243b;
+    }
 
-    mathStatus.className = "status error";
+    header {
+      min-height: 76px;
+      padding: 14px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: white;
+      box-shadow: 0 2px 14px rgba(20, 50, 90, 0.07);
+    }
 
-  } finally {
-    solveMathButton.disabled = false;
-    solveMathButton.textContent = "Solve Step by Step";
-  }
-});
-    studyForm.addEventListener("submit", async function (event) {
-      event.preventDefault();
+    .brand {
+      font-size: 25px;
+      font-weight: 800;
+      color: #2468d8;
+      text-decoration: none;
+    }
 
-      const task = document.getElementById("task").value;
-      const subject = document.getElementById("subject").value.trim();
-      const topic = document.getElementById("topic").value.trim();
-      const difficulty = document.getElementById("difficulty").value;
-      const language = document.getElementById("language").value;
-      const question = document.getElementById("question").value.trim();
-      const textbook = pdfText.value
-        .trim()
-        .slice(0, MAX_TEXT_CHARACTERS);
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-      if (!question && !topic && !textbook && !studyImage.files[0]) {
-        showStatus(
-          studyStatus,
-          "Please enter a question, topic, upload an image, or provide PDF study text.",
-          "error"
-        );
-        return;
+    .header-links a {
+      text-decoration: none;
+      font-weight: 700;
+      padding: 11px 17px;
+      border-radius: 10px;
+      color: #2468d8;
+    }
+
+    .header-links .premium {
+      background: #fff0c9;
+      color: #805600;
+    }
+
+    .hero {
+      min-height: 78vh;
+      padding: 55px 8%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 55px;
+      flex-wrap: wrap;
+    }
+
+    .hero-content {
+      flex: 1 1 340px;
+      max-width: 590px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 9px 15px;
+      background: #e6f0ff;
+      color: #2468d8;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      font-size: clamp(40px, 6vw, 65px);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    h1 span {
+      color: #3478e5;
+    }
+
+    .hero-content p {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #627087;
+      margin-bottom: 28px;
+    }
+
+    .start-button {
+      display: inline-block;
+      background: #3478e5;
+      color: white;
+      text-decoration: none;
+      padding: 16px 30px;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      box-shadow: 0 8px 20px rgba(52, 120, 229, 0.22);
+      transition: 0.2s;
+    }
+
+    .start-button:hover {
+      background: #205fc5;
+      transform: translateY(-2px);
+    }
+
+    .robot-area {
+      flex: 1 1 280px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .robot-area img {
+      width: min(100%, 390px);
+      max-height: 420px;
+      object-fit: contain;
+    }
+
+    .features {
+      padding: 55px 8%;
+      text-align: center;
+      background: white;
+    }
+
+    .features h2 {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .features > p {
+      color: #718096;
+      margin-bottom: 30px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 18px;
+      max-width: 1050px;
+      margin: auto;
+    }
+
+    .feature {
+      padding: 25px 18px;
+      background: #f5f8ff;
+      border: 1px solid #e6edfa;
+      border-radius: 16px;
+    }
+
+    .feature h3 {
+      color: #2468d8;
+      margin-bottom: 9px;
+    }
+
+    .feature p {
+      color: #718096;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    footer {
+      padding: 25px;
+      text-align: center;
+      color: #778398;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 13px 5%;
       }
 
-     let imageData = null;
-
-if (studyImage.files && studyImage.files[0]) {
-  try {
-    imageData = await compressStudyImage(studyImage.files[0]);
-  } catch (error) {
-    alert("Could not process the image. Please try another photo.");
-    return;
-  }
-}
-
-if (task === "short") {
-  // Short question generation instructions
-  // Use the uploaded PDF, image, topic or question as source.
-  // Generate concise, relevant questions with answers.
-}
-const requestQuestion = question || (
-  task === "notes"
-    ? `Generate detailed, well-organized study notes for ${subject || "the supplied subject"}. Topic: ${topic || "derive it from the uploaded study material"}. Use the supplied PDF text as the primary source.`
-    : task === "short"
-    ? `Generate important short questions with concise answers for ${subject || "the supplied subject"}. Topic: ${topic || "derive it from the uploaded study material"}. Use the supplied PDF text as the primary source.`
-    : task === "summary"
-    ? `Prepare a clear and comprehensive summary of ${subject || "the supplied study material"}. Topic: ${topic || "derive it from the uploaded PDF"}. Cover the important concepts and key points.`
-    : `Please help me with ${topic || "the supplied study material"}.`
-);
-
-const payload = {
-  task,
-  subject,
-  topic,
-  difficulty,
-  language,
-  question: requestQuestion,
-  textbook,
-  imageData
-};
-
-      generateButton.disabled = true;
-      generateButton.textContent = "Generating...";
-      const waitingMessage = task === "short"
-  ? "⏳ Generating your short questions. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again."
-  : task === "notes"
-  ? "⏳ Preparing your study notes. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again."
-  : task === "summary"
-  ? "⏳ Preparing your lesson summary. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again."
-  : "⏳ AI is processing your request. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again.";
-
-showStatus(studyStatus, waitingMessage);
-      resultBox.textContent = "This may take 5 to 10 minutes. Please keep this page open and do not click Generate again.";
-
-      try {
-        const response = await fetch("/api/study", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json().catch(() => ({}));
-
-        if (!response.ok) {
-          throw new Error(
-            data.error ||
-            "The server returned an error (" + response.status + ")."
-          );
-        }
-
-        if (!data.answer) {
-          throw new Error(
-            "The server did not return an answer. Check server.mjs."
-          );
-        }
-
-       await renderAnswer(data.answer, task);
-showStatus(studyStatus, "Your result is ready.", "success");
-      } catch (error) {
-        console.error("AI request error:", error);
-
-        resultBox.textContent = "We couldn't generate a result.";
-        showStatus(
-          studyStatus,
-          error.message ||
-          "Could not connect to the AI server. Make sure server.mjs is running and the AI connection is configured.",
-          "error"
-        );
-      } finally {
-        generateButton.disabled = false;
-        generateButton.textContent = "Generate";
-      }
-    });
-
-    document.getElementById("clearButton").addEventListener("click", function () {
-  if (studyRecognition && isStudyListening) {
-    studyRecognition.stop();
-  }
-
-  studyForm.reset();
-
-  pdfText.value = "";
-  pdfFile.value = "";
-
-  studyImage.value = "";
-  studyImagePreview.src = "";
-  studyImagePreview.style.display = "none";
-  removeStudyImage.style.display = "none";
-
-  studyVoiceStatus.textContent = "Tap the microphone and speak.";
-  studyVoiceButton.textContent = "🎤 Speak Your Question";
-
-  resultBox.textContent = "Your AI-generated answer will appear here.";
-
-  showStatus(pdfStatus, "");
-  showStatus(studyStatus, "");
-});
-      
-    document.getElementById("copyButton").addEventListener("click", async function () {
-      const textToCopy = resultBox.textContent.trim();
-
-      if (
-        !textToCopy ||
-        textToCopy === "Your AI-generated answer will appear here."
-      ) {
-        showStatus(studyStatus, "There is no result to copy yet.", "error");
-        return;
+      .brand {
+        font-size: 21px;
       }
 
-      try {
-        await navigator.clipboard.writeText(textToCopy);
-        showStatus(studyStatus, "Result copied to clipboard.", "success");
-      } catch (error) {
-        showStatus(
-          studyStatus,
-          "Clipboard access failed. Select the result text and copy it manually.",
-          "error"
-        );
+      .header-links {
+        gap: 2px;
       }
-    });
-    // PREMIUM GRAPH ACCESS
 
-async function loadGraphMembership() {
-  const graphSection = document.getElementById("premiumGraphSection");
+      .header-links a {
+        padding: 9px 10px;
+        font-size: 13px;
+      }
 
-  try {
-    const response = await fetch("/api/auth/me", {
-      credentials: "same-origin"
-    });
+      .hero {
+        text-align: center;
+        padding: 45px 7%;
+        gap: 25px;
+      }
 
-    const data = await response.json();
+      .robot-area img {
+        max-height: 290px;
+      }
+    }
+  </style>
+</head>
 
-    const isPremium =
-      data.loggedIn &&
-      data.user &&
-      data.user.plan === "premium";
+<body>
 
-    if (!isPremium) {
-      graphSection.innerHTML = `
-        <h3>📈 Math Graph Plotter</h3>
+  <header>
+    <a class="brand" href="index.html">Study Vibe</a>
+
+    <nav class="header-links">
+      <a href="login.html">Sign In</a>
+      <a class="premium" href="payment.html">Premium</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="tag">Study Vibe by Addrectionate</div>
+
+        <h1>From Confusion to <span>Confidence.</span></h1>
+
         <p>
-          Mathematical graph plotting is available with
-          Study Vibe Premium.
+          Your personal AI study assistant. Understand difficult topics,
+          solve mathematics, create notes and summaries, and prepare
+          for exams with a smarter way of learning.
         </p>
-        <a class="button" href="payment.html">
-          Upgrade to Premium
+
+        <a class="start-button" href="navigation.html">
+          Start Learning →
         </a>
-      `;
-    }
+      </div>
 
-  } catch (error) {
-    console.error("Could not check graph membership:", error);
-  }
-}
+      <div class="robot-area">
+        <img src="images/robot1.png" alt="Study Vibe AI Robot">
+      </div>
+    </section>
 
-loadGraphMembership();
-    // MATH GRAPH PLOTTER
+    <section class="features">
+      <h2>A Smarter Way to Study</h2>
+      <p>Everything you need to make learning easier.</p>
 
-const graphEquation = document.getElementById("graphEquation");
-const graphMin = document.getElementById("graphMin");
-const graphMax = document.getElementById("graphMax");
-const plotGraphButton = document.getElementById("plotGraphButton");
-const clearGraphButton = document.getElementById("clearGraphButton");
-const graphStatus = document.getElementById("graphStatus");
+      <div class="feature-grid">
+        <div class="feature">
+          <h3>AI Study Assistant</h3>
+          <p>Ask questions and understand lessons with AI.</p>
+        </div>
 
-plotGraphButton.addEventListener("click", function () {
+        <div class="feature">
+          <h3>Math Help</h3>
+          <p>Get step-by-step mathematical solutions.</p>
+        </div>
 
-  const expression = graphEquation.value.trim();
-  const min = Number(graphMin.value);
-  const max = Number(graphMax.value);
+        <div class="feature">
+          <h3>Smart Notes</h3>
+          <p>Create useful notes and summaries from your lessons.</p>
+        </div>
 
-  if (!expression) {
-    graphStatus.textContent = "Please enter a mathematical function.";
-    graphStatus.className = "status error";
-    return;
-  }
+        <div class="feature">
+          <h3>Exam Preparation</h3>
+          <p>Practice questions and prepare for your exams.</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-  if (
-    !Number.isFinite(min) ||
-    !Number.isFinite(max) ||
-    min >= max
-  ) {
-    graphStatus.textContent =
-      "Please enter a valid minimum and maximum x-value.";
-    graphStatus.className = "status error";
-    return;
-  }
+  <footer>
+    Study Vibe by Addrectionate · Building a direction with affection
+  </footer>
 
-  try {
-    const compiledFunction = math.compile(expression);
-
-    const xValues = [];
-    const yValues = [];
-
-    const samples = 500;
-
-    for (let i = 0; i <= samples; i++) {
-
-      const x = min + (max - min) * i / samples;
-
-      let y;
-
-      try {
-        y = compiledFunction.evaluate({ x });
-
-        if (typeof y !== "number" || !Number.isFinite(y)) {
-          y = null;
-        }
-
-        if (y !== null && Math.abs(y) > 1000000) {
-          y = null;
-        }
-
-      } catch {
-        y = null;
-      }
-
-      xValues.push(x);
-      yValues.push(y);
-    }
-
-    const graphData = [{
-      x: xValues,
-      y: yValues,
-      type: "scatter",
-      mode: "lines",
-      name: "y = " + expression,
-      line: {
-        width: 3
-      },
-      connectgaps: false
-    }];
-
-    const layout = {
-      title: "Graph of y = " + expression,
-      xaxis: {
-        title: "x",
-        zeroline: true,
-        showgrid: true
-      },
-      yaxis: {
-        title: "y",
-        zeroline: true,
-        showgrid: true
-      },
-      paper_bgcolor: "#ffffff",
-      plot_bgcolor: "#faf9ff",
-      margin: {
-        l: 55,
-        r: 20,
-        t: 55,
-        b: 50
-      }
-    };
-
-    Plotly.newPlot(
-      "mathGraph",
-      graphData,
-      layout,
-      {
-        responsive: true,
-        displaylogo: false
-      }
-    );
-
-    graphStatus.textContent = "Graph generated successfully.";
-    graphStatus.className = "status success";
-
-  } catch (error) {
-
-    graphStatus.textContent =
-      "Invalid equation. Try expressions like x^2, 2*x+3 or sin(x).";
-
-    graphStatus.className = "status error";
-
-  }
-
-});
-
-clearGraphButton.addEventListener("click", function () {
-
-  graphEquation.value = "";
-  graphMin.value = "-10";
-  graphMax.value = "10";
-
-  Plotly.purge("mathGraph");
-
-  graphStatus.textContent = "Graph cleared.";
-  graphStatus.className = "status";
-
-});
-  </script>
 </body>
 </html>

@@ -63,11 +63,17 @@
     }
 
     .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-bottom: 18px;
-    }
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 650px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
     .stat {
       background: #f4f7fc;
@@ -246,21 +252,92 @@
   <div id="message" role="status" aria-live="polite"></div>
 
   <section class="stats">
+
+  <div class="stat">
+    <span>Total registered accounts</span>
+    <strong id="totalUsersCount">—</strong>
+  </div>
+
+  <div class="stat">
+    <span>Active Premium members</span>
+    <strong id="activePremiumCount">—</strong>
+  </div>
+
+  <div class="stat">
+    <span>Free members</span>
+    <strong id="freeUsersCount">—</strong>
+  </div>
+
+  <div class="stat">
+    <span>Total Premium requests</span>
+    <strong id="totalRequestsCount">—</strong>
+  </div>
+
+  <div class="stat">
+    <span>Pending payments</span>
+    <strong id="pendingCount">—</strong>
+  </div>
+
+  <div class="stat">
+    <span>Approved payments</span>
+    <strong id="approvedCount">—</strong>
+  </div>
+
+  <div class="stat">
+    <span>Rejected payments</span>
+    <strong id="rejectedCount">—</strong>
+  </div>
+
+</section>
+
+<section class="panel">
+  <h2>AI Usage Analytics</h2>
+  <p style="font-size:13px;color:#69758a">
+    Current weekly Free and monthly Premium usage.
+  </p>
+
+  <div class="stats">
     <div class="stat">
-      <span>Pending payments</span>
-      <strong id="pendingCount">—</strong>
+      <span>Total AI requests</span>
+      <strong id="aiTotalRequests">—</strong>
     </div>
 
     <div class="stat">
-      <span>Approved payments</span>
-      <strong id="approvedCount">—</strong>
+      <span>Free AI requests</span>
+      <strong id="aiFreeRequests">—</strong>
     </div>
 
     <div class="stat">
-      <span>Rejected payments</span>
-      <strong id="rejectedCount">—</strong>
+      <span>Premium AI requests</span>
+      <strong id="aiPremiumRequests">—</strong>
     </div>
-  </section>
+
+    <div class="stat">
+      <span>Free active users</span>
+      <strong id="aiFreeUsers">—</strong>
+    </div>
+
+    <div class="stat">
+      <span>Premium active users</span>
+      <strong id="aiPremiumUsers">—</strong>
+    </div>
+
+    <div class="stat">
+      <span>Total active users</span>
+      <strong id="aiActiveUsers">—</strong>
+    </div>
+
+    <div class="stat">
+      <span>Average requests per active user</span>
+      <strong id="aiAverageRequests">—</strong>
+    </div>
+  </div>
+
+  <p id="aiAnalyticsPeriod"
+     style="font-size:12px;color:#69758a">
+    Usage periods will appear here.
+  </p>
+</section>
 
   <section class="panel">
 
@@ -481,6 +558,62 @@
     });
   }
 
+  async function loadAIAnalytics() {
+  const result = await apiRequest("/api/admin/ai-analytics");
+
+  if (!result.success) {
+    throw new Error("Could not load AI analytics.");
+  }
+
+  const a = result.analytics;
+
+  document.getElementById("aiTotalRequests").textContent =
+    a.totalRequests;
+
+  document.getElementById("aiFreeRequests").textContent =
+    a.freeRequests;
+
+  document.getElementById("aiPremiumRequests").textContent =
+    a.premiumRequests;
+
+  document.getElementById("aiFreeUsers").textContent =
+    a.freeActiveUsers;
+
+  document.getElementById("aiPremiumUsers").textContent =
+    a.premiumActiveUsers;
+
+  document.getElementById("aiActiveUsers").textContent =
+    a.totalActiveUsers;
+
+  document.getElementById("aiAverageRequests").textContent =
+    a.averageRequestsPerUser;
+
+  document.getElementById("aiAnalyticsPeriod").textContent =
+    `Free weekly period: ${a.freePeriod} | Premium monthly period: ${a.premiumPeriod}`;
+}
+
+  async function loadStats() {
+  const result = await apiRequest("/api/admin/stats");
+
+  if (!result.success) {
+    throw new Error("Could not load dashboard statistics.");
+  }
+
+  const stats = result.stats;
+
+  document.getElementById("totalUsersCount").textContent =
+    stats.totalUsers;
+
+  document.getElementById("totalRequestsCount").textContent =
+    stats.totalRequests;
+
+  document.getElementById("activePremiumCount").textContent =
+    stats.activePremium;
+
+  document.getElementById("freeUsersCount").textContent =
+    stats.freeUsers;
+}
+
   async function loadPayments() {
     if (!isAdmin) return;
 
@@ -497,7 +630,10 @@
     paymentsBody.appendChild(loadingRow);
 
     try {
-      const statuses = ["pending", "verified", "failed"];
+  await loadStats();
+  await loadAIAnalytics();
+
+  const statuses = ["pending", "verified", "failed"];
 
       const results = await Promise.all(
         statuses.map(status =>

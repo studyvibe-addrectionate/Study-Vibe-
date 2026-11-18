@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Study Assistant | Study Vibe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f8ff;
+      color: #17243b;
+    }
+
+    header {
+      background: white;
+      padding: 17px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px #17365d12;
+    }
+
+    .logo {
+      color: #2468d8;
+      font-size: 23px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    header a.back {
+      color: #2468d8;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .intro {
+      text-align: center;
+      padding: 38px 15px 22px;
+    }
+
+    .intro h1 {
+      font-size: clamp(28px, 5vw, 40px);
+      margin-bottom: 10px;
+    }
+
+    .intro h1 span { color: #3478e5; }
+
+    .intro p { color: #718096; line-height: 1.6; }
+
+    .container {
+      max-width: 900px;
+      width: 92%;
+      margin: 15px auto 55px;
+    }
+
+    .task-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .task-button {
+      background: white;
+      border: 2px solid #e4ebf7;
+      border-radius: 13px;
+      padding: 17px 8px;
+      cursor: pointer;
+      color: #34445e;
+      font-size: 14px;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    .task-button .emoji {
+      display: block;
+      font-size: 25px;
+      margin-bottom: 8px;
+    }
+
+    .task-button.active {
+      border-color: #3478e5;
+      background: #eaf2ff;
+      color: #2468d8;
+    }
+
+    .panel {
+      background: white;
+      padding: 27px;
+      border-radius: 18px;
+      border: 1px solid #e5ecf8;
+      box-shadow: 0 5px 20px #17365d0b;
+    }
+
+    .panel h2 {
+      font-size: 23px;
+      margin-bottom: 8px;
+    }
+
+    .description {
+      color: #718096;
+      font-size: 14px;
+      margin-bottom: 23px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      font-size: 14px;
+      margin: 17px 0 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #dce4f0;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 15px;
+      background: white;
+      color: #17243b;
+    }
+
+    textarea {
+      min-height: 125px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #b8d2ff;
+      border-color: #3478e5;
+    }
+
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .upload-box {
+      border: 1px dashed #b7c9e5;
+      border-radius: 12px;
+      padding: 15px;
+      background: #f8faff;
+    }
+
+    .upload-box input { border: none; padding: 5px 0; }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    button.primary {
+      background: #3478e5;
+      color: white;
+      border: none;
+      padding: 14px 22px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    button.secondary {
+      background: #edf3ff;
+      color: #2468d8;
+      border: none;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .result-box {
+      display: none;
+      margin-top: 25px;
+      padding: 23px;
+      border-radius: 14px;
+      border: 1px solid #dce8fb;
+      background: #fbfdff;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .result-box h2 {
+      font-size: 21px;
+      color: #2468d8;
+      margin-bottom: 15px;
+    }
+
+    .result-content h1, .result-content h2,
+    .result-content h3 {
+      margin: 16px 0 9px;
+    }
+
+    .result-content p { margin: 9px 0; }
+
+    .result-content ul, .result-content ol {
+      padding-left: 24px;
+      margin: 10px 0;
+    }
+
+    .result-content pre {
+      background: #edf2fa;
+      padding: 13px;
+      overflow-x: auto;
+      border-radius: 8px;
+    }
+
+    .result-content table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 12px 0;
+    }
+
+    .result-content td, .result-content th {
+      border: 1px solid #dce4f0;
+      padding: 8px;
+    }
+
+    .result-content img { max-width: 100%; }
+
+    .small-note {
+      color: #8793a5;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #8793a5;
+      font-size: 13px;
+    }
+
+    @media(max-width: 600px) {
+      .panel { padding: 19px; }
+      .two-columns { grid-template-columns: 1fr; }
+      .task-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <a href="index.html" class="logo">Study Vibe</a>
+  <a href="navigation.html" class="back">← Learning Menu</a>
+</header>
+
+<section class="intro">
+  <h1>Your <span>AI Study Assistant</span></h1>
+  <p>Ask, solve, understand and prepare for your exams.</p>
+</section>
+
+<main class="container">
+
+  <section class="task-grid">
+    <button class="task-button active" data-task="answer">
+      <span class="emoji">💬</span>Question Answer
+    </button>
+
+    <button class="task-button" data-task="math">
+      <span class="emoji">➗</span>Math Solve
+    </button>
+
+    <button class="task-button" data-task="short">
+      <span class="emoji">❓</span>Short Questions
+    </button>
+
+    <button class="task-button" data-task="summary">
+      <span class="emoji">📖</span>Summary
+    </button>
+
+    <button class="task-button" data-task="notes">
+      <span class="emoji">📝</span>Smart Notes
+    </button>
+  </section>
+
+  <section class="panel">
+    <h2 id="taskTitle">AI Question Answer</h2>
+    <p class="description" id="taskDescription">
+      Ask any study question and get a clear explanation from AI.
+    </p>
+
+    <form id="studyForm">
+
+      <div class="two-columns">
+        <div>
+          <label for="subject">Subject</label>
+          <input id="subject" type="text" placeholder="e.g. Chemistry">
+        </div>
+
+        <div>
+          <label for="topic">Topic or Chapter</label>
+          <input id="topic" type="text" placeholder="e.g. Chemical Bonding">
+        </div>
+      </div>
+
+      <div class="two-columns">
+        <div>
+          <label for="difficulty">Difficulty</label>
+          <select id="difficulty">
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate" selected>Intermediate</option>
+            <option value="Advanced">Advanced</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="language">Answer Language</label>
+          <select id="language">
+            <option value="English">English</option>
+            <option value="Bangla">বাংলা</option>
+            <option value="Both">English and Bangla</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="question" id="questionLabel">Your Question</label>
+      <textarea id="question" placeholder="Write your question here..."></textarea>
+
+      <div class="action-row">
+        <button type="button" class="secondary" id="voiceButton">
+          🎤 Speak
+        </button>
+        <span class="small-note" id="voiceStatus"></span>
+      </div>
+
+      <label for="studyImage">Upload a Photo (optional)</label>
+      <div class="upload-box">
+        <input type="file" id="studyImage" accept="image/png,image/jpeg,image/webp">
+      </div>
+
+      <label for="pdfFile">Upload a PDF (optional)</label>
+      <div class="upload-box">
+        <input type="file" id="pdfFile" accept="application/pdf">
+      </div>
+
+      <p class="small-note" id="pdfStatus">
+        You can ask questions from your uploaded PDF.
+      </p>
+
+      <div class="action-row">
+        <button type="submit" class="primary" id="generateButton">
+          Generate with AI →
+        </button>
+        <button type="button" class="secondary" id="clearButton">
+          Clear
+        </button>
+      </div>
+
+      <p class="status" id="studyStatus" role="status"></p>
+    </form>
+
+    <section class="result-box" id="result">
+      <div class="action-row" style="justify-content:space-between;align-items:center;margin-top:0">
+        <h2>AI Result</h2>
+        <button type="button" class="secondary" id="copyButton">Copy</button>
+      </div>
+      <div class="result-content" id="resultContent"></div>
+    </section>
+
+  </section>
+</main>
+
+<footer>
+  Study Vibe by Addrectionate · From Confusion to Confidence
+</footer>
+
+<script>
+  if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+
+  const taskButtons = document.querySelectorAll(".task-button");
+  const taskTitle = document.getElementById("taskTitle");
+  const taskDescription = document.getElementById("taskDescription");
+  const questionLabel = document.getElementById("questionLabel");
+  const questionInput = document.getElementById("question");
+  const form = document.getElementById("studyForm");
+  const statusText = document.getElementById("studyStatus");
+  const resultBox = document.getElementById("result");
+  const resultContent = document.getElementById("resultContent");
+  const generateButton = document.getElementById("generateButton");
+
+  let currentTask = "answer";
+  let extractedPdfText = "";
+  let latestAnswer = "";
+
+  const taskInfo = {
+    answer: {
+      title: "AI Question Answer",
+      description: "Ask any study question and get a clear explanation from AI.",
+      label: "Your Question",
+      placeholder: "Write your study question here..."
+    },
+    math: {
+      title: "Math Solve",
+      description: "Get step-by-step solutions to mathematical problems.",
+      label: "Math Problem",
+      placeholder: "Enter your mathematical problem..."
+    },
+    short: {
+      title: "Short Questions",
+      description: "Generate short questions to test your understanding.",
+      label: "Topic or Instructions",
+      placeholder: "Enter a topic or chapter for question generation..."
+    },
+    summary: {
+      title: "Lesson Summary",
+      description: "Turn your lesson or textbook chapter into an easy summary.",
+      label: "Topic or Instructions",
+      placeholder: "Enter the chapter or topic you want summarized..."
+    },
+    notes: {
+      title: "Smart Notes",
+      description: "Create organised study notes from a topic or uploaded PDF.",
+      label: "Topic or Instructions",
+      placeholder: "Enter the topic for your study notes..."
+    }
+  };
+
+  taskButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      currentTask = button.dataset.task;
+
+      taskButtons.forEach(item => item.classList.remove("active"));
+      button.classList.add("active");
+
+      const info = taskInfo[currentTask];
+      taskTitle.textContent = info.title;
+      taskDescription.textContent = info.description;
+      questionLabel.textContent = info.label;
+      questionInput.placeholder = info.placeholder;
+
+      resultBox.style.display = "none";
+      statusText.textContent = "";
+    });
+  });
+
+  async function extractPdf(file) {
+    if (!file) return "";
+
+    if (file.type !== "application/pdf") {
+      throw new Error("Please select a valid PDF file.");
+    }
+
+    statusText.textContent = "Reading your PDF...";
+
+    const buffer = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buffer }).promise;
+    let text = "";
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+      const page = await pdf.getPage(pageNumber);
+      const content = await page.getTextContent();
+      text += content.items.map(item => item.str).join(" ") + "\n";
+
+      if (text.length > 20000) break;
+    }
+
+    return text.slice(0, 20000);
+  }
+
+  async function compressStudyImage(file) {
+    if (!file) return "";
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      throw new Error("Please upload a JPG, PNG or WebP image.");
+    }
+
+    if (file.size > 12 * 1024 * 1024) {
+      throw new Error("Image must be smaller than 12 MB.");
+    }
+
+    const image = await createImageBitmap(file);
+    const canvas = document.createElement("canvas");
+    const maxDimension = 1600;
+    const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
+
+    canvas.width = Math.round(image.width * scale);
+    canvas.height = Math.round(image.height * scale);
+
+    const context = canvas.getContext("2d");
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    return canvas.toDataURL("image/jpeg", 0.82).split(",")[1];
+  }
+
+  function renderAnswer(answer) {
+    const raw = String(answer ?? "");
+
+    if (window.marked && window.DOMPurify) {
+      resultContent.innerHTML = DOMPurify.sanitize(
+        marked.parse(raw)
+      );
+    } else {
+      resultContent.textContent = raw;
+    }
+
+    if (window.MathJax && MathJax.typesetPromise) {
+      MathJax.typesetPromise([resultContent]).catch(console.error);
+    }
+  }
+
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const question = questionInput.value.trim();
+    const subject = document.getElementById("subject").value.trim();
+    const topic = document.getElementById("topic").value.trim();
+    const difficulty = document.getElementById("difficulty").value;
+    const language = document.getElementById("language").value;
+    const pdfFile = document.getElementById("pdfFile").files[0];
+    const imageFile = document.getElementById("studyImage").files[0];
+
+    if (!question && !pdfFile && !imageFile) {
+      statusText.textContent = "Please enter a question or upload a PDF/photo.";
+      return;
+    }
+
+    generateButton.disabled = true;
+    generateButton.textContent = "Generating...";
+    resultBox.style.display = "none";
+    statusText.textContent = "Your AI assistant is preparing your result...";
+
+    try {
+      extractedPdfText = pdfFile ? await extractPdf(pdfFile) : "";
+
+      const imageData = imageFile
+        ? await compressStudyImage(imageFile)
+        : "";
+
+      const payload = {
+        task: currentTask,
+        subject,
+        topic,
+        difficulty,
+        language,
+        question: question || (extractedPdfText
+          ? "Please work with the uploaded PDF."
+          : "Please analyse the uploaded image and help me."),
+        textbook: extractedPdfText,
+        imageData
+      };
+
+      const response = await fetch("/api/study", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || "AI request failed.");
+      }
+
+      const answer = data.answer || data.result || data.response;
+
+      if (!answer) {
+        throw new Error("The server returned an empty answer.");
+      }
+
+      latestAnswer = String(answer);
+      renderAnswer(latestAnswer);
+
+      resultBox.style.display = "block";
+      statusText.textContent = "Your result is ready!";
+      resultBox.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    } catch (error) {
+      console.error(error);
+      statusText.textContent = error.message || "Something went wrong. Please try again.";
+    } finally {
+      generateButton.disabled = false;
+      generateButton.textContent = "Generate with AI →";
+    }
+  });
+
+  document.getElementById("clearButton").addEventListener("click", () => {
+    form.reset();
+    extractedPdfText = "";
+    latestAnswer = "";
+    resultBox.style.display = "none";
+    statusText.textContent = "";
+    document.getElementById("pdfStatus").textContent =
+      "You can ask questions from your uploaded PDF.";
+  });
+
+  document.getElementById("pdfFile").addEventListener("change", event => {
+    const file = event.target.files[0];
+    document.getElementById("pdfStatus").textContent =
+      file ? "Selected: " + file.name : "You can ask questions from your uploaded PDF.";
+  });
+
+  document.getElementById("copyButton").addEventListener("click", async () => {
+    if (!latestAnswer) return;
+
+    try {
+      await navigator.clipboard.writeText(latestAnswer);
+      document.getElementById("copyButton").textContent = "Copied!";
+      setTimeout(() => {
+        document.getElementById("copyButton").textContent = "Copy";
+      }, 1500);
+    } catch {
+      statusText.textContent = "Copy is unavailable in this browser.";
+    }
+  });
+
+  document.getElementById("voiceButton").addEventListener("click", () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      document.getElementById("voiceStatus").textContent =
+        "Voice input is not supported in this browser.";
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang =
+      document.getElementById("language").value === "Bangla"
+        ? "bn-BD"
+        : "en-US";
+
+    recognition.interimResults = false;
+
+    document.getElementById("voiceStatus").textContent = "Listening...";
+
+    recognition.onresult = event => {
+      const spokenText = event.results[0][0].transcript;
+      questionInput.value += (questionInput.value ? " " : "") + spokenText;
+      document.getElementById("voiceStatus").textContent = "Voice input added.";
+    };
+
+    recognition.onerror = () => {
+      document.getElementById("voiceStatus").textContent =
+        "Could not recognise speech. Please try again.";
+    };
+
+    recognition.onend = () => {
+      if (document.getElementById("voiceStatus").textContent === "Listening...") {
+        document.getElementById("voiceStatus").textContent = "";
+      }
+    };
+
+    recognition.start();
+  });
+</script>
+
+</body>
+</html>

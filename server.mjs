@@ -1,4 +1,4 @@
-// ============================================
+﻿// ============================================
 // STUDY VIBE - SERVER
 // SECTION 1 OF 3
 // ============================================
@@ -1117,6 +1117,155 @@ app.get(
 
       return res.status(500).json({
         error: "Could not load payments."
+      });
+    }
+  }
+);
+
+// ============================================
+ // ADMIN - DASHBOARD STATISTICS
+ // ============================================
+
+app.get(
+  "/api/admin/stats",
+  requirePaymentAdmin,
+  async (req, res) => {
+    try {
+      const result = await pool.query(`
+        SELECT
+          (SELECT COUNT(*) FROM users) AS total_users,
+
+          (SELECT COUNT(*)
+           FROM users
+           WHERE plan = 'free') AS free_users,
+
+          (SELECT COUNT(*)
+           FROM users
+           WHERE plan = 'premium'
+           AND premium_expires_at > NOW()) AS active_premium,
+
+          (SELECT COUNT(*) FROM payments) AS total_requests,
+
+          (SELECT COUNT(*)
+           FROM payments
+           WHERE status = 'pending') AS pending_requests,
+
+          (SELECT COUNT(*)
+           FROM payments
+           WHERE status = 'verified') AS approved_requests,
+
+          (SELECT COUNT(*)
+           FROM payments
+           WHERE status = 'failed') AS rejected_requests
+      `);
+
+      const row = result.rows[0];
+
+      return res.json({
+        success: true,
+        stats: {
+          totalUsers: Number(row.total_users),
+          freeUsers: Number(row.free_users),
+          activePremium: Number(row.active_premium),
+          totalRequests: Number(row.total_requests),
+          pendingRequests: Number(row.pending_requests),
+          approvedRequests: Number(row.approved_requests),
+          rejectedRequests: Number(row.rejected_requests)
+        }
+      });
+
+    } catch (error) {
+      console.error("Admin statistics error:", error);
+
+      return res.status(500).json({
+        error: "Could not load dashboard statistics."
+      });
+    }
+  }
+);
+
+// ============================================
+// ADMIN - AI USAGE ANALYTICS
+// ============================================
+
+app.get(
+  "/api/admin/ai-analytics",
+  requirePaymentAdmin,
+  async (req, res) => {
+    try {
+      const freePeriod = getUsagePeriod("free");
+      const premiumPeriod = getUsagePeriod("premium");
+
+      const result = await pool.query(`
+        SELECT
+          COALESCE(SUM(requests_used) FILTER (
+            WHERE period_type = 'weekly'
+            AND period_start = $1::date
+          ), 0) AS free_requests,
+
+          COALESCE(SUM(requests_used) FILTER (
+            WHERE period_type = 'monthly'
+            AND period_start = $2::date
+          ), 0) AS premium_requests,
+
+          COUNT(DISTINCT user_id) FILTER (
+            WHERE period_type = 'weekly'
+            AND period_start = $1::date
+            AND requests_used > 0
+          ) AS free_active_users,
+
+          COUNT(DISTINCT user_id) FILTER (
+            WHERE period_type = 'monthly'
+            AND period_start = $2::date
+            AND requests_used > 0
+          ) AS premium_active_users,
+
+          COUNT(DISTINCT user_id) FILTER (
+            WHERE (
+              (period_type = 'weekly' AND period_start = $1::date)
+              OR
+              (period_type = 'monthly' AND period_start = $2::date)
+            )
+            AND requests_used > 0
+          ) AS total_active_users
+
+        FROM ai_usage
+      `, [
+        freePeriod.periodStart,
+        premiumPeriod.periodStart
+      ]);
+
+      const row = result.rows[0];
+
+      const freeRequests = Number(row.free_requests);
+      const premiumRequests = Number(row.premium_requests);
+      const totalRequests = freeRequests + premiumRequests;
+      const activeUsers = Number(row.total_active_users);
+
+      return res.json({
+        success: true,
+        analytics: {
+          totalRequests,
+          freeRequests,
+          premiumRequests,
+          freeActiveUsers: Number(row.free_active_users),
+          premiumActiveUsers: Number(row.premium_active_users),
+          totalActiveUsers: activeUsers,
+          averageRequestsPerUser: activeUsers > 0
+            ? Number((totalRequests / activeUsers).toFixed(2))
+            : 0,
+          freeLimit: 10,
+          premiumLimit: 200,
+          freePeriod: freePeriod.periodStart,
+          premiumPeriod: premiumPeriod.periodStart
+        }
+      });
+
+    } catch (error) {
+      console.error("AI analytics error:", error);
+
+      return res.status(500).json({
+        error: "Could not load AI usage analytics."
       });
     }
   }

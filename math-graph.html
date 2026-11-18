@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Graph Plotter | Study Vibe</title>
+
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/13.2.0/math.min.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f8ff;
+      color: #17243b;
+    }
+
+    header {
+      background: white;
+      padding: 17px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 12px #17365d12;
+    }
+
+    .logo {
+      font-size: 23px;
+      font-weight: 800;
+      color: #2468d8;
+      text-decoration: none;
+    }
+
+    .back {
+      color: #2468d8;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .intro {
+      text-align: center;
+      padding: 40px 15px 25px;
+    }
+
+    .intro h1 {
+      font-size: clamp(28px, 5vw, 40px);
+      margin-bottom: 12px;
+    }
+
+    .intro h1 span {
+      color: #3478e5;
+    }
+
+    .intro p {
+      color: #718096;
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 950px;
+      margin: 15px auto 60px;
+    }
+
+    .panel {
+      background: white;
+      padding: 26px;
+      border-radius: 18px;
+      border: 1px solid #e5ecf8;
+      box-shadow: 0 5px 20px #17365d0b;
+    }
+
+    .premium-label {
+      display: inline-block;
+      background: #fff0c9;
+      color: #805600;
+      padding: 7px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 17px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      font-size: 14px;
+      margin: 17px 0 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #dce4f0;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    input:focus {
+      outline: 2px solid #b8d2ff;
+      border-color: #3478e5;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 14px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 14px 22px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .plot-button {
+      background: #3478e5;
+      color: white;
+      flex: 1;
+    }
+
+    .clear-button {
+      background: #edf3ff;
+      color: #2468d8;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    #graphStatus {
+      margin-top: 16px;
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    #mathGraph {
+      width: 100%;
+      min-height: 400px;
+      margin-top: 22px;
+    }
+
+    .examples {
+      margin-top: 25px;
+      padding: 18px;
+      background: #f5f8ff;
+      border-radius: 12px;
+      color: #627087;
+      line-height: 1.9;
+      font-size: 14px;
+    }
+
+    .examples strong {
+      color: #2468d8;
+    }
+
+    .access-message {
+      text-align: center;
+      padding: 35px 20px;
+    }
+
+    .access-message h2 {
+      font-size: 26px;
+      margin-bottom: 13px;
+    }
+
+    .access-message p {
+      color: #718096;
+      line-height: 1.7;
+      margin-bottom: 22px;
+    }
+
+    .upgrade-button {
+      display: inline-block;
+      background: #3478e5;
+      color: white;
+      text-decoration: none;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #8793a5;
+      font-size: 13px;
+    }
+
+    @media(max-width: 650px) {
+      .row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .row > div:first-child {
+        grid-column: 1 / -1;
+      }
+
+      .panel {
+        padding: 19px;
+      }
+
+      #mathGraph {
+        min-height: 330px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <a href="index.html" class="logo">Study Vibe</a>
+  <a href="navigation.html" class="back">← Learning Menu</a>
+</header>
+
+<section class="intro">
+  <h1>Premium <span>Math Graph Plotter</span></h1>
+  <p>Explore mathematical functions through interactive graphs.</p>
+</section>
+
+<main class="container">
+  <section class="panel" id="graphAccess">
+
+    <div class="premium-label">✦ PREMIUM FEATURE</div>
+
+    <h2>Plot Your Function</h2>
+    <p style="color:#718096;margin-top:8px;line-height:1.6">
+      Enter a mathematical function using x and generate its graph.
+    </p>
+
+    <div class="row">
+      <div>
+        <label for="graphEquation">Function f(x)</label>
+        <input
+          id="graphEquation"
+          type="text"
+          placeholder="Example: x^2 + 2*x + 1"
+        >
+      </div>
+
+      <div>
+        <label for="graphMin">Minimum X</label>
+        <input id="graphMin" type="number" value="-10">
+      </div>
+
+      <div>
+        <label for="graphMax">Maximum X</label>
+        <input id="graphMax" type="number" value="10">
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="plot-button" id="plotGraphButton">
+        Plot Graph →
+      </button>
+
+      <button class="clear-button" id="clearGraphButton">
+        Clear
+      </button>
+    </div>
+
+    <p id="graphStatus" role="status"></p>
+
+    <div id="mathGraph"></div>
+
+    <div class="examples">
+      <strong>Example functions:</strong><br>
+      x^2<br>
+      sin(x)<br>
+      cos(x)<br>
+      tan(x)<br>
+      sqrt(x)<br>
+      2*x + 5<br>
+      x^3 - 3*x
+    </div>
+
+  </section>
+</main>
+
+<footer>
+  Study Vibe by Addrectionate · From Confusion to Confidence
+</footer>
+
+<script>
+  const graphAccess = document.getElementById("graphAccess");
+  const equationInput = document.getElementById("graphEquation");
+  const minInput = document.getElementById("graphMin");
+  const maxInput = document.getElementById("graphMax");
+  const plotButton = document.getElementById("plotGraphButton");
+  const clearButton = document.getElementById("clearGraphButton");
+  const graphStatus = document.getElementById("graphStatus");
+
+  let premiumAccess = false;
+
+  async function checkPremiumAccess() {
+    try {
+      const response = await fetch("/api/auth/me", {
+        method: "GET",
+        credentials: "same-origin"
+      });
+
+      const data = await response.json();
+
+      premiumAccess = Boolean(
+        response.ok &&
+        data.loggedIn &&
+        data.user &&
+        data.user.plan === "premium"
+      );
+
+      if (!premiumAccess) {
+        graphAccess.innerHTML = `
+          <div class="access-message">
+            <div class="premium-label">✦ PREMIUM FEATURE</div>
+            <h2>Unlock Math Graph Plotter</h2>
+            <p>
+              This feature is available to Premium members.
+              Sign in with your Premium account or upgrade your membership
+              to access the interactive graph plotter.
+            </p>
+            <a class="upgrade-button" href="payment.html">
+              Get Premium →
+            </a>
+            <p style="margin-top:18px">
+              <a href="login.html" style="color:#2468d8">
+                Already Premium? Sign in
+              </a>
+            </p>
+          </div>
+        `;
+      }
+    } catch (error) {
+      console.error(error);
+      graphAccess.innerHTML = `
+        <div class="access-message">
+          <h2>Unable to verify membership</h2>
+          <p>Please check your connection and sign in again.</p>
+          <a class="upgrade-button" href="login.html">Sign In</a>
+        </div>
+      `;
+    }
+  }
+
+  function plotGraph() {
+    if (!premiumAccess) return;
+
+    const equation = equationInput.value.trim();
+    const min = Number(minInput.value);
+    const max = Number(maxInput.value);
+
+    if (!equation) {
+      graphStatus.textContent = "Please enter a mathematical function.";
+      return;
+    }
+
+    if (!Number.isFinite(min) || !Number.isFinite(max) || min >= max) {
+      graphStatus.textContent =
+        "Please enter valid X values. Maximum X must be greater than minimum X.";
+      return;
+    }
+
+    if (max - min > 10000) {
+      graphStatus.textContent =
+        "Please choose a smaller graph range.";
+      return;
+    }
+
+    plotButton.disabled = true;
+    graphStatus.textContent = "Generating your graph...";
+
+    try {
+      const compiled = math.compile(equation);
+      const xValues = [];
+      const yValues = [];
+
+      const steps = 1000;
+      const stepSize = (max - min) / steps;
+
+      for (let i = 0; i <= steps; i++) {
+        const x = min + i * stepSize;
+
+        try {
+          const value = compiled.evaluate({ x });
+
+          xValues.push(x);
+          yValues.push(
+            typeof value === "number" && Number.isFinite(value)
+              ? value
+              : null
+          );
+        } catch {
+          xValues.push(x);
+          yValues.push(null);
+        }
+      }
+
+      Plotly.newPlot("mathGraph", [{
+        x: xValues,
+        y: yValues,
+        type: "scatter",
+        mode: "lines",
+        name: "f(x)"
+      }], {
+        title: "Graph of f(x) = " + equation,
+        xaxis: {
+          title: "X",
+          zeroline: true,
+          gridcolor: "#e5ecf8"
+        },
+        yaxis: {
+          title: "f(x)",
+          zeroline: true,
+          gridcolor: "#e5ecf8"
+        },
+        paper_bgcolor: "#ffffff",
+        plot_bgcolor: "#ffffff",
+        margin: { t: 60, r: 25, b: 55, l: 55 }
+      }, {
+        responsive: true,
+        displaylogo: false
+      });
+
+      graphStatus.textContent = "Your graph is ready!";
+    } catch (error) {
+      console.error(error);
+      graphStatus.textContent =
+        "Invalid function. Check your mathematical expression and try again.";
+    } finally {
+      plotButton.disabled = false;
+    }
+  }
+
+  plotButton.addEventListener("click", plotGraph);
+
+  clearButton.addEventListener("click", () => {
+    equationInput.value = "";
+    minInput.value = "-10";
+    maxInput.value = "10";
+    graphStatus.textContent = "";
+
+    if (premiumAccess && document.getElementById("mathGraph")) {
+      Plotly.purge("mathGraph");
+    }
+  });
+
+  equationInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") plotGraph();
+  });
+
+  checkPremiumAccess();
+</script>
+
+</body>
+</html>

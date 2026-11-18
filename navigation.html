@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Start Learning | Study Vibe</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f8ff;
+      color: #17243b;
+    }
+
+    header {
+      background: white;
+      padding: 18px 7%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(20, 50, 90, 0.07);
+    }
+
+    .logo {
+      color: #2468d8;
+      font-size: 24px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .home-link {
+      color: #2468d8;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .intro {
+      text-align: center;
+      padding: 55px 20px 30px;
+    }
+
+    .intro h1 {
+      font-size: clamp(30px, 5vw, 43px);
+      margin-bottom: 12px;
+    }
+
+    .intro h1 span {
+      color: #3478e5;
+    }
+
+    .intro p {
+      color: #718096;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .section-grid {
+      width: 88%;
+      max-width: 1100px;
+      margin: 25px auto 65px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 22px;
+    }
+
+    .section-card {
+      background: white;
+      border: 1px solid #e5ecf8;
+      border-radius: 18px;
+      padding: 28px 23px;
+      min-height: 230px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 5px 18px rgba(25, 60, 110, 0.05);
+      transition: 0.2s;
+    }
+
+    .section-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(25, 60, 110, 0.10);
+    }
+
+    .section-icon {
+      font-size: 36px;
+      margin-bottom: 17px;
+    }
+
+    .section-card h2 {
+      font-size: 21px;
+      margin-bottom: 10px;
+      color: #2468d8;
+    }
+
+    .section-card p {
+      color: #718096;
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 22px;
+      flex-grow: 1;
+    }
+
+    .open-link {
+      display: inline-block;
+      text-align: center;
+      background: #3478e5;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .open-link:hover {
+      background: #205fc5;
+    }
+
+    .premium-label {
+      display: inline-block;
+      color: #805600;
+      background: #fff0c9;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      width: fit-content;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #778398;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a href="index.html" class="logo">Study Vibe</a>
+    <a href="index.html" class="home-link">← Home</a>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h1>What would you like to <span>learn?</span></h1>
+      <p>Choose a study space and start learning your way.</p>
+    </section>
+
+    <section class="section-grid">
+
+      <article class="section-card">
+        <div class="section-icon">📈</div>
+        <h2>Math Graph</h2>
+        <p>
+          Plot mathematical functions and explore graphs visually.
+          Available with Premium membership.
+        </p>
+        <span class="premium-label">PREMIUM</span>
+        <a href="math-graph.html" class="open-link">Open Math Graph →</a>
+      </article>
+
+      <article class="section-card">
+        <div class="section-icon">🤖</div>
+        <h2>AI Study Assistant</h2>
+        <p>
+          Ask questions, solve mathematics, generate short questions,
+          create summaries and make study notes.
+        </p>
+        <a href="study-assistant.html" class="open-link">Start Studying →</a>
+      </article>
+
+      <article class="section-card">
+        <div class="section-icon">✍️</div>
+        <h2>Writing Studio</h2>
+        <p>
+          Create assignments, essays, research papers and other
+          academic or professional writing.
+        </p>
+        <a href="writing-studio.html" class="open-link">Open Writing Studio →</a>
+      </article>
+
+      <article class="section-card">
+        <div class="section-icon">📝</div>
+        <h2>Handwritten Notes</h2>
+        <p>
+          Write, draw diagrams, add shapes and images, and save
+          your handwritten notes.
+        </p>
+        <a href="handwritten-notes.html" class="open-link">Open Notes →</a>
+      </article>
+
+      <article class="section-card">
+        <div class="section-icon">🧰</div>
+        <h2>Tools Studio</h2>
+        <p>
+          Explore useful educational tools and utilities
+          to support your learning.
+        </p>
+        <a href="tools.html/index.html" class="open-link">Explore Tools →</a>
+      </article>
+
+    </section>
+  </main>
+
+  <footer>
+    Study Vibe by Addrectionate · From Confusion to Confidence
+  </footer>
+
+</body>
+</html>
