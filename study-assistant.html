@@ -557,7 +557,7 @@
     generateButton.disabled = true;
     generateButton.textContent = "Generating...";
     resultBox.style.display = "none";
-    statusText.textContent = "Your AI assistant is preparing your result...";
+    statusText.textContent = "Your AI assistant is preparing your result. This may take 5 to 10 minutes. Please keep this page open and do not click Generate again.";
 
     try {
       extractedPdfText = pdfFile ? await extractPdf(pdfFile) : "";
