@@ -3,405 +3,548 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Vibe | Login</title>
+  <title>Login | Study Vibe</title>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
 
     body {
-      margin: 0;
       min-height: 100vh;
+      background: linear-gradient(135deg, #071a36, #123d70);
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      justify-content: center;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #101a35, #193d72);
-      color: #17233e;
+      padding: 25px 15px;
+      color: #172b4d;
     }
 
-    .main-navigation {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 22px;
+    .wrapper {
+      width: 100%;
+      max-width: 440px;
     }
 
-    .main-navigation a {
+    .back-link {
+      display: inline-block;
       color: white;
       text-decoration: none;
-      font-size: 13px;
+      margin-bottom: 18px;
+      font-size: 15px;
     }
 
-    .main-navigation a:hover {
-      color: #e6c36b;
+    .back-link:hover {
+      text-decoration: underline;
     }
 
-    .login-card {
-      width: 100%;
-      max-width: 420px;
-      padding: 32px 26px;
+    .card {
       background: white;
-      border-radius: 20px;
-      box-shadow: 0 15px 45px #0005;
+      border-radius: 18px;
+      padding: 32px 25px;
+      box-shadow: 0 12px 35px rgba(0,0,0,.25);
+      text-align: center;
     }
 
-    .brand {
-      text-align: center;
-      color: #183c75;
+    .logo {
       font-size: 30px;
       font-weight: bold;
-      margin-bottom: 6px;
+      color: #123d70;
+      margin-bottom: 8px;
     }
 
     .tagline {
-      text-align: center;
-      color: #b18a35;
-      margin-bottom: 26px;
+      color: #718096;
+      font-size: 14px;
+      margin-bottom: 25px;
     }
 
-    h2 { text-align: center; }
+    h2 {
+      color: #123d70;
+      margin-bottom: 20px;
+    }
+
+    .menu-button {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      margin: 12px 0;
+      background: #123d70;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .menu-button:hover {
+      background: #1b5796;
+    }
+
+    .premium-button {
+      background: #d6a32a;
+      color: #142b49;
+    }
+
+    .premium-button:hover {
+      background: #bd8b19;
+    }
+
+    .logout-button {
+      background: #e8edf3;
+      color: #263b56;
+    }
+
+    .logout-button:hover {
+      background: #d8e0eb;
+    }
+
+    .view-plans {
+      display: inline-block;
+      margin-top: 15px;
+      color: #1761a8;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .view-plans:hover {
+      text-decoration: underline;
+    }
+
+    .form-section,
+    .account-section,
+    .plans-section {
+      display: none;
+    }
+
+    .input-group {
+      text-align: left;
+      margin: 16px 0;
+    }
 
     label {
       display: block;
       font-weight: bold;
-      margin: 17px 0 7px;
+      margin-bottom: 7px;
+      color: #334b68;
     }
 
     input {
       width: 100%;
       padding: 13px;
-      border: 1px solid #cbd3e0;
-      border-radius: 9px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
       font-size: 15px;
+      outline: none;
     }
 
-    .hint {
-      color: #68748a;
-      font-size: 12px;
-      margin-top: 6px;
+    input:focus {
+      border-color: #1761a8;
+      box-shadow: 0 0 0 2px rgba(23,97,168,.12);
+    }
+
+    .message {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #d33;
       line-height: 1.5;
     }
 
-    button {
+    .success {
+      color: #16834a;
+    }
+
+    .small-button {
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       border: none;
-      border-radius: 9px;
+      border-radius: 8px;
+      margin-top: 12px;
+      cursor: pointer;
       font-size: 15px;
       font-weight: bold;
-      cursor: pointer;
-      margin-top: 14px;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .premium {
-      background: #183c75;
+      background: #123d70;
       color: white;
     }
 
-    .free {
-      background: #f0f3f8;
-      color: #183c75;
-      border: 1px solid #d6deeb;
+    .secondary-button {
+      background: #e8edf3;
+      color: #263b56;
     }
 
-    #message {
+    .plan-card {
+      border: 1px solid #dce4ee;
+      border-radius: 12px;
+      padding: 20px 16px;
+      margin: 15px 0;
+      text-align: left;
+    }
+
+    .plan-card h3 {
+      color: #123d70;
+      margin-bottom: 8px;
       text-align: center;
+    }
+
+    .plan-label {
+      text-align: center;
+      color: #718096;
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+
+    .plan-card ul {
+      padding-left: 20px;
+      line-height: 1.8;
       font-size: 14px;
-      margin-top: 16px;
-      line-height: 1.5;
+      color: #42546b;
+    }
+
+    .premium-plan {
+      border: 2px solid #d6a32a;
+    }
+
+    .account-detail {
+      background: #f1f5f9;
+      border-radius: 9px;
+      padding: 13px;
+      margin: 12px 0;
+      text-align: left;
       overflow-wrap: anywhere;
     }
 
-    .footer {
-      text-align: center;
-      color: #6c7587;
-      font-size: 12px;
-      margin-top: 22px;
+    .account-detail strong {
+      color: #123d70;
     }
 
-    .account-actions a {
-      display: block;
-      text-align: center;
-      margin-top: 15px;
-      color: #183c75;
-      font-weight: bold;
-      text-decoration: none;
+    @media (max-width: 400px) {
+      .card {
+        padding: 26px 18px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <nav class="main-navigation" aria-label="Main navigation">
-      <a href="index.html">Home</a>
-      <a href="index.html#features">Features</a>
-      <a href="index.html#assistant">AI Study Assistant</a>
-      <a href="index.html#plans">Plans</a>
-      <a href="login.html">Login / Register</a>
-      <a href="payment.html">Premium Payment</a>
-    </nav>
-  </header>
+<div class="wrapper">
 
-  <main class="login-card">
+  <a href="index.html" class="back-link">← Back</a>
 
-    <div class="brand">Study Vibe</div>
-    <div class="tagline">From Confusion to Confidence</div>
+  <div class="card">
 
-    <h2 id="heading">Welcome Back!</h2>
+    <div class="logo">Study Vibe</div>
+    <p class="tagline">From Confusion to Confidence</p>
 
-    <p style="text-align:center;color:#69748a">
-      Sign in to continue your learning journey.
-    </p>
+    <!-- MAIN MENU -->
+    <section id="mainMenu">
+      <h2>Welcome!</h2>
 
-    <form id="loginForm">
-
-      <label for="email">Email Address</label>
-      <input
-        type="email"
-        id="email"
-        placeholder="you@example.com"
-        autocomplete="email"
-        required
-      >
-
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        placeholder="Enter your password"
-        autocomplete="current-password"
-        minlength="8"
-        required
-      >
-
-      <div class="hint" id="passwordHint">
-        Enter your account password.
-      </div>
-
-      <button class="premium" type="submit" id="submitButton">
+      <button class="menu-button" onclick="showForm('login')">
         Sign In
       </button>
 
-      <button class="free" type="button" id="freeButton">
-        Create a Free Account
+      <button class="menu-button" onclick="showForm('register')">
+        Create Account
       </button>
 
-    </form>
+      <a href="payment.html" class="menu-button premium-button">
+        Get Premium
+      </a>
 
-    <div id="message" role="status" aria-live="polite"></div>
-
-    <div class="account-actions" id="accountActions" hidden>
-      <a href="index.html">Go to Study Vibe Home</a>
-      <a href="payment.html">Explore Premium Membership</a>
-      <button class="free" type="button" id="logoutButton">
+      <button class="menu-button logout-button" onclick="logout()">
         Log Out
       </button>
-    </div>
 
-    <div class="footer">
-      A product by Addrectionate
-    </div>
+      <a class="view-plans" onclick="showPlans()">
+        View Plans
+      </a>
+    </section>
 
-  </main>
+    <!-- LOGIN / REGISTER FORM -->
+    <section id="formSection" class="form-section">
+      <h2 id="formTitle">Sign In</h2>
 
-  <script>
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const message = document.getElementById("message");
-    const form = document.getElementById("loginForm");
-    const heading = document.getElementById("heading");
-    const submitButton = document.getElementById("submitButton");
-    const freeButton = document.getElementById("freeButton");
-    const passwordHint = document.getElementById("passwordHint");
-    const accountActions = document.getElementById("accountActions");
-    const logoutButton = document.getElementById("logoutButton");
+      <form id="authForm">
+        <div class="input-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email address"
+            required
+            autocomplete="email"
+          >
+        </div>
 
-    let mode = "login";
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            required
+            autocomplete="current-password"
+          >
+        </div>
 
-    function showMessage(text, success = false) {
-      message.textContent = text;
-      message.style.color = success ? "#168044" : "#c0392b";
-    }
+        <button type="submit" class="small-button" id="submitButton">
+          Sign In
+        </button>
+      </form>
 
-    function setMode(newMode) {
-      mode = newMode;
-      message.textContent = "";
+      <p id="authMessage" class="message"></p>
 
-      if (mode === "register") {
-        heading.textContent = "Create Your Account";
-        submitButton.textContent = "Create Free Account";
-        freeButton.textContent = "Back to Login";
-        password.placeholder = "Create a strong password";
-        password.autocomplete = "new-password";
-        passwordHint.textContent =
-          "At least 8 characters, including a letter, a number and a symbol.";
+      <button class="small-button secondary-button" onclick="showMenu()">
+        ← Back
+      </button>
+    </section>
+
+    <!-- ACCOUNT SECTION -->
+    <section id="accountSection" class="account-section">
+      <h2>My Account</h2>
+
+      <div class="account-detail">
+        <strong>Email:</strong>
+        <p id="accountEmail"></p>
+      </div>
+
+      <div class="account-detail">
+        <strong>Membership:</strong>
+        <p id="accountPlan"></p>
+      </div>
+
+      <a href="index.html" class="menu-button">
+        Go to Study Vibe
+      </a>
+
+      <a href="payment.html" class="menu-button premium-button">
+        Get Premium
+      </a>
+
+      <button class="small-button" onclick="showPlans()">
+        View Plans
+      </button>
+
+      <button class="small-button secondary-button" onclick="logout()">
+        Log Out
+      </button>
+    </section>
+
+    <!-- VIEW PLANS -->
+    <section id="plansSection" class="plans-section">
+      <h2>Choose Your Plan</h2>
+
+      <div class="plan-card">
+        <h3>Free Plan</h3>
+        <p class="plan-label">FREE</p>
+
+        <ul>
+          <li>10 AI requests per week</li>
+          <li>MCQ generation without explanations</li>
+          <li>MCQ exams without explanations</li>
+          <li>No Math Graph Plotter</li>
+          <li>No Writing Studio</li>
+          <li>No Handwritten Notes</li>
+          <li>No Educational Tools</li>
+        </ul>
+      </div>
+
+      <div class="plan-card premium-plan">
+        <h3>Premium Plan</h3>
+        <p class="plan-label">৳299/month</p>
+
+        <ul>
+          <li>All Free Plan features</li>
+          <li>MCQ generation with explanations</li>
+          <li>MCQ exams with explanations</li>
+          <li>Math Graph Plotter</li>
+          <li>Writing Studio</li>
+          <li>Handwritten Notes</li>
+          <li>Educational Tools</li>
+          <li>All other Study Vibe features</li>
+        </ul>
+
+        <a href="payment.html" class="menu-button premium-button">
+          Get Premium
+        </a>
+      </div>
+
+      <button class="small-button secondary-button" onclick="showMenu()">
+        ← Back
+      </button>
+    </section>
+
+  </div>
+</div>
+
+<script>
+  const mainMenu = document.getElementById("mainMenu");
+  const formSection = document.getElementById("formSection");
+  const accountSection = document.getElementById("accountSection");
+  const plansSection = document.getElementById("plansSection");
+
+  const authForm = document.getElementById("authForm");
+  const authMessage = document.getElementById("authMessage");
+
+  let currentMode = "login";
+
+  function hideAllSections() {
+    mainMenu.style.display = "none";
+    formSection.style.display = "none";
+    accountSection.style.display = "none";
+    plansSection.style.display = "none";
+  }
+
+  function showMenu() {
+    hideAllSections();
+    mainMenu.style.display = "block";
+    authMessage.textContent = "";
+    authForm.reset();
+  }
+
+  function showForm(mode) {
+    hideAllSections();
+
+    currentMode = mode;
+    formSection.style.display = "block";
+
+    document.getElementById("formTitle").textContent =
+      mode === "login" ? "Sign In" : "Create Account";
+
+    document.getElementById("submitButton").textContent =
+      mode === "login" ? "Sign In" : "Create Account";
+
+    document.getElementById("password").setAttribute(
+      "autocomplete",
+      mode === "login" ? "current-password" : "new-password"
+    );
+
+    authMessage.textContent = "";
+    authMessage.className = "message";
+    authForm.reset();
+  }
+
+  function showPlans() {
+    hideAllSections();
+    plansSection.style.display = "block";
+  }
+
+  async function checkSession() {
+    try {
+      const response = await fetch("/api/auth/me", {
+        credentials: "same-origin"
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.loggedIn && data.user) {
+        hideAllSections();
+        accountSection.style.display = "block";
+
+        document.getElementById("accountEmail").textContent =
+          data.user.email || "Not available";
+
+        document.getElementById("accountPlan").textContent =
+          data.user.plan === "premium" ? "Premium" : "Free";
       } else {
-        heading.textContent = "Welcome Back!";
-        submitButton.textContent = "Sign In";
-        freeButton.textContent = "Create a Free Account";
-        password.placeholder = "Enter your password";
-        password.autocomplete = "current-password";
-        passwordHint.textContent = "Enter your account password.";
+        showMenu();
+      }
+    } catch (error) {
+      showMenu();
+    }
+  }
+
+  authForm.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    authMessage.className = "message";
+    authMessage.textContent = "Please wait...";
+
+    if (currentMode === "register") {
+      const passwordBytes = new TextEncoder().encode(password).length;
+
+      if (
+        password.length < 8 ||
+        !/[A-Za-z]/.test(password) ||
+        !/[0-9]/.test(password) ||
+        !/[^A-Za-z0-9]/.test(password) ||
+        passwordBytes > 72
+      ) {
+        authMessage.textContent =
+          "Password must be at least 8 characters and contain a letter, a number, and a symbol. Maximum UTF-8 length: 72 bytes.";
+        return;
       }
     }
 
-    function validateForm() {
-      const emailValid =
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+    try {
+      const endpoint =
+        currentMode === "login"
+          ? "/api/auth/login"
+          : "/api/auth/register";
 
-      if (!emailValid) {
-        showMessage("Please enter a valid email address.");
-        return false;
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "same-origin",
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || "Authentication failed.");
       }
 
-      if (mode === "register") {
-        const passwordValid =
-          password.value.length >= 8 &&
-          /[A-Za-z]/.test(password.value) &&
-          /[0-9]/.test(password.value) &&
-          /[^A-Za-z0-9]/.test(password.value);
+      authMessage.className = "message success";
+      authMessage.textContent =
+        "Success! Redirecting to Study Vibe...";
 
-        if (!passwordValid) {
-          showMessage(
-            "Password must have at least 8 characters, a letter, a number and a symbol."
-          );
-          return false;
-        }
+      window.location.href = "index.html";
 
-        if (new TextEncoder().encode(password.value).length > 72) {
-          showMessage("Password is too long.");
-          return false;
-        }
-      } else if (!password.value) {
-        showMessage("Please enter your password.");
-        return false;
-      }
-
-      return true;
+    } catch (error) {
+      authMessage.className = "message";
+      authMessage.textContent =
+        error.message || "Something went wrong. Please try again.";
     }
+  });
 
-    async function checkAccount() {
-      try {
-        const response = await fetch("/api/auth/me", {
-          credentials: "same-origin"
-        });
+  async function logout() {
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "same-origin"
+      });
 
-        const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
-        if (data.loggedIn && data.user) {
-          form.hidden = true;
-          heading.textContent = "You're Signed In!";
-          accountActions.hidden = false;
-
-          const plan =
-            data.user.plan === "premium" ? "Premium" : "Free";
-
-          showMessage(
-            "Signed in as " + data.user.email +
-            " · " + plan + " account.",
-            true
-          );
-        }
-      } catch (error) {
-        showMessage(
-          "Could not check your account. Please refresh the page."
-        );
+      if (!response.ok) {
+        throw new Error(data.message || data.error || "Logout failed.");
       }
+
+      showMenu();
+      alert("You have been logged out.");
+
+    } catch (error) {
+      alert(error.message || "Unable to log out. Please try again.");
     }
+  }
 
-    form.addEventListener("submit", async function(event) {
-      event.preventDefault();
-
-      if (!validateForm()) return;
-
-      submitButton.disabled = true;
-      freeButton.disabled = true;
-      submitButton.textContent = "Please wait...";
-
-      try {
-        const endpoint = mode === "register"
-          ? "/api/auth/register"
-          : "/api/auth/login";
-
-        const response = await fetch(endpoint, {
-          method: "POST",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            email: email.value.trim(),
-            password: password.value
-          })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Something went wrong.");
-        }
-
-        showMessage(
-          mode === "register"
-            ? "Your Free account has been created successfully!"
-            : "Login successful!",
-          true
-        );
-
-        password.value = "";
-
-        // Open the homepage after successful registration or login.
-        window.location.href = "index.html";
-
-      } catch (error) {
-        showMessage(error.message);
-      } finally {
-        submitButton.disabled = false;
-        freeButton.disabled = false;
-
-        submitButton.textContent =
-          mode === "register" ? "Create Free Account" : "Sign In";
-      }
-    });
-
-    freeButton.addEventListener("click", function() {
-      setMode(mode === "login" ? "register" : "login");
-    });
-
-    logoutButton.addEventListener("click", async function() {
-      logoutButton.disabled = true;
-
-      try {
-        const response = await fetch("/api/auth/logout", {
-          method: "POST",
-          credentials: "same-origin"
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Logout failed.");
-        }
-
-        window.location.reload();
-
-      } catch (error) {
-        showMessage(error.message);
-        logoutButton.disabled = false;
-      }
-    });
-
-    checkAccount();
-  </script>
+  checkSession();
+</script>
 
 </body>
 </html>

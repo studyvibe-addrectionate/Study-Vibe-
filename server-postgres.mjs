@@ -1916,6 +1916,80 @@ Instructions:
 );
 
 // ============================================
+// PREMIUM PAGE ACCESS CONTROL
+// ============================================
+
+// These pages are accessible to Premium members only.
+const premiumPagePaths = new Set([
+  "/math-graph.html",
+  "/studio.html",
+  "/writing-studio.html"
+]);
+
+function isPremiumPage(requestPath) {
+  let decodedPath = String(requestPath || "");
+
+  try {
+    decodedPath = decodeURIComponent(decodedPath);
+  } catch {
+    return true;
+  }
+
+  const normalizedPath = path.posix.normalize(
+    `/${decodedPath.replace(/\\/g, "/")}`
+  ).toLowerCase();
+
+  return premiumPagePaths.has(normalizedPath) ||
+    normalizedPath === "/tools.html" ||
+    normalizedPath.startsWith("/tools.html/");
+}
+
+// Verify membership before serving Premium pages.
+app.use(async (req, res, next) => {
+
+  if (
+    !["GET", "HEAD"].includes(req.method) ||
+    !isPremiumPage(req.path)
+  ) {
+    return next();
+  }
+
+  // Logged-out users cannot access Premium pages.
+  if (!req.session.userId) {
+    return res.redirect(302, "/login.html");
+  }
+
+  try {
+    // Check actual membership from PostgreSQL.
+    const plan = await getEffectivePlan(
+      req.session.userId
+    );
+
+    // Free members cannot access Premium pages.
+    if (plan !== "premium") {
+      return res.redirect(
+        302,
+        "/payment.html?required=premium"
+      );
+    }
+
+    // Premium membership verified.
+    return next();
+
+  } catch (error) {
+
+    console.error(
+      "Premium page access check error:",
+      error
+    );
+
+    return res.status(503).send(
+      "Unable to verify membership. Please try again later."
+    );
+  }
+});
+
+// ============================================
 // STATIC WEBSITE FILES
 // ============================================
 
