@@ -1642,14 +1642,17 @@ app.post(
           });
         }
 
-        const validImage = /^data:image\/(png|jpeg|jpg|webp);base64,/i
-          .test(imageData);
+        const imageMatch = imageData.match(
+  /^data:(image\/(?:png|jpe?g|webp))(?:;[^,]*)?;base64,([\s\S]+)$/i
+);
 
-        if (!validImage) {
-          return res.status(400).json({
-            error: "Only PNG, JPG, JPEG, and WEBP images are supported."
-          });
-        }
+if (!imageMatch) {
+  console.error("Unsupported image data format:", imageData.slice(0, 100));
+
+  return res.status(400).json({
+    error: "Invalid image data format. Please upload a PNG, JPG, JPEG, or WEBP image."
+  });
+}
       }
 
       const question = String(
@@ -1702,8 +1705,12 @@ app.post(
         }
 
         const matches = imageData.match(
-          /^data:image\/(png|jpeg|jpg|webp);base64,(.+)$/i
-        );
+  /^data:image\/(png|jpeg|jpg|webp);base64,([\s\S]+)$/i
+);
+
+        if (!matches) {
+  throw new Error("Invalid image data.");
+}
 
         if (!matches) {
           throw new Error("Invalid image data.");
@@ -1713,7 +1720,7 @@ app.post(
           ? "image/jpeg"
           : `image/${matches[1].toLowerCase()}`;
 
-        const base64Data = matches[2];
+        const base64Data = matches[2].replace(/\s/g, "");
 
         const imagePrompt = `
 ${prompt}
@@ -1790,6 +1797,62 @@ app.post(
 
     try {
       const userId = req.session.userId;
+
+      // SERVER-SIDE PREMIUM EXPLANATION PROTECTION
+const requestedTask = String(
+  req.body.task || req.body.type || "answer"
+).trim().toLowerCase();
+
+if (
+  reservation.plan !== "premium" &&
+  requestedTask === "mcq"
+) {
+  try {
+    const jsonStart = answer.indexOf("[");
+    const jsonEnd = answer.lastIndexOf("]");
+
+    if (jsonStart === -1 || jsonEnd < jsonStart) {
+      throw new Error("Invalid MCQ response.");
+    }
+
+    const questions = JSON.parse(
+      answer.slice(jsonStart, jsonEnd + 1)
+    );
+
+    if (!Array.isArray(questions)) {
+      throw new Error("Invalid MCQ format.");
+    }
+
+    function removeExplanationFields(value) {
+      if (Array.isArray(value)) {
+        return value.map(removeExplanationFields);
+      }
+
+      if (value && typeof value === "object") {
+        const cleaned = {};
+
+        for (const [key, item] of Object.entries(value)) {
+          if (/explanation/i.test(key)) continue;
+
+          cleaned[key] = removeExplanationFields(item);
+        }
+
+        return cleaned;
+      }
+
+      return value;
+    }
+
+    answer = JSON.stringify(
+      removeExplanationFields(questions)
+    );
+
+  } catch (error) {
+    throw new Error(
+      "Could not verify the Free MCQ response."
+    );
+  }
+}
 
       const user = await getUserById(userId);
 
